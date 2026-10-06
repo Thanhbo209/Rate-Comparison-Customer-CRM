@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
-import DropWell from "@/public/dropwell.png";
-import { BRAND } from "../shared/Brand";
+import { BRAND, Logo } from "../shared/Brand";
 const NAV = [
   { id: "home", label: "Home" },
   { id: "features", label: "Features" },
@@ -58,7 +56,7 @@ export function Navbar() {
         <nav
           aria-label="Main"
           className={cn(
-            "flex items-center justify-between gap-2 rounded-md border border-border bg-sidebar pl-4 pr-2 transition-shadow duration-300",
+            "flex items-center justify-between gap-2 py-3 rounded-md border border-border bg-sidebar pl-4 pr-2 transition-shadow duration-300",
             scrolled && "shadow-lg shadow-black/5",
           )}
         >
@@ -67,7 +65,7 @@ export function Navbar() {
             onClick={() => setOpen(false)}
             className="flex items-center gap-2 text-primary"
           >
-            <Image src={DropWell} alt="logo" width={80} height={80} />
+            <Logo size={30} />
             <span className="font-heading text-lg font-semibold text-foreground">
               {BRAND}
             </span>
