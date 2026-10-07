@@ -18,7 +18,20 @@ export const metadata: Metadata = {
   description: "Track every delivery and keep customers informed.",
 };
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ error?: string; error_description?: string }>;
+}) {
+  const params = searchParams ? await searchParams : undefined;
+  const errorParam = params?.error_description || params?.error;
+  const initialError =
+    errorParam === "oauth_failed"
+      ? "Google sign-in was cancelled or failed. Please try again."
+      : errorParam === "confirmation_failed"
+        ? "Email confirmation link is invalid or expired."
+        : errorParam;
+
   return (
     <main className="flex min-h-screen bg-background text-foreground">
       {/* ───────────── login form ───────────── */}
@@ -65,7 +78,7 @@ export default function LoginPage() {
           </p>
 
           {/* Only this part runs in the browser */}
-          <LoginForm />
+          <LoginForm initialError={initialError} />
         </div>
       </section>
 

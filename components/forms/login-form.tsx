@@ -11,7 +11,7 @@ import { createClient } from "@/lib/supabase/client";
 
 type Errors = { email?: string; password?: string };
 
-export function LoginForm() {
+export function LoginForm({ initialError }: { initialError?: string } = {}) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
 
@@ -19,8 +19,9 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
-  const [formError, setFormError] = useState("");
+  const [formError, setFormError] = useState(initialError || "");
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -56,14 +57,20 @@ export function LoginForm() {
 
   async function handleGoogle() {
     setFormError("");
+    setGoogleLoading(true);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: {
+          access_type: "offline",
+          prompt: "consent",
+        },
       },
     });
     if (error) {
       setFormError(error.message);
+      setGoogleLoading(false);
     }
   }
 
@@ -149,7 +156,7 @@ export function LoginForm() {
           type="submit"
           size="lg"
           className="h-11 w-full"
-          disabled={loading}
+          disabled={loading || googleLoading}
         >
           {loading ? "Logging in…" : "Log in"}
         </Button>
@@ -167,9 +174,10 @@ export function LoginForm() {
         size="lg"
         className="h-11 w-full gap-3"
         onClick={handleGoogle}
+        disabled={loading || googleLoading}
       >
         <FcGoogle size={18} />
-        Log in with Google
+        {googleLoading ? "Connecting to Google…" : "Log in with Google"}
       </Button>
     </>
   );

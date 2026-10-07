@@ -30,7 +30,7 @@ function FieldError({ id, message }: { id: string; message?: string }) {
   );
 }
 
-export function RegisterForm() {
+export function RegisterForm({ initialError }: { initialError?: string } = {}) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
 
@@ -43,8 +43,9 @@ export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
-  const [formError, setFormError] = useState("");
+  const [formError, setFormError] = useState(initialError || "");
 
   // Confirmation state
   const [success, setSuccess] = useState(false);
@@ -142,14 +143,20 @@ export function RegisterForm() {
 
   async function handleGoogle() {
     setFormError("");
+    setGoogleLoading(true);
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: {
+          access_type: "offline",
+          prompt: "consent",
+        },
       },
     });
     if (error) {
       setFormError(error.message);
+      setGoogleLoading(false);
     }
   }
 
@@ -402,7 +409,7 @@ export function RegisterForm() {
           type="submit"
           size="lg"
           className="h-11 w-full"
-          disabled={loading}
+          disabled={loading || googleLoading}
         >
           {loading ? "Creating account…" : "Create account"}
         </Button>
@@ -420,9 +427,10 @@ export function RegisterForm() {
         size="lg"
         className="h-11 w-full gap-3"
         onClick={handleGoogle}
+        disabled={loading || googleLoading}
       >
         <FcGoogle size={18} />
-        Sign up with Google
+        {googleLoading ? "Connecting to Google…" : "Sign up with Google"}
       </Button>
     </>
   );
