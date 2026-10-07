@@ -1,7 +1,7 @@
 "use client";
 
 import { Menu, Building2 } from "lucide-react";
-import { SignOutButton } from "./sign-out-button";
+import { SignOutButton } from "../shared/sign-out-button";
 import type { AppRole } from "@/lib/auth/roles";
 import { cn } from "@/lib/utils";
 
@@ -47,13 +47,13 @@ export function DashboardHeader({
             </h1>
             <span
               className={cn(
-                "hidden rounded-full px-2 py-0.5 text-[10px] font-semibold sm:inline-block",
+                "hidden rounded-full px-2 py-0.5 text-[12px] font-semibold sm:inline-block",
                 isAdmin
                   ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
-                  : "bg-sky-500/10 text-sky-700 dark:text-sky-400"
+                  : "bg-primary/10 text-primary dark:text-sky-400",
               )}
             >
-              {isAdmin ? "Admin Portal" : "Sales Portal"}
+              {isAdmin ? "Admin Portal" : "Sales Representative Workspace"}
             </span>
           </div>
           {subtitle && (
@@ -79,7 +79,9 @@ export function DashboardHeader({
 
         {userName && (
           <div className="hidden text-right text-xs lg:block">
-            <span className="block font-medium text-foreground">{userName}</span>
+            <span className="block font-medium text-foreground">
+              {userName}
+            </span>
           </div>
         )}
 
