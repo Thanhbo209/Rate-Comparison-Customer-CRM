@@ -1,11 +1,16 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
+
+const RESEND_SECONDS = 60;
 
 type Errors = {
   name?: string;
@@ -16,7 +21,19 @@ type Errors = {
   terms?: string;
 };
 
+function FieldError({ id, message }: { id: string; message?: string }) {
+  if (!message) return null;
+  return (
+    <p id={id} role="alert" className="text-sm text-destructive">
+      {message}
+    </p>
+  );
+}
+
 export function RegisterForm() {
+  const router = useRouter();
+  const supabase = useMemo(() => createClient(), []);
+
   const [name, setName] = useState("");
   const [organizationName, setOrganizationName] = useState("");
   const [email, setEmail] = useState("");
@@ -24,11 +41,27 @@ export function RegisterForm() {
   const [confirm, setConfirm] = useState("");
   const [terms, setTerms] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
+  const [formError, setFormError] = useState("");
+
+  // Confirmation state
+  const [success, setSuccess] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+  const [resending, setResending] = useState(false);
+  const [resendMessage, setResendMessage] = useState("");
+
+  // Countdown for the "Resend email" button
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [cooldown]);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setFormError("");
 
     const next: Errors = {};
     if (name.trim().length < 2) next.name = "Enter your full name.";
@@ -40,22 +73,194 @@ export function RegisterForm() {
       next.password = "Password must be at least 8 characters.";
     if (confirm !== password) next.confirm = "Passwords do not match.";
     if (!terms) next.terms = "You need to accept the terms to continue.";
+
     setErrors(next);
     if (Object.keys(next).length > 0) return;
 
     setLoading(true);
-    // TODO: call your register API here
-    await new Promise((r) => setTimeout(r, 800));
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        // Where the link in the confirmation email sends the user
+        emailRedirectTo: `${window.location.origin}/auth/confirm`,
+        // Saved as user metadata (user_metadata / raw_user_meta_data)
+        data: {
+          full_name: name.trim(),
+          organization_name: organizationName.trim(),
+        },
+      },
+    });
+
     setLoading(false);
+
+    if (error) {
+      setFormError(error.message);
+      return;
+    }
+
+    // For an email that is already registered, Supabase returns a user with no identities
+    if (data.user && data.user.identities?.length === 0) {
+      setFormError(
+        "An account with this email already exists. Try logging in instead.",
+      );
+      return;
+    }
+
+    // Email confirmation turned off in Supabase: the user is already signed in
+    if (data.session) {
+      router.push("/");
+      router.refresh();
+      return;
+    }
+
+    // Email confirmation turned on: show the "check your email" message
+    setCooldown(RESEND_SECONDS);
+    setSuccess(true);
   }
 
-  function handleGoogle() {
-    // TODO: connect Google sign-up here
+  async function handleResend() {
+    setResending(true);
+    setResendMessage("");
+
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: { emailRedirectTo: `${window.location.origin}/auth/confirm` },
+    });
+
+    setResending(false);
+
+    if (error) {
+      setResendMessage(error.message);
+      return;
+    }
+    setResendMessage("We sent the email again.");
+    setCooldown(RESEND_SECONDS);
   }
 
+  async function handleGoogle() {
+    setFormError("");
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+    if (error) {
+      setFormError(error.message);
+    }
+  }
+
+  /* ───────────── Confirmation state ───────────── */
+  if (success) {
+    return (
+      <div aria-live="polite">
+        <span className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <rect
+              x="3"
+              y="5"
+              width="18"
+              height="14"
+              rx="3"
+              stroke="currentColor"
+              strokeWidth="2"
+            />
+            <path
+              d="M4 8l8 6 8-6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+
+        <h1 className="mt-6 font-heading text-4xl font-bold tracking-tight">
+          Check your email
+        </h1>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          We sent a confirmation link to{" "}
+          <span className="break-all font-medium text-foreground">{email}</span>
+          . Open it to activate your account.
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          Can&apos;t see it? Check your spam folder.
+        </p>
+
+        <div className="mt-8 space-y-3">
+          <Link
+            href="/login"
+            className={cn(buttonVariants({ size: "lg" }), "h-11 w-full")}
+          >
+            Back to login
+          </Link>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            className="h-11 w-full"
+            onClick={handleResend}
+            disabled={cooldown > 0 || resending}
+          >
+            {resending
+              ? "Sending…"
+              : cooldown > 0
+                ? `Resend email in ${cooldown}s`
+                : "Resend email"}
+          </Button>
+
+          {resendMessage && (
+            <p
+              role="status"
+              className="text-center text-sm text-muted-foreground"
+            >
+              {resendMessage}
+            </p>
+          )}
+        </div>
+
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          Wrong email?{" "}
+          <button
+            type="button"
+            onClick={() => setSuccess(false)}
+            className="font-medium text-foreground underline underline-offset-2 hover:text-primary"
+          >
+            Go back and change it
+          </button>
+        </p>
+      </div>
+    );
+  }
+
+  /* ───────────── Sign-up form ───────────── */
   return (
     <>
-      <form onSubmit={handleSubmit} className="mt-8 space-y-4" noValidate>
+      <h1 className="font-heading text-4xl font-bold tracking-tight">
+        Create your account
+      </h1>
+      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+        Already have an account?{" "}
+        <Link
+          href="/login"
+          className="font-medium text-foreground underline underline-offset-2 hover:text-primary"
+        >
+          Log in
+        </Link>
+        . It&apos;s free and takes under a minute.
+      </p>
+
+      <form onSubmit={handleSubmit} className="mt-4 space-y-5" noValidate>
         <div className="space-y-2">
           <Label htmlFor="name">Full name</Label>
           <Input
@@ -68,15 +273,7 @@ export function RegisterForm() {
             aria-describedby={errors.name ? "name-error" : undefined}
             className="h-11"
           />
-          {errors.name && (
-            <p
-              id="name-error"
-              role="alert"
-              className="text-sm text-destructive"
-            >
-              {errors.name}
-            </p>
-          )}
+          <FieldError id="name-error" message={errors.name} />
         </div>
 
         <div className="space-y-2">
@@ -93,15 +290,10 @@ export function RegisterForm() {
             }
             className="h-11"
           />
-          {errors.organizationName && (
-            <p
-              id="organizationName-error"
-              role="alert"
-              className="text-sm text-destructive"
-            >
-              {errors.organizationName}
-            </p>
-          )}
+          <FieldError
+            id="organizationName-error"
+            message={errors.organizationName}
+          />
         </div>
 
         <div className="space-y-2">
@@ -117,15 +309,7 @@ export function RegisterForm() {
             aria-describedby={errors.email ? "email-error" : undefined}
             className="h-11"
           />
-          {errors.email && (
-            <p
-              id="email-error"
-              role="alert"
-              className="text-sm text-destructive"
-            >
-              {errors.email}
-            </p>
-          )}
+          <FieldError id="email-error" message={errors.email} />
         </div>
 
         <div className="space-y-2">
@@ -151,15 +335,7 @@ export function RegisterForm() {
               {showPassword ? "Hide" : "Show"}
             </button>
           </div>
-          {errors.password && (
-            <p
-              id="password-error"
-              role="alert"
-              className="text-sm text-destructive"
-            >
-              {errors.password}
-            </p>
-          )}
+          <FieldError id="password-error" message={errors.password} />
         </div>
 
         <div className="space-y-2">
@@ -175,15 +351,7 @@ export function RegisterForm() {
             aria-describedby={errors.confirm ? "confirm-error" : undefined}
             className="h-11"
           />
-          {errors.confirm && (
-            <p
-              id="confirm-error"
-              role="alert"
-              className="text-sm text-destructive"
-            >
-              {errors.confirm}
-            </p>
-          )}
+          <FieldError id="confirm-error" message={errors.confirm} />
         </div>
 
         <div className="space-y-2">
@@ -218,16 +386,17 @@ export function RegisterForm() {
               .
             </Label>
           </div>
-          {errors.terms && (
-            <p
-              id="terms-error"
-              role="alert"
-              className="text-sm text-destructive"
-            >
-              {errors.terms}
-            </p>
-          )}
+          <FieldError id="terms-error" message={errors.terms} />
         </div>
+
+        {formError && (
+          <p
+            role="alert"
+            className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+          >
+            {formError}
+          </p>
+        )}
 
         <Button
           type="submit"

@@ -1,10 +1,11 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { BRAND, Logo } from "@/components/shared/brand";
+import { createClient } from "@/lib/supabase/client";
 
 const NAV = [
   { id: "home", label: "Home" },
@@ -14,9 +15,33 @@ const NAV = [
 ];
 
 export function Navbar() {
+  const router = useRouter();
   const [active, setActive] = useState("home");
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      setUserEmail(data.user?.email ?? null);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUserEmail(session?.user?.email ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    setUserEmail(null);
+    router.refresh();
+  };
 
   // Shadow appears once the page has scrolled
   useEffect(() => {
@@ -93,15 +118,31 @@ export function Navbar() {
           </ul>
 
           <div className="flex items-center gap-1">
-            <Link
-              href="/login"
-              className={cn(
-                buttonVariants({ size: "sm" }),
-                "rounded-md px-6 p-4 mr-5",
-              )}
-            >
-              Log in
-            </Link>
+            {userEmail ? (
+              <div className="flex items-center gap-2 mr-3">
+                <span className="hidden text-xs text-muted-foreground sm:inline-block max-w-[150px] truncate">
+                  {userEmail}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSignOut}
+                  className="rounded-md"
+                >
+                  Log out
+                </Button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className={cn(
+                  buttonVariants({ size: "sm" }),
+                  "rounded-md px-6 p-4 mr-5",
+                )}
+              >
+                Log in
+              </Link>
+            )}
 
             {/* Mobile menu button */}
             <button
@@ -163,6 +204,28 @@ export function Navbar() {
                   </a>
                 </li>
               ))}
+              <li className="border-t border-border mt-1 pt-1">
+                {userEmail ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpen(false);
+                      handleSignOut();
+                    }}
+                    className="block w-full text-left rounded-xl px-4 py-3 text-sm text-foreground hover:bg-muted"
+                  >
+                    Log out ({userEmail})
+                  </button>
+                ) : (
+                  <Link
+                    href="/login"
+                    onClick={() => setOpen(false)}
+                    className="block rounded-xl px-4 py-3 text-sm font-medium text-primary hover:bg-muted"
+                  >
+                    Log in
+                  </Link>
+                )}
+              </li>
             </ul>
           </div>
         )}

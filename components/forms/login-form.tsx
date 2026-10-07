@@ -1,43 +1,75 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { createClient } from "@/lib/supabase/client";
 
 type Errors = { email?: string; password?: string };
 
 export function LoginForm() {
+  const router = useRouter();
+  const supabase = useMemo(() => createClient(), []);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
+  const [formError, setFormError] = useState("");
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setFormError("");
 
     const next: Errors = {};
-    if (!/^\S+@\S+\.\S+$/.test(email)) next.email = "Enter a valid email address.";
-    if (password.length < 8) next.password = "Password must be at least 8 characters.";
+    if (!/^\S+@\S+\.\S+$/.test(email))
+      next.email = "Enter a valid email address.";
+    if (password.length < 8)
+      next.password = "Password must be at least 8 characters.";
     setErrors(next);
     if (Object.keys(next).length > 0) return;
 
     setLoading(true);
-    // TODO: call your login API here
-    await new Promise((r) => setTimeout(r, 800));
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
+
     setLoading(false);
+
+    if (error) {
+      setFormError(error.message);
+      return;
+    }
+
+    if (data.session) {
+      router.push("/");
+      router.refresh();
+    }
   }
 
-  function handleGoogle() {
-    // TODO: connect Google sign-in here
+  async function handleGoogle() {
+    setFormError("");
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+    if (error) {
+      setFormError(error.message);
+    }
   }
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="mt-10 space-y-5" noValidate>
+      <form onSubmit={handleSubmit} className="mt-4 space-y-5" noValidate>
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input
@@ -52,7 +84,11 @@ export function LoginForm() {
             className="h-11"
           />
           {errors.email && (
-            <p id="email-error" role="alert" className="text-sm text-destructive">
+            <p
+              id="email-error"
+              role="alert"
+              className="text-sm text-destructive"
+            >
               {errors.email}
             </p>
           )}
@@ -90,13 +126,31 @@ export function LoginForm() {
             </button>
           </div>
           {errors.password && (
-            <p id="password-error" role="alert" className="text-sm text-destructive">
+            <p
+              id="password-error"
+              role="alert"
+              className="text-sm text-destructive"
+            >
               {errors.password}
             </p>
           )}
         </div>
 
-        <Button type="submit" size="lg" className="h-11 w-full" disabled={loading}>
+        {formError && (
+          <p
+            role="alert"
+            className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+          >
+            {formError}
+          </p>
+        )}
+
+        <Button
+          type="submit"
+          size="lg"
+          className="h-11 w-full"
+          disabled={loading}
+        >
           {loading ? "Logging in…" : "Log in"}
         </Button>
       </form>

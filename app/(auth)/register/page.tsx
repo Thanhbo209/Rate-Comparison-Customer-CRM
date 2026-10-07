@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { BRAND, Logo } from "@/components/shared/brand";
 import { AuthPanel } from "@/components/shared/auth/auth-panel";
 import { RegisterForm } from "@/components/forms/register-form";
@@ -37,7 +36,7 @@ export default function RegisterPage() {
 
         <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-12">
           {/* Back button + breadcrumb */}
-          <div className="mb-8 flex items-center justify-between gap-4">
+          <div className="mb-4 flex items-center justify-between gap-4">
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
@@ -50,20 +49,6 @@ export default function RegisterPage() {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-
-          <h1 className="font-heading text-4xl font-bold tracking-tight">
-            Create your account
-          </h1>
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            Already have an account?{" "}
-            <Link
-              href="/login"
-              className="font-medium text-foreground underline underline-offset-2 hover:text-primary"
-            >
-              Log in
-            </Link>
-            . It&apos;s free and takes under a minute.
-          </p>
 
           {/* Only this part runs in the browser */}
           <RegisterForm />
