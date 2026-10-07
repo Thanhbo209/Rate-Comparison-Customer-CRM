@@ -1,5 +1,5 @@
 import { requireRole } from "@/lib/auth/session";
-import { DashboardShell } from "@/components/dashboard/dashboard-shell";
+import { DashboardShell } from "@/components/dashboard/layout/dashboard-shell";
 
 export const dynamic = "force-dynamic";
 

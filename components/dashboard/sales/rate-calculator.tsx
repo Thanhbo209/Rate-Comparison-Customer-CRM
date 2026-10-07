@@ -55,8 +55,12 @@ const CARRIER_RATES: CarrierRate[] = [
 export function RateCalculator() {
   const [origin, setOrigin] = useState("CNSHA - Shanghai, China");
   const [destination, setDestination] = useState("USLAX - Los Angeles, USA");
-  const [equipment, setEquipment] = useState<"rate20" | "rate40" | "rate40HC">("rate40HC");
-  const [selectedCarrier, setSelectedCarrier] = useState<string | null>("Maersk");
+  const [equipment, setEquipment] = useState<"rate20" | "rate40" | "rate40HC">(
+    "rate40HC",
+  );
+  const [selectedCarrier, setSelectedCarrier] = useState<string | null>(
+    "Maersk",
+  );
   const [quoteSent, setQuoteSent] = useState(false);
 
   const handleCreateQuote = () => {
@@ -75,7 +79,8 @@ export function RateCalculator() {
             </h3>
           </div>
           <p className="text-xs text-muted-foreground">
-            Instantly compare ocean container rates across premier shipping lines
+            Instantly compare ocean container rates across premier shipping
+            lines
           </p>
         </div>
 
@@ -128,10 +133,16 @@ export function RateCalculator() {
             onChange={(e) => setOrigin(e.target.value)}
             className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary"
           >
-            <option value="CNSHA - Shanghai, China">CNSHA - Shanghai, China</option>
+            <option value="CNSHA - Shanghai, China">
+              CNSHA - Shanghai, China
+            </option>
             <option value="CNNGB - Ningbo, China">CNNGB - Ningbo, China</option>
-            <option value="VNSGN - Ho Chi Minh, Vietnam">VNSGN - Ho Chi Minh, Vietnam</option>
-            <option value="SGSIN - Singapore, Singapore">SGSIN - Singapore, Singapore</option>
+            <option value="VNSGN - Ho Chi Minh, Vietnam">
+              VNSGN - Ho Chi Minh, Vietnam
+            </option>
+            <option value="SGSIN - Singapore, Singapore">
+              SGSIN - Singapore, Singapore
+            </option>
           </select>
         </div>
 
@@ -144,10 +155,18 @@ export function RateCalculator() {
             onChange={(e) => setDestination(e.target.value)}
             className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary"
           >
-            <option value="USLAX - Los Angeles, USA">USLAX - Los Angeles, USA</option>
-            <option value="USLGB - Long Beach, USA">USLGB - Long Beach, USA</option>
-            <option value="NLRTM - Rotterdam, Netherlands">NLRTM - Rotterdam, Netherlands</option>
-            <option value="DEHAM - Hamburg, Germany">DEHAM - Hamburg, Germany</option>
+            <option value="USLAX - Los Angeles, USA">
+              USLAX - Los Angeles, USA
+            </option>
+            <option value="USLGB - Long Beach, USA">
+              USLGB - Long Beach, USA
+            </option>
+            <option value="NLRTM - Rotterdam, Netherlands">
+              NLRTM - Rotterdam, Netherlands
+            </option>
+            <option value="DEHAM - Hamburg, Germany">
+              DEHAM - Hamburg, Germany
+            </option>
           </select>
         </div>
       </div>
@@ -173,7 +192,9 @@ export function RateCalculator() {
                 <tr
                   key={item.carrier}
                   className={`transition-colors ${
-                    isSelected ? "bg-primary/5 font-medium" : "hover:bg-muted/30"
+                    isSelected
+                      ? "bg-primary/5 font-medium"
+                      : "hover:bg-muted/30"
                   }`}
                 >
                   <td className="px-5 py-3">
@@ -201,7 +222,10 @@ export function RateCalculator() {
                     <span className="font-heading text-sm font-bold text-foreground">
                       ${rate.toLocaleString()}
                     </span>
-                    <span className="text-[10px] text-muted-foreground"> / unit</span>
+                    <span className="text-[10px] text-muted-foreground">
+                      {" "}
+                      / unit
+                    </span>
                   </td>
                   <td className="px-5 py-3 text-right">
                     <button
@@ -213,7 +237,11 @@ export function RateCalculator() {
                           : "border border-border bg-background text-foreground hover:bg-muted"
                       }`}
                     >
-                      {isSelected ? <Check className="size-3" /> : <ArrowLeftRight className="size-3" />}
+                      {isSelected ? (
+                        <Check className="size-3" />
+                      ) : (
+                        <ArrowLeftRight className="size-3" />
+                      )}
                       <span>{isSelected ? "Selected" : "Select"}</span>
                     </button>
                   </td>
@@ -227,8 +255,11 @@ export function RateCalculator() {
       {/* Action footer */}
       <div className="flex flex-col gap-3 border-t border-border p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="text-xs text-muted-foreground">
-          Selected: <strong className="text-foreground">{selectedCarrier}</strong> on lane{" "}
-          <span className="font-mono text-[11px]">{origin.split(" - ")[0]} &rarr; {destination.split(" - ")[0]}</span>
+          Selected:{" "}
+          <strong className="text-foreground">{selectedCarrier}</strong> on lane{" "}
+          <span className="font-mono text-[11px]">
+            {origin.split(" - ")[0]} &rarr; {destination.split(" - ")[0]}
+          </span>
         </div>
 
         <button

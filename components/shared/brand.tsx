@@ -5,8 +5,8 @@ export const BRAND = "Dropwell";
 export function Logo({ size = 32 }: { size?: number }) {
   return (
     <Image
-      src="/dropwell.png"
-      alt=""
+      src="/images/dropwell.png"
+      alt={BRAND}
       width={size}
       height={size}
       className="h-auto shrink-0"
