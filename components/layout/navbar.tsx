@@ -19,18 +19,18 @@ export function Navbar() {
   const [active, setActive] = useState("home");
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
-      setUserEmail(data.user?.email ?? null);
+      setLoggedIn(!!data.user);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUserEmail(session?.user?.email ?? null);
+      setLoggedIn(!!session?.user);
     });
 
     return () => subscription.unsubscribe();
@@ -39,7 +39,7 @@ export function Navbar() {
   const handleSignOut = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
-    setUserEmail(null);
+    setLoggedIn(false);
     router.refresh();
   };
 
@@ -118,11 +118,17 @@ export function Navbar() {
           </ul>
 
           <div className="flex items-center gap-1">
-            {userEmail ? (
-              <div className="flex items-center gap-2 mr-3">
-                <span className="hidden text-xs text-muted-foreground sm:inline-block max-w-[150px] truncate">
-                  {userEmail}
-                </span>
+            {loggedIn ? (
+              <div className="mr-3 hidden items-center gap-2 md:flex">
+                <Link
+                  href="/dashboard"
+                  className={cn(
+                    buttonVariants({ size: "sm" }),
+                    "rounded-md px-4",
+                  )}
+                >
+                  Continue to dashboard
+                </Link>
                 <Button
                   variant="outline"
                   size="sm"
@@ -205,17 +211,26 @@ export function Navbar() {
                 </li>
               ))}
               <li className="border-t border-border mt-1 pt-1">
-                {userEmail ? (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOpen(false);
-                      handleSignOut();
-                    }}
-                    className="block w-full text-left rounded-xl px-4 py-3 text-sm text-foreground hover:bg-muted"
-                  >
-                    Log out ({userEmail})
-                  </button>
+                {loggedIn ? (
+                  <>
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setOpen(false)}
+                      className="block rounded-xl px-4 py-3 text-sm font-medium text-primary hover:bg-muted"
+                    >
+                      Continue to dashboard
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOpen(false);
+                        handleSignOut();
+                      }}
+                      className="block w-full text-left rounded-xl px-4 py-3 text-sm text-foreground hover:bg-muted"
+                    >
+                      Log out
+                    </button>
+                  </>
                 ) : (
                   <Link
                     href="/login"

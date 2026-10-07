@@ -36,7 +36,7 @@ export async function provisionUser({
         authUserId,
         name,
         organizationId: organization.id,
-        role: "ADMIN",
+        role: "SALES",
       },
     });
   });
