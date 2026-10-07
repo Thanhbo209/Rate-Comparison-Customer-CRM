@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  SALES_MANAGER
+  SALES
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users User[]
+}
+
+model User {
+  id             String       @id @default(cuid())
+  authUserId     String       @unique
+  name           String
+  organizationId String
+  role           Role         @default(SALES)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  organization  Organization @relation(fields: [organizationId], references: [id],onDelete: Cascade)
+
+  @@index([organizationId])
+}
