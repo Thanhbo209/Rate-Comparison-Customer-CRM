@@ -21,7 +21,7 @@ export function LoginForm() {
 
     const next: Errors = {};
     if (!/^\S+@\S+\.\S+$/.test(email)) next.email = "Enter a valid email address.";
-    if (password.length < 6) next.password = "Password must be at least 6 characters.";
+    if (password.length < 8) next.password = "Password must be at least 8 characters.";
     setErrors(next);
     if (Object.keys(next).length > 0) return;
 

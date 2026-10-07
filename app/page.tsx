@@ -1,7 +1,7 @@
+import { Navbar } from "@/components/layout/navbar";
+import { BRAND, Logo } from "@/components/shared/brand";
 import Link from "next/link";
 // import { ContactForm } from "@/components/contact-form";
-import { BRAND, Logo } from "@/components/shared/Brand";
-import { Navbar } from "@/components/layout/NavBar";
 
 const SHIPMENTS = [
   {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { BRAND, Logo } from "@/components/shared/brand";
 import { AuthPanel } from "@/components/shared/auth/auth-panel";
-import { LoginForm } from "@/components/forms/login-form";
+import { RegisterForm } from "@/components/forms/register-form";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,14 +14,15 @@ import {
 import { headline } from "@/lib/fonts";
 
 export const metadata: Metadata = {
-  title: "Sign in to Dropwell",
-  description: "Track every delivery and keep customers informed.",
+  title: "Create account",
+  description:
+    "Create your account to track every delivery and keep customers informed.",
 };
 
-export default function LoginPage() {
+export default function RegisterPage() {
   return (
     <main className="flex min-h-screen bg-background text-foreground">
-      {/* ───────────── login form ───────────── */}
+      {/* ───────────── Register form ───────────── */}
       <section className="flex flex-1 flex-col px-6 py-10 sm:px-12 lg:px-16 xl:px-24">
         <div className="flex items-center text-primary">
           <span className="lg:hidden">
@@ -44,35 +45,35 @@ export default function LoginPage() {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Login</BreadcrumbPage>
+                  <BreadcrumbPage>Register</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
 
           <h1 className="font-heading text-4xl font-bold tracking-tight">
-            Welcome back
+            Create your account
           </h1>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-            New here?{" "}
+            Already have an account?{" "}
             <Link
-              href="/register"
+              href="/login"
               className="font-medium text-foreground underline underline-offset-2 hover:text-primary"
             >
-              Create an account
+              Log in
             </Link>
             . It&apos;s free and takes under a minute.
           </p>
 
           {/* Only this part runs in the browser */}
-          <LoginForm />
+          <RegisterForm />
         </div>
       </section>
 
       {/* ───────────── logistics panel ───────────── */}
       <AuthPanel
-        lines={["Every parcel.", "Every customer.", "One view."]}
-        description="Track shipments, update delivery windows and keep customers informed without chasing drivers or spreadsheets."
+        lines={["Set up in minutes.", "Ship with confidence."]}
+        description="Add your drivers and first orders today, and your customers start getting delivery updates right away."
       />
     </main>
   );

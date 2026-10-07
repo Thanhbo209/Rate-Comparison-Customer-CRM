@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { BRAND, Logo } from "../shared/Brand";
+import { BRAND, Logo } from "@/components/shared/brand";
+
 const NAV = [
   { id: "home", label: "Home" },
   { id: "features", label: "Features" },
