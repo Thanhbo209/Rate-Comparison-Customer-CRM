@@ -103,7 +103,7 @@ export default async function SalesDashboardPage() {
         />
 
         <StatCard
-          title="Shipments"
+          title="Total Shipments"
           value={7}
           icon={Truck}
           variant="amber"
@@ -111,11 +111,11 @@ export default async function SalesDashboardPage() {
         />
 
         <StatCard
-          title="Quote Win Rate"
-          value="68.4%"
+          title="Rate Comparisons"
+          value="875"
           icon={FileCheck}
           variant="emerald"
-          trend={{ value: "+5.2% vs team avg", isPositive: true }}
+          trend={{ value: "across 342", isPositive: true }}
         />
 
         <StatCard
@@ -123,7 +123,7 @@ export default async function SalesDashboardPage() {
           value="$54,800"
           icon={TrendingUp}
           variant="primary"
-          description="73% of $75k monthly target"
+          description="Across current rates"
         />
       </div>
 
