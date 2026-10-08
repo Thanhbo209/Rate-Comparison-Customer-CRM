@@ -105,37 +105,32 @@ interface RatesTotalRowProps {
 export function RatesTotalRow({
   result,
   baseCurrency,
-  colCount = 7,
 }: RatesTotalRowProps) {
   if (!result || result.rateCount === 0) return null;
-
-  // We render a label cell spanning (colCount - 4) columns, then
-  // Net / Gross / Profit / Margin cells (4 cols), then Actions is handled
-  // by the parent table naturally.
-  const labelCols = Math.max(1, colCount - 4);
 
   return (
     <tr className="border-t-2 border-border bg-muted/40 text-xs font-semibold">
       <td
-        colSpan={labelCols}
-        className="px-4 py-2.5 text-muted-foreground font-medium"
+        colSpan={2}
+        className="px-4 py-3 text-foreground font-semibold"
       >
         Shipment Total ({result.rateCount}{" "}
         {result.rateCount === 1 ? "rate" : "rates"})
       </td>
-      <td className="px-4 py-2.5 font-mono text-right text-foreground">
+      <td className="px-4 py-3 font-mono font-medium text-foreground">
         {fmt(result.net)} {baseCurrency}
       </td>
-      <td className="px-4 py-2.5 font-mono text-right text-foreground">
+      <td className="px-4 py-3 font-mono font-bold text-foreground">
         {fmt(result.gross)} {baseCurrency}
       </td>
-      <td className="px-4 py-2.5 font-mono text-right text-emerald-700 dark:text-emerald-400 font-bold">
+      <td className="px-4 py-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">
         {sign(result.profit)}
         {fmt(result.profit)} {baseCurrency}
       </td>
-      <td className="px-4 py-2.5 font-mono text-right text-foreground">
+      <td className="px-4 py-3 font-mono text-foreground font-semibold">
         {result.marginPercent.toFixed(1)}%
       </td>
+      <td className="px-4 py-3 text-right" />
     </tr>
   );
 }
