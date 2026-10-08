@@ -16,8 +16,8 @@ export async function createCustomerAction(
 ): Promise<ActionResponse<CustomerItem>> {
   try {
     const profile = await getCurrentProfile();
-    if (!profile) {
-      return { success: false, error: "Authentication required" };
+    if (!profile || !profile.organizationId) {
+      return { success: false, error: "Organization required" };
     }
 
     if (!data.companyName?.trim()) {
@@ -62,8 +62,8 @@ export async function updateCustomerAction(
 ): Promise<ActionResponse<CustomerItem>> {
   try {
     const profile = await getCurrentProfile();
-    if (!profile) {
-      return { success: false, error: "Authentication required" };
+    if (!profile || !profile.organizationId) {
+      return { success: false, error: "Organization required" };
     }
 
     if (!data.companyName?.trim()) {
@@ -116,8 +116,8 @@ export async function deleteCustomerAction(
 ): Promise<ActionResponse<{ id: string }>> {
   try {
     const profile = await getCurrentProfile();
-    if (!profile) {
-      return { success: false, error: "Authentication required" };
+    if (!profile || !profile.organizationId) {
+      return { success: false, error: "Organization required" };
     }
 
     // Ensure customer belongs to current user's organization

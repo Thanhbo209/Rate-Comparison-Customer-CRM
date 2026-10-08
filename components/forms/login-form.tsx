@@ -50,7 +50,7 @@ export function LoginForm({ initialError }: { initialError?: string } = {}) {
     }
 
     if (data.session) {
-      router.push("/");
+      router.push("/dashboard");
       router.refresh();
     }
   }

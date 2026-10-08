@@ -2,9 +2,11 @@ import { prisma } from "@/lib/db/prisma";
 import type { CustomerItem, CustomerStats } from "./types";
 
 export async function getCustomers(
-  organizationId: string,
+  organizationId?: string | null,
   search?: string
 ): Promise<CustomerItem[]> {
+  if (!organizationId) return [];
+
   return prisma.customer.findMany({
     where: {
       organizationId,
@@ -32,7 +34,12 @@ export async function getCustomers(
   });
 }
 
-export async function getCustomerById(id: string, organizationId: string) {
+export async function getCustomerById(
+  id: string,
+  organizationId?: string | null
+) {
+  if (!organizationId) return null;
+
   return prisma.customer.findFirst({
     where: {
       id,
@@ -55,8 +62,17 @@ export async function getCustomerById(id: string, organizationId: string) {
 }
 
 export async function getCustomerStats(
-  organizationId: string
+  organizationId?: string | null
 ): Promise<CustomerStats> {
+  if (!organizationId) {
+    return {
+      totalCustomers: 0,
+      totalShipments: 0,
+      totalCommodities: 0,
+      totalZones: 0,
+    };
+  }
+
   const [totalCustomers, totalShipments, allCustomers] = await Promise.all([
     prisma.customer.count({
       where: { organizationId },

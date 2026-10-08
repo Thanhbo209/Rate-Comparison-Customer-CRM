@@ -525,10 +525,6 @@ export type CustomerUncheckedUpdateManyWithoutOrganizationNestedInput = {
   deleteMany?: Prisma.CustomerScalarWhereInput | Prisma.CustomerScalarWhereInput[]
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type CustomerCreateNestedOneWithoutShipmentsInput = {
   create?: Prisma.XOR<Prisma.CustomerCreateWithoutShipmentsInput, Prisma.CustomerUncheckedCreateWithoutShipmentsInput>
   connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutShipmentsInput
