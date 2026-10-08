@@ -47,7 +47,42 @@ export { Prisma }
  */
 export type Organization = Prisma.OrganizationModel
 /**
+ * Model OrganizationExchangeRate
+ * 
+ */
+export type OrganizationExchangeRate = Prisma.OrganizationExchangeRateModel
+/**
  * Model User
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model OrganizationInvitation
+ * 
+ */
+export type OrganizationInvitation = Prisma.OrganizationInvitationModel
+/**
+ * Model Customer
+ * 
+ */
+export type Customer = Prisma.CustomerModel
+/**
+ * Model Shipment
+ * 
+ */
+export type Shipment = Prisma.ShipmentModel
+/**
+ * Model Provider
+ * 
+ */
+export type Provider = Prisma.ProviderModel
+/**
+ * Model ShipmentRate
+ * 
+ */
+export type ShipmentRate = Prisma.ShipmentRateModel
+/**
+ * Model FreightItem
+ * 
+ */
+export type FreightItem = Prisma.FreightItemModel

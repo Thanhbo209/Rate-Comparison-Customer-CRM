@@ -11,6 +11,10 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
+  if (!profile.organizationId && profile.role !== "ADMIN") {
+    redirect("/onboarding");
+  }
+
   const targetPath = ROLE_HOME[profile.role as AppRole] ?? "/dashboard/sales";
   redirect(targetPath);
 }

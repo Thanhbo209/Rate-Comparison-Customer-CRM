@@ -16,3 +16,11 @@ export const Role = {
 } as const
 
 export type Role = (typeof Role)[keyof typeof Role]
+
+
+export const ShipmentDirection = {
+  IMPORT: 'IMPORT',
+  EXPORT: 'EXPORT'
+} as const
+
+export type ShipmentDirection = (typeof ShipmentDirection)[keyof typeof ShipmentDirection]

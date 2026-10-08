@@ -205,13 +205,13 @@ export default async function AdminDashboardPage() {
               <div className="flex items-center justify-between border-b border-border/60 pb-2">
                 <span className="text-muted-foreground">Company Name</span>
                 <span className="font-medium text-foreground">
-                  {profile.organization?.name}
+                  {profile.organization?.name ?? "Platform Admin"}
                 </span>
               </div>
               <div className="flex items-center justify-between border-b border-border/60 pb-2">
                 <span className="text-muted-foreground">Organization ID</span>
                 <span className="font-mono text-[11px] text-muted-foreground">
-                  {profile.organizationId.slice(0, 10)}...
+                  {profile.organizationId ? `${profile.organizationId.slice(0, 10)}...` : "None"}
                 </span>
               </div>
               <div className="flex items-center justify-between border-b border-border/60 pb-2">

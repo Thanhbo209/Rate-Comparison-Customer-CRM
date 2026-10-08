@@ -14,7 +14,6 @@ const RESEND_SECONDS = 60;
 
 type Errors = {
   name?: string;
-  organizationName?: string;
   email?: string;
   password?: string;
   confirm?: string;
@@ -35,7 +34,6 @@ export function RegisterForm({ initialError }: { initialError?: string } = {}) {
   const supabase = useMemo(() => createClient(), []);
 
   const [name, setName] = useState("");
-  const [organizationName, setOrganizationName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -66,8 +64,6 @@ export function RegisterForm({ initialError }: { initialError?: string } = {}) {
 
     const next: Errors = {};
     if (name.trim().length < 2) next.name = "Enter your full name.";
-    if (organizationName.trim().length < 2)
-      next.organizationName = "Enter your organization name.";
     if (!/^\S+@\S+\.\S+$/.test(email))
       next.email = "Enter a valid email address.";
     if (password.length < 8)
@@ -89,7 +85,6 @@ export function RegisterForm({ initialError }: { initialError?: string } = {}) {
         // Saved as user metadata (user_metadata / raw_user_meta_data)
         data: {
           full_name: name.trim(),
-          organization_name: organizationName.trim(),
         },
       },
     });
@@ -111,7 +106,7 @@ export function RegisterForm({ initialError }: { initialError?: string } = {}) {
 
     // Email confirmation turned off in Supabase: the user is already signed in
     if (data.session) {
-      router.push("/");
+      router.push("/dashboard");
       router.refresh();
       return;
     }
@@ -281,26 +276,6 @@ export function RegisterForm({ initialError }: { initialError?: string } = {}) {
             className="h-11"
           />
           <FieldError id="name-error" message={errors.name} />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="organizationName">Organization name</Label>
-          <Input
-            id="organizationName"
-            autoComplete="organization"
-            placeholder="Your company or organization"
-            value={organizationName}
-            onChange={(e) => setOrganizationName(e.target.value)}
-            aria-invalid={!!errors.organizationName}
-            aria-describedby={
-              errors.organizationName ? "organizationName-error" : undefined
-            }
-            className="h-11"
-          />
-          <FieldError
-            id="organizationName-error"
-            message={errors.organizationName}
-          />
         </div>
 
         <div className="space-y-2">

@@ -52,7 +52,14 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Organization: 'Organization',
-  User: 'User'
+  OrganizationExchangeRate: 'OrganizationExchangeRate',
+  User: 'User',
+  OrganizationInvitation: 'OrganizationInvitation',
+  Customer: 'Customer',
+  Shipment: 'Shipment',
+  Provider: 'Provider',
+  ShipmentRate: 'ShipmentRate',
+  FreightItem: 'FreightItem'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -74,11 +81,25 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const OrganizationScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  baseCurrency: 'baseCurrency',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
+
+
+export const OrganizationExchangeRateScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  fromCurrency: 'fromCurrency',
+  toCurrency: 'toCurrency',
+  rate: 'rate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OrganizationExchangeRateScalarFieldEnum = (typeof OrganizationExchangeRateScalarFieldEnum)[keyof typeof OrganizationExchangeRateScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
@@ -92,6 +113,92 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const OrganizationInvitationScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  code: 'code',
+  role: 'role',
+  createdById: 'createdById',
+  usedById: 'usedById',
+  usedAt: 'usedAt',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type OrganizationInvitationScalarFieldEnum = (typeof OrganizationInvitationScalarFieldEnum)[keyof typeof OrganizationInvitationScalarFieldEnum]
+
+
+export const CustomerScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  companyName: 'companyName',
+  industrialZone: 'industrialZone',
+  location: 'location',
+  address: 'address',
+  commodity: 'commodity',
+  contactPerson: 'contactPerson',
+  cellPhone: 'cellPhone',
+  email: 'email',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
+
+
+export const ShipmentScalarFieldEnum = {
+  id: 'id',
+  customerId: 'customerId',
+  name: 'name',
+  direction: 'direction',
+  commodity: 'commodity',
+  selectedRateId: 'selectedRateId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ShipmentScalarFieldEnum = (typeof ShipmentScalarFieldEnum)[keyof typeof ShipmentScalarFieldEnum]
+
+
+export const ProviderScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProviderScalarFieldEnum = (typeof ProviderScalarFieldEnum)[keyof typeof ProviderScalarFieldEnum]
+
+
+export const ShipmentRateScalarFieldEnum = {
+  id: 'id',
+  shipmentId: 'shipmentId',
+  providerId: 'providerId',
+  optionName: 'optionName',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ShipmentRateScalarFieldEnum = (typeof ShipmentRateScalarFieldEnum)[keyof typeof ShipmentRateScalarFieldEnum]
+
+
+export const FreightItemScalarFieldEnum = {
+  id: 'id',
+  shipmentRateId: 'shipmentRateId',
+  freight: 'freight',
+  unit: 'unit',
+  net: 'net',
+  quantity: 'quantity',
+  gross: 'gross',
+  currency: 'currency',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FreightItemScalarFieldEnum = (typeof FreightItemScalarFieldEnum)[keyof typeof FreightItemScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -108,4 +215,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

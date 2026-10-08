@@ -13,25 +13,167 @@ enum Role {
   SALES
 }
 
-model Organization {
-  id        String   @id @default(cuid())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  users User[]
+enum ShipmentDirection {
+  IMPORT
+  EXPORT
 }
 
-model User {
+model Organization {
+  id           String                   @id @default(cuid())
+  name         String
+  baseCurrency String                   @default("USD")
+  createdAt    DateTime                 @default(now())
+  updatedAt    DateTime                 @updatedAt
+
+  users         User[]
+  customers     Customer[]
+  providers     Provider[]
+  invitations   OrganizationInvitation[]
+  exchangeRates OrganizationExchangeRate[]
+}
+
+model OrganizationExchangeRate {
   id             String       @id @default(cuid())
-  authUserId     String       @unique
-  name           String
   organizationId String
-  role           Role         @default(SALES)
+  fromCurrency   String
+  toCurrency     String
+  rate           Decimal
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 
-  organization  Organization @relation(fields: [organizationId], references: [id],onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@unique([organizationId, fromCurrency, toCurrency])
+}
+
+model User {
+  id             String        @id @default(cuid())
+  authUserId     String        @unique
+  name           String
+  organizationId String?
+  role           Role          @default(SALES)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  organization       Organization?            @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  createdInvitations OrganizationInvitation[] @relation("CreatedInvitations")
+  usedInvitations    OrganizationInvitation[] @relation("UsedInvitations")
 
   @@index([organizationId])
 }
+
+model OrganizationInvitation {
+  id             String       @id @default(cuid())
+  organizationId String
+  code           String       @unique
+  role           Role         @default(SALES)
+  createdById    String
+  usedById       String?
+  usedAt         DateTime?
+  expiresAt      DateTime
+  createdAt      DateTime     @default(now())
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy      User         @relation("CreatedInvitations", fields: [createdById], references: [id], onDelete: Cascade)
+  usedBy         User?        @relation("UsedInvitations", fields: [usedById], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([code])
+}
+
+model Customer {
+  id             String   @id @default(cuid())
+  organizationId String
+
+  companyName    String
+  industrialZone String?
+  location       String?
+  address        String?
+  commodity      String?
+  contactPerson  String?
+  cellPhone      String?
+  email          String?
+
+  organization Organization @relation(fields: [organizationId],references: [id],onDelete: Cascade)
+
+  shipments Shipment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+}
+
+model Shipment {
+  id             String            @id @default(cuid())
+  customerId     String
+  name           String
+  direction      ShipmentDirection
+  commodity      String?
+  selectedRateId String?           @unique
+
+  customer     Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  rates        ShipmentRate[] @relation("ShipmentRates")
+  selectedRate ShipmentRate?  @relation("ShipmentSelectedRate", fields: [selectedRateId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([customerId])
+}
+
+model Provider {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  shipmentRates ShipmentRate[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@unique([organizationId, name])
+}
+
+model ShipmentRate {
+  id         String  @id @default(cuid())
+  shipmentId String
+  providerId String
+  optionName String?
+
+  shipment            Shipment      @relation("ShipmentRates", fields: [shipmentId], references: [id], onDelete: Cascade)
+  selectedForShipment Shipment?     @relation("ShipmentSelectedRate")
+  provider            Provider      @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  freightItems FreightItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([shipmentId])
+  @@index([providerId])
+}
+
+model FreightItem {
+  id             String @id @default(cuid())
+  shipmentRateId String
+
+  freight  String
+  unit     String?
+  net      Decimal
+  quantity Decimal @db.Decimal(12, 3)
+  gross    Decimal
+  currency String
+
+  shipmentRate ShipmentRate @relation(fields: [shipmentRateId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([shipmentRateId])
+}
+

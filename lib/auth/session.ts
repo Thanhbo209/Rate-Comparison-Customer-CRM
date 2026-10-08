@@ -56,6 +56,9 @@ export const getCurrentProfile = cache(async () => {
 export async function requireRole(allowed: AppRole[]) {
   const profile = await getCurrentProfile();
   if (!profile) redirect("/login");
+  if (!profile.organizationId && profile.role !== "ADMIN") {
+    redirect("/onboarding");
+  }
   if (!allowed.includes(profile.role as AppRole)) redirect("/dashboard");
   return profile;
 }

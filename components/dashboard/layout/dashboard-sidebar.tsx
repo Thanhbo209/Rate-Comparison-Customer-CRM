@@ -15,6 +15,8 @@ import {
   Settings,
   CircleHelp,
   Building2,
+  UserPlus,
+  Package,
 } from "lucide-react";
 import { BRAND, Logo } from "@/components/shared/brand";
 import { SignOutButton } from "../shared/sign-out-button";
@@ -38,7 +40,16 @@ const ADMIN_NAV_ITEMS: NavConfigItem[] = [
     label: "Customers",
     href: "/dashboard/admin/customers",
     icon: Users,
-    badge: "Soon",
+  },
+  {
+    label: "Shipments",
+    href: "/dashboard/admin/shipments",
+    icon: Package,
+  },
+  {
+    label: "Rate comparison",
+    href: "/dashboard/admin/rates",
+    icon: ArrowLeftRight,
   },
   {
     label: "RFQs",
@@ -71,7 +82,6 @@ const ADMIN_BOTTOM_ITEMS: NavConfigItem[] = [
     label: "Settings",
     href: "/dashboard/admin/settings",
     icon: Settings,
-    badge: "Soon",
   },
   {
     label: "Help & Support",
@@ -86,7 +96,6 @@ const SALES_BOTTOM_ITEMS: NavConfigItem[] = [
     label: "Settings",
     href: "/dashboard/sales/settings",
     icon: Settings,
-    badge: "Soon",
   },
   {
     label: "Help & Support",
@@ -106,7 +115,21 @@ const SALES_NAV_ITEMS: NavConfigItem[] = [
     label: "My customers",
     href: "/dashboard/sales/customers",
     icon: Users,
-    badge: "Soon",
+  },
+  {
+    label: "Shipments",
+    href: "/dashboard/sales/shipments",
+    icon: Package,
+  },
+  {
+    label: "Rate comparison",
+    href: "/dashboard/sales/rates",
+    icon: ArrowLeftRight,
+  },
+  {
+    label: "Team members",
+    href: "/dashboard/sales/team",
+    icon: UserPlus,
   },
   {
     label: "My RFQs",
@@ -120,12 +143,7 @@ const SALES_NAV_ITEMS: NavConfigItem[] = [
     icon: Calculator,
     badge: "Soon",
   },
-  {
-    label: "Rate comparison",
-    href: "/dashboard/sales/rates",
-    icon: ArrowLeftRight,
-    badge: "Soon",
-  },
+
   {
     label: "Sales targets",
     href: "/dashboard/sales/targets",
