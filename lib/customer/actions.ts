@@ -16,8 +16,18 @@ export async function createCustomerAction(
 ): Promise<ActionResponse<CustomerItem>> {
   try {
     const profile = await getCurrentProfile();
-    if (!profile || !profile.organizationId) {
-      return { success: false, error: "Organization required" };
+    if (!profile) {
+      return { success: false, error: "Authentication required" };
+    }
+
+    if (!profile.organizationId) {
+      return {
+        success: false,
+        error:
+          profile.role === "ADMIN"
+            ? "Platform administrators must belong to an organization to create customer records."
+            : "You must belong to an organization to create customer records.",
+      };
     }
 
     if (!data.companyName?.trim()) {
@@ -37,6 +47,9 @@ export async function createCustomerAction(
         email: data.email?.trim() || null,
       },
       include: {
+        organization: {
+          select: { id: true, name: true },
+        },
         _count: {
           select: { shipments: true },
         },
@@ -62,7 +75,11 @@ export async function updateCustomerAction(
 ): Promise<ActionResponse<CustomerItem>> {
   try {
     const profile = await getCurrentProfile();
-    if (!profile || !profile.organizationId) {
+    if (!profile) {
+      return { success: false, error: "Authentication required" };
+    }
+
+    if (profile.role !== "ADMIN" && !profile.organizationId) {
       return { success: false, error: "Organization required" };
     }
 
@@ -70,9 +87,14 @@ export async function updateCustomerAction(
       return { success: false, error: "Company name is required" };
     }
 
-    // Ensure customer belongs to current user's organization
+    // Tenant isolation: if not platform admin, strictly restrict to user's organization
+    const where =
+      profile.role === "ADMIN" && !profile.organizationId
+        ? { id }
+        : { id, organizationId: profile.organizationId! };
+
     const existing = await prisma.customer.findFirst({
-      where: { id, organizationId: profile.organizationId },
+      where,
     });
 
     if (!existing) {
@@ -92,6 +114,9 @@ export async function updateCustomerAction(
         email: data.email?.trim() || null,
       },
       include: {
+        organization: {
+          select: { id: true, name: true },
+        },
         _count: {
           select: { shipments: true },
         },
@@ -116,13 +141,29 @@ export async function deleteCustomerAction(
 ): Promise<ActionResponse<{ id: string }>> {
   try {
     const profile = await getCurrentProfile();
-    if (!profile || !profile.organizationId) {
+    if (!profile) {
+      return { success: false, error: "Authentication required" };
+    }
+
+    if (profile.role !== "ADMIN" && !profile.organizationId) {
       return { success: false, error: "Organization required" };
     }
 
-    // Ensure customer belongs to current user's organization
+    // Role check: Only SALES_MANAGER or ADMIN can delete customer accounts
+    if (profile.role === "SALES") {
+      return {
+        success: false,
+        error: "Only Sales Managers or Administrators can delete customer accounts.",
+      };
+    }
+
+    const where =
+      profile.role === "ADMIN" && !profile.organizationId
+        ? { id }
+        : { id, organizationId: profile.organizationId! };
+
     const existing = await prisma.customer.findFirst({
-      where: { id, organizationId: profile.organizationId },
+      where,
     });
 
     if (!existing) {

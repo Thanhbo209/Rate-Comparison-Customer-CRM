@@ -16,7 +16,7 @@ export default async function SalesCustomersPage() {
     <CustomersView
       initialCustomers={customers}
       stats={stats}
-      role={profile.role === "ADMIN" ? "ADMIN" : "SALES"}
+      role={profile.role}
       organizationName={profile.organization?.name ?? "My Organization"}
     />
   );

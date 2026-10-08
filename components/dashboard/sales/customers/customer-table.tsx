@@ -23,6 +23,7 @@ import type { CustomerItem } from "@/lib/customer/types";
 
 interface CustomerTableProps {
   customers: CustomerItem[];
+  role?: "ADMIN" | "SALES" | "SALES_MANAGER";
   onView: (customer: CustomerItem) => void;
   onEdit: (customer: CustomerItem) => void;
   onDelete: (customer: CustomerItem) => void;
@@ -33,6 +34,7 @@ const ITEMS_PER_PAGE = 8;
 
 export function CustomerTable({
   customers,
+  role = "SALES",
   onView,
   onEdit,
   onDelete,
@@ -221,6 +223,12 @@ export function CustomerTable({
                           <p className="font-semibold text-foreground truncate max-w-[200px]">
                             {customer.companyName}
                           </p>
+                          {role === "ADMIN" && customer.organization && (
+                            <span className="inline-flex items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground font-medium mt-0.5">
+                              <Building2 className="size-2.5" />
+                              {customer.organization.name}
+                            </span>
+                          )}
                           {customer.address && (
                             <p className="truncate max-w-[200px] text-[11px] text-muted-foreground">
                               {customer.address}
@@ -307,14 +315,16 @@ export function CustomerTable({
                         >
                           <Pencil className="size-3.5" />
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => onDelete(customer)}
-                          title="Delete Customer"
-                          className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-                        >
-                          <Trash2 className="size-3.5" />
-                        </button>
+                        {role !== "SALES" && (
+                          <button
+                            type="button"
+                            onClick={() => onDelete(customer)}
+                            title="Delete Customer"
+                            className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                          >
+                            <Trash2 className="size-3.5" />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

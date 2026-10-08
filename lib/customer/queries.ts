@@ -3,13 +3,17 @@ import type { CustomerItem, CustomerStats } from "./types";
 
 export async function getCustomers(
   organizationId?: string | null,
-  search?: string
+  search?: string,
+  isPlatformAdmin = false
 ): Promise<CustomerItem[]> {
-  if (!organizationId) return [];
+  if (!organizationId && !isPlatformAdmin) return [];
+
+  const orgFilter =
+    isPlatformAdmin && !organizationId ? {} : { organizationId: organizationId! };
 
   return prisma.customer.findMany({
     where: {
-      organizationId,
+      ...orgFilter,
       ...(search
         ? {
             OR: [
@@ -24,6 +28,12 @@ export async function getCustomers(
         : {}),
     },
     include: {
+      organization: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
       _count: {
         select: { shipments: true },
       },
@@ -36,16 +46,26 @@ export async function getCustomers(
 
 export async function getCustomerById(
   id: string,
-  organizationId?: string | null
+  organizationId?: string | null,
+  isPlatformAdmin = false
 ) {
-  if (!organizationId) return null;
+  if (!organizationId && !isPlatformAdmin) return null;
+
+  const orgFilter =
+    isPlatformAdmin && !organizationId ? {} : { organizationId: organizationId! };
 
   return prisma.customer.findFirst({
     where: {
       id,
-      organizationId,
+      ...orgFilter,
     },
     include: {
+      organization: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
       shipments: {
         include: {
           rates: {
@@ -62,9 +82,10 @@ export async function getCustomerById(
 }
 
 export async function getCustomerStats(
-  organizationId?: string | null
+  organizationId?: string | null,
+  isPlatformAdmin = false
 ): Promise<CustomerStats> {
-  if (!organizationId) {
+  if (!organizationId && !isPlatformAdmin) {
     return {
       totalCustomers: 0,
       totalShipments: 0,
@@ -73,15 +94,22 @@ export async function getCustomerStats(
     };
   }
 
+  const orgFilter =
+    isPlatformAdmin && !organizationId ? {} : { organizationId: organizationId! };
+  const shipmentFilter =
+    isPlatformAdmin && !organizationId
+      ? {}
+      : { customer: { organizationId: organizationId! } };
+
   const [totalCustomers, totalShipments, allCustomers] = await Promise.all([
     prisma.customer.count({
-      where: { organizationId },
+      where: orgFilter,
     }),
     prisma.shipment.count({
-      where: { customer: { organizationId } },
+      where: shipmentFilter,
     }),
     prisma.customer.findMany({
-      where: { organizationId },
+      where: orgFilter,
       select: {
         commodity: true,
         industrialZone: true,

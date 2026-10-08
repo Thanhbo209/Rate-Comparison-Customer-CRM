@@ -8,8 +8,8 @@ export default async function AdminCustomersPage() {
   const profile = await requireRole(["ADMIN"]);
 
   const [customers, stats] = await Promise.all([
-    getCustomers(profile.organizationId),
-    getCustomerStats(profile.organizationId),
+    getCustomers(profile.organizationId, undefined, true),
+    getCustomerStats(profile.organizationId, true),
   ]);
 
   return (
@@ -17,7 +17,7 @@ export default async function AdminCustomersPage() {
       initialCustomers={customers}
       stats={stats}
       role="ADMIN"
-      organizationName={profile.organization?.name ?? "My Organization"}
+      organizationName={profile.organization?.name ?? "Platform Directory"}
     />
   );
 }

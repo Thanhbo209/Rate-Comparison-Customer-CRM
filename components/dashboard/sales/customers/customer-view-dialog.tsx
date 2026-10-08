@@ -47,8 +47,14 @@ export function CustomerViewDialog({
             </div>
             <div>
               <DialogTitle>{customer.companyName}</DialogTitle>
-              <DialogDescription>
-                Customer ID: {customer.id}
+              <DialogDescription className="flex items-center gap-2 flex-wrap">
+                <span>Customer ID: {customer.id}</span>
+                {customer.organization && (
+                  <span className="inline-flex items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground font-medium">
+                    <Building2 className="size-2.5" />
+                    {customer.organization.name}
+                  </span>
+                )}
               </DialogDescription>
             </div>
           </div>

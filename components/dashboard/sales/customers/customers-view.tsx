@@ -69,6 +69,7 @@ export function CustomersView({
       {/* Customer List Data Table */}
       <CustomerTable
         customers={initialCustomers}
+        role={role}
         onAddNew={() => setCreateDialogOpen(true)}
         onView={(cust) => setViewingCustomer(cust)}
         onEdit={(cust) => setEditingCustomer(cust)}

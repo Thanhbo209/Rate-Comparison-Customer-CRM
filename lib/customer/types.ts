@@ -1,6 +1,10 @@
 export interface CustomerItem {
   id: string;
   organizationId: string;
+  organization?: {
+    id: string;
+    name: string;
+  };
   companyName: string;
   industrialZone: string | null;
   location: string | null;
