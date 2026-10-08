@@ -52,7 +52,12 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Organization: 'Organization',
-  User: 'User'
+  User: 'User',
+  Customer: 'Customer',
+  Shipment: 'Shipment',
+  Provider: 'Provider',
+  ShipmentRate: 'ShipmentRate',
+  FreightItem: 'FreightItem'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -94,6 +99,76 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const CustomerScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  companyName: 'companyName',
+  industrialZone: 'industrialZone',
+  location: 'location',
+  address: 'address',
+  commodity: 'commodity',
+  contactPerson: 'contactPerson',
+  cellPhone: 'cellPhone',
+  email: 'email',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
+
+
+export const ShipmentScalarFieldEnum = {
+  id: 'id',
+  customerId: 'customerId',
+  name: 'name',
+  direction: 'direction',
+  commodity: 'commodity',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ShipmentScalarFieldEnum = (typeof ShipmentScalarFieldEnum)[keyof typeof ShipmentScalarFieldEnum]
+
+
+export const ProviderScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProviderScalarFieldEnum = (typeof ProviderScalarFieldEnum)[keyof typeof ProviderScalarFieldEnum]
+
+
+export const ShipmentRateScalarFieldEnum = {
+  id: 'id',
+  shipmentId: 'shipmentId',
+  providerId: 'providerId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ShipmentRateScalarFieldEnum = (typeof ShipmentRateScalarFieldEnum)[keyof typeof ShipmentRateScalarFieldEnum]
+
+
+export const FreightItemScalarFieldEnum = {
+  id: 'id',
+  shipmentRateId: 'shipmentRateId',
+  freight: 'freight',
+  unit: 'unit',
+  net: 'net',
+  quantity: 'quantity',
+  gross: 'gross',
+  profit: 'profit',
+  currency: 'currency',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FreightItemScalarFieldEnum = (typeof FreightItemScalarFieldEnum)[keyof typeof FreightItemScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -108,4 +183,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

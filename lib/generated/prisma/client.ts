@@ -51,3 +51,28 @@ export type Organization = Prisma.OrganizationModel
  * 
  */
 export type User = Prisma.UserModel
+/**
+ * Model Customer
+ * 
+ */
+export type Customer = Prisma.CustomerModel
+/**
+ * Model Shipment
+ * 
+ */
+export type Shipment = Prisma.ShipmentModel
+/**
+ * Model Provider
+ * 
+ */
+export type Provider = Prisma.ProviderModel
+/**
+ * Model ShipmentRate
+ * 
+ */
+export type ShipmentRate = Prisma.ShipmentRateModel
+/**
+ * Model FreightItem
+ * 
+ */
+export type FreightItem = Prisma.FreightItemModel

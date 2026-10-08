@@ -10,4 +10,9 @@
  */
 export type * from './models/Organization'
 export type * from './models/User'
+export type * from './models/Customer'
+export type * from './models/Shipment'
+export type * from './models/Provider'
+export type * from './models/ShipmentRate'
+export type * from './models/FreightItem'
 export type * from './commonInputTypes'
