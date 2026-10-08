@@ -24,9 +24,10 @@ model Organization {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users     User[]
-  customers Customer[]
-  providers Provider[]
+  users       User[]
+  customers   Customer[]
+  providers   Provider[]
+  invitations OrganizationInvitation[]
 }
 
 model User {
@@ -38,9 +39,30 @@ model User {
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 
-  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  organization       Organization?            @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  createdInvitations OrganizationInvitation[] @relation("CreatedInvitations")
+  usedInvitations    OrganizationInvitation[] @relation("UsedInvitations")
 
   @@index([organizationId])
+}
+
+model OrganizationInvitation {
+  id             String       @id @default(cuid())
+  organizationId String
+  code           String       @unique
+  role           Role         @default(SALES)
+  createdById    String
+  usedById       String?
+  usedAt         DateTime?
+  expiresAt      DateTime
+  createdAt      DateTime     @default(now())
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy      User         @relation("CreatedInvitations", fields: [createdById], references: [id], onDelete: Cascade)
+  usedBy         User?        @relation("UsedInvitations", fields: [usedById], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([code])
 }
 
 model Customer {

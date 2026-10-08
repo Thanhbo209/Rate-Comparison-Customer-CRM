@@ -10,6 +10,7 @@
  */
 export type * from './models/Organization'
 export type * from './models/User'
+export type * from './models/OrganizationInvitation'
 export type * from './models/Customer'
 export type * from './models/Shipment'
 export type * from './models/Provider'
