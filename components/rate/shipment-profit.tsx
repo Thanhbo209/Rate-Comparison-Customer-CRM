@@ -1,0 +1,214 @@
+/**
+ * shipment-profit.tsx
+ *
+ * Three presentational components for displaying shipment-level profit totals
+ * and rankings in the Rate Comparison view.
+ *
+ *   ShipmentProfitCell  – replaces the "Best for Customer" directory-table cell
+ *   RatesTotalRow       – <tr> footer row for the per-shipment TABLE view
+ *   RatesTotalStrip     – summary strip for the per-shipment CARD view
+ */
+
+import React from "react";
+import { TrendingUp, Trophy, Minus } from "lucide-react";
+import type { ShipmentRankResult } from "@/lib/rate/shipment-ranking";
+
+// ─── Shared helpers ───────────────────────────────────────────────────────────
+
+function fmt(n: number, decimals = 0): string {
+  return n.toLocaleString(undefined, { maximumFractionDigits: decimals });
+}
+
+function sign(n: number): string {
+  return n >= 0 ? "+" : "";
+}
+
+// ─── ShipmentProfitCell ───────────────────────────────────────────────────────
+
+interface ShipmentProfitCellProps {
+  result: ShipmentRankResult | undefined;
+  baseCurrency: string;
+}
+
+/**
+ * Renders the "Total Profit" column cell in the shipment directory table.
+ *
+ *  – null rank (no rates):  shows "No rates" in muted italic
+ *  – isBest:                shows emerald "Best choice" trophy badge
+ *  – not best, has rank:    shows profit + "X behind best" note
+ *  – only 1 shipment (comparedWith < 2): shows profit only, no badge
+ */
+export function ShipmentProfitCell({
+  result,
+  baseCurrency,
+}: ShipmentProfitCellProps) {
+  if (!result || result.rank === null) {
+    return (
+      <span className="text-muted-foreground/60 text-xs italic">No rates</span>
+    );
+  }
+
+  const profitStr = `${sign(result.profit)}${fmt(result.profit)} ${baseCurrency}`;
+  const marginStr = `${result.marginPercent.toFixed(1)}%`;
+
+  return (
+    <div className="flex flex-col gap-0.5">
+      {/* Profit + margin */}
+      <div className="inline-flex items-center gap-1.5">
+        <TrendingUp className="size-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+        <span className="font-mono font-bold text-xs text-emerald-700 dark:text-emerald-400">
+          {profitStr}
+        </span>
+        <span className="text-[10px] text-muted-foreground font-medium">
+          {marginStr}
+        </span>
+      </div>
+
+      {/* Ranking badge — only when comparing ≥ 2 shipments for same customer */}
+      {result.comparedWith >= 2 && result.isBest && (
+        <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/15 px-1.5 py-0.5 text-[9px] font-bold text-emerald-800 dark:text-emerald-300 w-fit">
+          <Trophy className="size-2.5" />
+          Best choice
+        </span>
+      )}
+
+      {result.comparedWith >= 2 &&
+        !result.isBest &&
+        result.profitBehindBest !== null &&
+        result.profitBehindBest > 0 && (
+          <span className="text-[10px] text-muted-foreground pl-0.5">
+            <Minus className="size-2.5 inline mr-0.5" />
+            {fmt(result.profitBehindBest)} {baseCurrency} behind best
+          </span>
+        )}
+    </div>
+  );
+}
+
+// ─── RatesTotalRow ────────────────────────────────────────────────────────────
+
+interface RatesTotalRowProps {
+  result: ShipmentRankResult | undefined;
+  baseCurrency: string;
+  /** Total number of <td> columns in the table — used for colSpan on label cell */
+  colCount?: number;
+}
+
+/**
+ * A <tfoot><tr> that shows the aggregate Net / Gross / Profit totals
+ * for a single shipment in the TABLE expanded view.
+ *
+ * The columns mirror the table view layout:
+ *   Provider | Option | Net | Gross | Profit | Margin | Actions
+ * Caller wraps this in <tfoot>.
+ */
+export function RatesTotalRow({
+  result,
+  baseCurrency,
+  colCount = 7,
+}: RatesTotalRowProps) {
+  if (!result || result.rateCount === 0) return null;
+
+  // We render a label cell spanning (colCount - 4) columns, then
+  // Net / Gross / Profit / Margin cells (4 cols), then Actions is handled
+  // by the parent table naturally.
+  const labelCols = Math.max(1, colCount - 4);
+
+  return (
+    <tr className="border-t-2 border-border bg-muted/40 text-xs font-semibold">
+      <td
+        colSpan={labelCols}
+        className="px-4 py-2.5 text-muted-foreground font-medium"
+      >
+        Shipment Total ({result.rateCount}{" "}
+        {result.rateCount === 1 ? "rate" : "rates"})
+      </td>
+      <td className="px-4 py-2.5 font-mono text-right text-foreground">
+        {fmt(result.net)} {baseCurrency}
+      </td>
+      <td className="px-4 py-2.5 font-mono text-right text-foreground">
+        {fmt(result.gross)} {baseCurrency}
+      </td>
+      <td className="px-4 py-2.5 font-mono text-right text-emerald-700 dark:text-emerald-400 font-bold">
+        {sign(result.profit)}
+        {fmt(result.profit)} {baseCurrency}
+      </td>
+      <td className="px-4 py-2.5 font-mono text-right text-foreground">
+        {result.marginPercent.toFixed(1)}%
+      </td>
+    </tr>
+  );
+}
+
+// ─── RatesTotalStrip ──────────────────────────────────────────────────────────
+
+interface RatesTotalStripProps {
+  result: ShipmentRankResult | undefined;
+  baseCurrency: string;
+}
+
+/**
+ * A compact horizontal summary strip shown above the card grid in the
+ * CARD expanded view. Displays Net / Gross / Profit / Margin in one line,
+ * plus a "Best choice" badge when applicable.
+ */
+export function RatesTotalStrip({
+  result,
+  baseCurrency,
+}: RatesTotalStripProps) {
+  if (!result || result.rateCount === 0) return null;
+
+  return (
+    <div className="mx-4 sm:mx-6 mt-4 rounded-xl border border-border/80 bg-muted/30 px-4 py-2.5 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs">
+      {/* Label */}
+      <span className="font-semibold text-foreground shrink-0">
+        Shipment Total
+      </span>
+
+      <span className="text-muted-foreground shrink-0">
+        Net:{" "}
+        <span className="font-mono font-medium text-foreground">
+          {fmt(result.net)} {baseCurrency}
+        </span>
+      </span>
+
+      <span className="text-muted-foreground shrink-0">
+        Gross:{" "}
+        <span className="font-mono font-medium text-foreground">
+          {fmt(result.gross)} {baseCurrency}
+        </span>
+      </span>
+
+      <span className="text-muted-foreground shrink-0">
+        Profit:{" "}
+        <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400">
+          {sign(result.profit)}
+          {fmt(result.profit)} {baseCurrency}
+        </span>
+      </span>
+
+      <span className="text-muted-foreground shrink-0">
+        Margin:{" "}
+        <span className="font-mono font-medium text-foreground">
+          {result.marginPercent.toFixed(1)}%
+        </span>
+      </span>
+
+      {result.comparedWith >= 2 && result.isBest && (
+        <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/15 px-2 py-0.5 text-[9px] font-bold text-emerald-800 dark:text-emerald-300 shrink-0">
+          <Trophy className="size-2.5" />
+          Best choice
+        </span>
+      )}
+
+      {result.comparedWith >= 2 &&
+        !result.isBest &&
+        result.profitBehindBest !== null &&
+        result.profitBehindBest > 0 && (
+          <span className="text-[10px] text-muted-foreground italic shrink-0">
+            {fmt(result.profitBehindBest)} {baseCurrency} behind best
+          </span>
+        )}
+    </div>
+  );
+}

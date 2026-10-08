@@ -50,6 +50,8 @@ export interface ShipmentRateItem {
   totalProfit: number;
   marginPercent: number;
   primaryCurrency: string;
+  hasMissingExchangeRate?: boolean;
+  missingCurrencies?: string[];
   createdAt: Date | string;
 }
 
@@ -58,6 +60,7 @@ export interface ShipmentComparisonDetail {
   name: string;
   direction: "IMPORT" | "EXPORT";
   commodity: string | null;
+  selectedRateId?: string | null;
   customerId: string;
   customer: {
     id: string;
@@ -74,6 +77,8 @@ export interface ShipmentComparisonDetail {
   bestCustomerRateId?: string;
   bestCustomerRateProfit?: number;
   bestCustomerRateCarrier?: string;
+  tieBreakUsed?: boolean;
+  unrankedRateIds?: string[];
   // Lowest buying cost option
   bestRateId?: string;
   highestMarginRateId?: string;

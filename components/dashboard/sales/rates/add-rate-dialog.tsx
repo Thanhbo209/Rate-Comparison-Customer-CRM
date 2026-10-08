@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Loader2, Plus, Building2, Truck } from "lucide-react";
+import { Loader2, Truck } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -31,10 +31,10 @@ export function AddRateDialog({
   onSuccess,
 }: AddRateDialogProps) {
   const [mode, setMode] = useState<"select" | "new">(
-    existingProviders.length > 0 ? "select" : "new"
+    existingProviders.length > 0 ? "select" : "new",
   );
   const [selectedProviderId, setSelectedProviderId] = useState<string>(
-    existingProviders[0]?.id || ""
+    existingProviders[0]?.id || "",
   );
   const [newProviderName, setNewProviderName] = useState("");
   const [optionName, setOptionName] = useState("");
@@ -75,7 +75,9 @@ export function AddRateDialog({
       onOpenChange(false);
       onSuccess();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An unexpected error occurred.");
+      setError(
+        err instanceof Error ? err.message : "An unexpected error occurred.",
+      );
     } finally {
       setLoading(false);
     }
@@ -92,7 +94,8 @@ export function AddRateDialog({
             <div>
               <DialogTitle>Add Carrier Rate</DialogTitle>
               <DialogDescription>
-                Add a freight provider to compare rates for &quot;{shipmentName}&quot;.
+                Add a freight provider to compare rates for &quot;{shipmentName}
+                &quot;.
               </DialogDescription>
             </div>
           </div>
@@ -119,7 +122,7 @@ export function AddRateDialog({
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                Existing Carrier
+                Existing Freight
               </button>
               <button
                 type="button"
@@ -133,7 +136,7 @@ export function AddRateDialog({
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                New Carrier
+                New Freight
               </button>
             </div>
           )}
@@ -142,7 +145,7 @@ export function AddRateDialog({
             <div className="space-y-1.5">
               <label className="font-medium text-foreground flex items-center gap-1.5">
                 <Truck className="size-3.5 text-muted-foreground" />
-                Select Carrier / Provider
+                Select Freight / Provider
               </label>
               <select
                 value={selectedProviderId}
@@ -160,11 +163,11 @@ export function AddRateDialog({
             <div className="space-y-1.5">
               <label className="font-medium text-foreground flex items-center gap-1.5">
                 <Truck className="size-3.5 text-muted-foreground" />
-                Carrier / Line Name
+                Freight / Line Name
               </label>
               <input
                 type="text"
-                placeholder="e.g. Maersk Line, MSC, CMA CGM, ONE"
+                placeholder="e.g. Trucking, Custom VN, Express, Delivery, DOC"
                 value={newProviderName}
                 onChange={(e) => setNewProviderName(e.target.value)}
                 autoFocus
@@ -175,11 +178,16 @@ export function AddRateDialog({
 
           <div className="space-y-1.5">
             <label className="font-medium text-foreground flex items-center justify-between">
-              <span>Option / Routing Label <span className="text-muted-foreground font-normal">(optional)</span></span>
+              <span>
+                Option / Routing Label{" "}
+                <span className="text-muted-foreground font-normal">
+                  (optional)
+                </span>
+              </span>
             </label>
             <input
               type="text"
-              placeholder="e.g. Direct — 18 days, Via Singapore, Spot Rate"
+              placeholder="e.g. Direct - 18 days, Via Singapore, Spot Rate"
               value={optionName}
               onChange={(e) => setOptionName(e.target.value)}
               className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
@@ -200,7 +208,7 @@ export function AddRateDialog({
               className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
             >
               {loading && <Loader2 className="size-3.5 animate-spin" />}
-              <span>Add Carrier Option</span>
+              <span>Add Freight Option</span>
             </button>
           </DialogFooter>
         </form>

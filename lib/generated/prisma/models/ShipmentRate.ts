@@ -191,6 +191,7 @@ export type ShipmentRateWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"ShipmentRate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ShipmentRate"> | Date | string
   shipment?: Prisma.XOR<Prisma.ShipmentScalarRelationFilter, Prisma.ShipmentWhereInput>
+  selectedForShipment?: Prisma.XOR<Prisma.ShipmentNullableScalarRelationFilter, Prisma.ShipmentWhereInput> | null
   provider?: Prisma.XOR<Prisma.ProviderScalarRelationFilter, Prisma.ProviderWhereInput>
   freightItems?: Prisma.FreightItemListRelationFilter
 }
@@ -203,6 +204,7 @@ export type ShipmentRateOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   shipment?: Prisma.ShipmentOrderByWithRelationInput
+  selectedForShipment?: Prisma.ShipmentOrderByWithRelationInput
   provider?: Prisma.ProviderOrderByWithRelationInput
   freightItems?: Prisma.FreightItemOrderByRelationAggregateInput
 }
@@ -218,6 +220,7 @@ export type ShipmentRateWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"ShipmentRate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ShipmentRate"> | Date | string
   shipment?: Prisma.XOR<Prisma.ShipmentScalarRelationFilter, Prisma.ShipmentWhereInput>
+  selectedForShipment?: Prisma.XOR<Prisma.ShipmentNullableScalarRelationFilter, Prisma.ShipmentWhereInput> | null
   provider?: Prisma.XOR<Prisma.ProviderScalarRelationFilter, Prisma.ProviderWhereInput>
   freightItems?: Prisma.FreightItemListRelationFilter
 }, "id">
@@ -252,6 +255,7 @@ export type ShipmentRateCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   shipment: Prisma.ShipmentCreateNestedOneWithoutRatesInput
+  selectedForShipment?: Prisma.ShipmentCreateNestedOneWithoutSelectedRateInput
   provider: Prisma.ProviderCreateNestedOneWithoutShipmentRatesInput
   freightItems?: Prisma.FreightItemCreateNestedManyWithoutShipmentRateInput
 }
@@ -263,6 +267,7 @@ export type ShipmentRateUncheckedCreateInput = {
   optionName?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  selectedForShipment?: Prisma.ShipmentUncheckedCreateNestedOneWithoutSelectedRateInput
   freightItems?: Prisma.FreightItemUncheckedCreateNestedManyWithoutShipmentRateInput
 }
 
@@ -272,6 +277,7 @@ export type ShipmentRateUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   shipment?: Prisma.ShipmentUpdateOneRequiredWithoutRatesNestedInput
+  selectedForShipment?: Prisma.ShipmentUpdateOneWithoutSelectedRateNestedInput
   provider?: Prisma.ProviderUpdateOneRequiredWithoutShipmentRatesNestedInput
   freightItems?: Prisma.FreightItemUpdateManyWithoutShipmentRateNestedInput
 }
@@ -283,6 +289,7 @@ export type ShipmentRateUncheckedUpdateInput = {
   optionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  selectedForShipment?: Prisma.ShipmentUncheckedUpdateOneWithoutSelectedRateNestedInput
   freightItems?: Prisma.FreightItemUncheckedUpdateManyWithoutShipmentRateNestedInput
 }
 
@@ -315,6 +322,11 @@ export type ShipmentRateListRelationFilter = {
   every?: Prisma.ShipmentRateWhereInput
   some?: Prisma.ShipmentRateWhereInput
   none?: Prisma.ShipmentRateWhereInput
+}
+
+export type ShipmentRateNullableScalarRelationFilter = {
+  is?: Prisma.ShipmentRateWhereInput | null
+  isNot?: Prisma.ShipmentRateWhereInput | null
 }
 
 export type ShipmentRateOrderByRelationAggregateInput = {
@@ -360,6 +372,12 @@ export type ShipmentRateCreateNestedManyWithoutShipmentInput = {
   connect?: Prisma.ShipmentRateWhereUniqueInput | Prisma.ShipmentRateWhereUniqueInput[]
 }
 
+export type ShipmentRateCreateNestedOneWithoutSelectedForShipmentInput = {
+  create?: Prisma.XOR<Prisma.ShipmentRateCreateWithoutSelectedForShipmentInput, Prisma.ShipmentRateUncheckedCreateWithoutSelectedForShipmentInput>
+  connectOrCreate?: Prisma.ShipmentRateCreateOrConnectWithoutSelectedForShipmentInput
+  connect?: Prisma.ShipmentRateWhereUniqueInput
+}
+
 export type ShipmentRateUncheckedCreateNestedManyWithoutShipmentInput = {
   create?: Prisma.XOR<Prisma.ShipmentRateCreateWithoutShipmentInput, Prisma.ShipmentRateUncheckedCreateWithoutShipmentInput> | Prisma.ShipmentRateCreateWithoutShipmentInput[] | Prisma.ShipmentRateUncheckedCreateWithoutShipmentInput[]
   connectOrCreate?: Prisma.ShipmentRateCreateOrConnectWithoutShipmentInput | Prisma.ShipmentRateCreateOrConnectWithoutShipmentInput[]
@@ -379,6 +397,16 @@ export type ShipmentRateUpdateManyWithoutShipmentNestedInput = {
   update?: Prisma.ShipmentRateUpdateWithWhereUniqueWithoutShipmentInput | Prisma.ShipmentRateUpdateWithWhereUniqueWithoutShipmentInput[]
   updateMany?: Prisma.ShipmentRateUpdateManyWithWhereWithoutShipmentInput | Prisma.ShipmentRateUpdateManyWithWhereWithoutShipmentInput[]
   deleteMany?: Prisma.ShipmentRateScalarWhereInput | Prisma.ShipmentRateScalarWhereInput[]
+}
+
+export type ShipmentRateUpdateOneWithoutSelectedForShipmentNestedInput = {
+  create?: Prisma.XOR<Prisma.ShipmentRateCreateWithoutSelectedForShipmentInput, Prisma.ShipmentRateUncheckedCreateWithoutSelectedForShipmentInput>
+  connectOrCreate?: Prisma.ShipmentRateCreateOrConnectWithoutSelectedForShipmentInput
+  upsert?: Prisma.ShipmentRateUpsertWithoutSelectedForShipmentInput
+  disconnect?: Prisma.ShipmentRateWhereInput | boolean
+  delete?: Prisma.ShipmentRateWhereInput | boolean
+  connect?: Prisma.ShipmentRateWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ShipmentRateUpdateToOneWithWhereWithoutSelectedForShipmentInput, Prisma.ShipmentRateUpdateWithoutSelectedForShipmentInput>, Prisma.ShipmentRateUncheckedUpdateWithoutSelectedForShipmentInput>
 }
 
 export type ShipmentRateUncheckedUpdateManyWithoutShipmentNestedInput = {
@@ -456,6 +484,7 @@ export type ShipmentRateCreateWithoutShipmentInput = {
   optionName?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  selectedForShipment?: Prisma.ShipmentCreateNestedOneWithoutSelectedRateInput
   provider: Prisma.ProviderCreateNestedOneWithoutShipmentRatesInput
   freightItems?: Prisma.FreightItemCreateNestedManyWithoutShipmentRateInput
 }
@@ -466,6 +495,7 @@ export type ShipmentRateUncheckedCreateWithoutShipmentInput = {
   optionName?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  selectedForShipment?: Prisma.ShipmentUncheckedCreateNestedOneWithoutSelectedRateInput
   freightItems?: Prisma.FreightItemUncheckedCreateNestedManyWithoutShipmentRateInput
 }
 
@@ -477,6 +507,31 @@ export type ShipmentRateCreateOrConnectWithoutShipmentInput = {
 export type ShipmentRateCreateManyShipmentInputEnvelope = {
   data: Prisma.ShipmentRateCreateManyShipmentInput | Prisma.ShipmentRateCreateManyShipmentInput[]
   skipDuplicates?: boolean
+}
+
+export type ShipmentRateCreateWithoutSelectedForShipmentInput = {
+  id?: string
+  optionName?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  shipment: Prisma.ShipmentCreateNestedOneWithoutRatesInput
+  provider: Prisma.ProviderCreateNestedOneWithoutShipmentRatesInput
+  freightItems?: Prisma.FreightItemCreateNestedManyWithoutShipmentRateInput
+}
+
+export type ShipmentRateUncheckedCreateWithoutSelectedForShipmentInput = {
+  id?: string
+  shipmentId: string
+  providerId: string
+  optionName?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  freightItems?: Prisma.FreightItemUncheckedCreateNestedManyWithoutShipmentRateInput
+}
+
+export type ShipmentRateCreateOrConnectWithoutSelectedForShipmentInput = {
+  where: Prisma.ShipmentRateWhereUniqueInput
+  create: Prisma.XOR<Prisma.ShipmentRateCreateWithoutSelectedForShipmentInput, Prisma.ShipmentRateUncheckedCreateWithoutSelectedForShipmentInput>
 }
 
 export type ShipmentRateUpsertWithWhereUniqueWithoutShipmentInput = {
@@ -507,12 +562,44 @@ export type ShipmentRateScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"ShipmentRate"> | Date | string
 }
 
+export type ShipmentRateUpsertWithoutSelectedForShipmentInput = {
+  update: Prisma.XOR<Prisma.ShipmentRateUpdateWithoutSelectedForShipmentInput, Prisma.ShipmentRateUncheckedUpdateWithoutSelectedForShipmentInput>
+  create: Prisma.XOR<Prisma.ShipmentRateCreateWithoutSelectedForShipmentInput, Prisma.ShipmentRateUncheckedCreateWithoutSelectedForShipmentInput>
+  where?: Prisma.ShipmentRateWhereInput
+}
+
+export type ShipmentRateUpdateToOneWithWhereWithoutSelectedForShipmentInput = {
+  where?: Prisma.ShipmentRateWhereInput
+  data: Prisma.XOR<Prisma.ShipmentRateUpdateWithoutSelectedForShipmentInput, Prisma.ShipmentRateUncheckedUpdateWithoutSelectedForShipmentInput>
+}
+
+export type ShipmentRateUpdateWithoutSelectedForShipmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  optionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  shipment?: Prisma.ShipmentUpdateOneRequiredWithoutRatesNestedInput
+  provider?: Prisma.ProviderUpdateOneRequiredWithoutShipmentRatesNestedInput
+  freightItems?: Prisma.FreightItemUpdateManyWithoutShipmentRateNestedInput
+}
+
+export type ShipmentRateUncheckedUpdateWithoutSelectedForShipmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  shipmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  providerId?: Prisma.StringFieldUpdateOperationsInput | string
+  optionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  freightItems?: Prisma.FreightItemUncheckedUpdateManyWithoutShipmentRateNestedInput
+}
+
 export type ShipmentRateCreateWithoutProviderInput = {
   id?: string
   optionName?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   shipment: Prisma.ShipmentCreateNestedOneWithoutRatesInput
+  selectedForShipment?: Prisma.ShipmentCreateNestedOneWithoutSelectedRateInput
   freightItems?: Prisma.FreightItemCreateNestedManyWithoutShipmentRateInput
 }
 
@@ -522,6 +609,7 @@ export type ShipmentRateUncheckedCreateWithoutProviderInput = {
   optionName?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  selectedForShipment?: Prisma.ShipmentUncheckedCreateNestedOneWithoutSelectedRateInput
   freightItems?: Prisma.FreightItemUncheckedCreateNestedManyWithoutShipmentRateInput
 }
 
@@ -557,6 +645,7 @@ export type ShipmentRateCreateWithoutFreightItemsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   shipment: Prisma.ShipmentCreateNestedOneWithoutRatesInput
+  selectedForShipment?: Prisma.ShipmentCreateNestedOneWithoutSelectedRateInput
   provider: Prisma.ProviderCreateNestedOneWithoutShipmentRatesInput
 }
 
@@ -567,6 +656,7 @@ export type ShipmentRateUncheckedCreateWithoutFreightItemsInput = {
   optionName?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  selectedForShipment?: Prisma.ShipmentUncheckedCreateNestedOneWithoutSelectedRateInput
 }
 
 export type ShipmentRateCreateOrConnectWithoutFreightItemsInput = {
@@ -591,6 +681,7 @@ export type ShipmentRateUpdateWithoutFreightItemsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   shipment?: Prisma.ShipmentUpdateOneRequiredWithoutRatesNestedInput
+  selectedForShipment?: Prisma.ShipmentUpdateOneWithoutSelectedRateNestedInput
   provider?: Prisma.ProviderUpdateOneRequiredWithoutShipmentRatesNestedInput
 }
 
@@ -601,6 +692,7 @@ export type ShipmentRateUncheckedUpdateWithoutFreightItemsInput = {
   optionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  selectedForShipment?: Prisma.ShipmentUncheckedUpdateOneWithoutSelectedRateNestedInput
 }
 
 export type ShipmentRateCreateManyShipmentInput = {
@@ -616,6 +708,7 @@ export type ShipmentRateUpdateWithoutShipmentInput = {
   optionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  selectedForShipment?: Prisma.ShipmentUpdateOneWithoutSelectedRateNestedInput
   provider?: Prisma.ProviderUpdateOneRequiredWithoutShipmentRatesNestedInput
   freightItems?: Prisma.FreightItemUpdateManyWithoutShipmentRateNestedInput
 }
@@ -626,6 +719,7 @@ export type ShipmentRateUncheckedUpdateWithoutShipmentInput = {
   optionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  selectedForShipment?: Prisma.ShipmentUncheckedUpdateOneWithoutSelectedRateNestedInput
   freightItems?: Prisma.FreightItemUncheckedUpdateManyWithoutShipmentRateNestedInput
 }
 
@@ -651,6 +745,7 @@ export type ShipmentRateUpdateWithoutProviderInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   shipment?: Prisma.ShipmentUpdateOneRequiredWithoutRatesNestedInput
+  selectedForShipment?: Prisma.ShipmentUpdateOneWithoutSelectedRateNestedInput
   freightItems?: Prisma.FreightItemUpdateManyWithoutShipmentRateNestedInput
 }
 
@@ -660,6 +755,7 @@ export type ShipmentRateUncheckedUpdateWithoutProviderInput = {
   optionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  selectedForShipment?: Prisma.ShipmentUncheckedUpdateOneWithoutSelectedRateNestedInput
   freightItems?: Prisma.FreightItemUncheckedUpdateManyWithoutShipmentRateNestedInput
 }
 
@@ -710,6 +806,7 @@ export type ShipmentRateSelect<ExtArgs extends runtime.Types.Extensions.Internal
   createdAt?: boolean
   updatedAt?: boolean
   shipment?: boolean | Prisma.ShipmentDefaultArgs<ExtArgs>
+  selectedForShipment?: boolean | Prisma.ShipmentRate$selectedForShipmentArgs<ExtArgs>
   provider?: boolean | Prisma.ProviderDefaultArgs<ExtArgs>
   freightItems?: boolean | Prisma.ShipmentRate$freightItemsArgs<ExtArgs>
   _count?: boolean | Prisma.ShipmentRateCountOutputTypeDefaultArgs<ExtArgs>
@@ -749,6 +846,7 @@ export type ShipmentRateSelectScalar = {
 export type ShipmentRateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "shipmentId" | "providerId" | "optionName" | "createdAt" | "updatedAt", ExtArgs["result"]["shipmentRate"]>
 export type ShipmentRateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   shipment?: boolean | Prisma.ShipmentDefaultArgs<ExtArgs>
+  selectedForShipment?: boolean | Prisma.ShipmentRate$selectedForShipmentArgs<ExtArgs>
   provider?: boolean | Prisma.ProviderDefaultArgs<ExtArgs>
   freightItems?: boolean | Prisma.ShipmentRate$freightItemsArgs<ExtArgs>
   _count?: boolean | Prisma.ShipmentRateCountOutputTypeDefaultArgs<ExtArgs>
@@ -766,6 +864,7 @@ export type $ShipmentRatePayload<ExtArgs extends runtime.Types.Extensions.Intern
   name: "ShipmentRate"
   objects: {
     shipment: Prisma.$ShipmentPayload<ExtArgs>
+    selectedForShipment: Prisma.$ShipmentPayload<ExtArgs> | null
     provider: Prisma.$ProviderPayload<ExtArgs>
     freightItems: Prisma.$FreightItemPayload<ExtArgs>[]
   }
@@ -1171,6 +1270,7 @@ readonly fields: ShipmentRateFieldRefs;
 export interface Prisma__ShipmentRateClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   shipment<T extends Prisma.ShipmentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ShipmentDefaultArgs<ExtArgs>>): Prisma.Prisma__ShipmentClient<runtime.Types.Result.GetResult<Prisma.$ShipmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  selectedForShipment<T extends Prisma.ShipmentRate$selectedForShipmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ShipmentRate$selectedForShipmentArgs<ExtArgs>>): Prisma.Prisma__ShipmentClient<runtime.Types.Result.GetResult<Prisma.$ShipmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   provider<T extends Prisma.ProviderDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProviderDefaultArgs<ExtArgs>>): Prisma.Prisma__ProviderClient<runtime.Types.Result.GetResult<Prisma.$ProviderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   freightItems<T extends Prisma.ShipmentRate$freightItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ShipmentRate$freightItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FreightItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1606,6 +1706,25 @@ export type ShipmentRateDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many ShipmentRates to delete.
    */
   limit?: number
+}
+
+/**
+ * ShipmentRate.selectedForShipment
+ */
+export type ShipmentRate$selectedForShipmentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Shipment
+   */
+  select?: Prisma.ShipmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Shipment
+   */
+  omit?: Prisma.ShipmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ShipmentInclude<ExtArgs> | null
+  where?: Prisma.ShipmentWhereInput
 }
 
 /**

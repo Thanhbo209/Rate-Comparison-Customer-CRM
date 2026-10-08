@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Building2,
   User,
@@ -11,6 +11,7 @@ import {
   Package,
   Calendar,
   ExternalLink,
+  Award,
 } from "lucide-react";
 import {
   Dialog,
@@ -21,6 +22,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import type { CustomerItem } from "@/lib/customer/types";
+import { getCustomerAgentSummaryAction } from "@/lib/customer/actions";
+import type { CustomerAgentSummaryItem } from "@/lib/rate/ranking";
 
 interface CustomerViewDialogProps {
   open: boolean;
@@ -35,6 +38,45 @@ export function CustomerViewDialog({
   customer,
   onEdit,
 }: CustomerViewDialogProps) {
+  const [agentSummary, setAgentSummary] = useState<CustomerAgentSummaryItem[]>([]);
+  const [bestAgent, setBestAgent] = useState<CustomerAgentSummaryItem | null>(null);
+  const [agentBaseCurrency, setAgentBaseCurrency] = useState("USD");
+  const [loadingAgentSummary, setLoadingAgentSummary] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    if (open && customer?.id) {
+      queueMicrotask(() => {
+        if (active) setLoadingAgentSummary(true);
+      });
+      getCustomerAgentSummaryAction(customer.id)
+        .then((res) => {
+          if (!active) return;
+          if (res.success && res.data) {
+            setAgentSummary(res.data.agentSummary);
+            setBestAgent(res.data.bestAgent);
+            setAgentBaseCurrency(res.data.baseCurrency);
+          } else {
+            setAgentSummary([]);
+            setBestAgent(null);
+          }
+        })
+        .catch((err) => {
+          if (!active) return;
+          console.error("Failed to load customer agent summary:", err);
+          setAgentSummary([]);
+          setBestAgent(null);
+        })
+        .finally(() => {
+          if (active) setLoadingAgentSummary(false);
+        });
+    }
+
+    return () => {
+      active = false;
+    };
+  }, [open, customer?.id]);
+
   if (!customer) return null;
 
   return (
@@ -138,7 +180,7 @@ export function CustomerViewDialog({
             )}
           </div>
 
-          {/* Location & Industrial Zone */}
+          {/* Facility Location */}
           <div className="rounded-xl border border-border bg-card p-4 space-y-2.5">
             <h4 className="font-heading text-xs font-semibold text-foreground uppercase tracking-wider text-muted-foreground">
               Facility Location
@@ -158,6 +200,108 @@ export function CustomerViewDialog({
                 )}
               </div>
             </div>
+          </div>
+
+          {/* BEST AGENT & AGENT PERFORMANCE ROLL-UP */}
+          <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+            <div className="flex items-center justify-between border-b border-border/60 pb-2">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+                <Award className="size-4 text-emerald-600 dark:text-emerald-400" />
+                <span>Best Agent & Carrier Performance</span>
+              </div>
+              <span className="text-[10px] text-muted-foreground">
+                Roll-up of selected / winning rates
+              </span>
+            </div>
+
+            {loadingAgentSummary ? (
+              <div className="py-6 text-center text-xs text-muted-foreground animate-pulse">
+                Analyzing customer shipment rates...
+              </div>
+            ) : agentSummary.length === 0 ? (
+              <div className="py-4 text-center text-xs text-muted-foreground italic">
+                No active carrier rates configured yet for this customer&apos;s shipments.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {/* Best Agent Highlight Card */}
+                {bestAgent && (
+                  <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/8 p-3 flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300">
+                        Top Performing Agent
+                      </span>
+                      <h4 className="font-heading text-sm font-bold text-foreground mt-0.5">
+                        {bestAgent.providerName}
+                      </h4>
+                      <p className="text-[11px] text-muted-foreground">
+                        {bestAgent.shipmentsWon}{" "}
+                        {bestAgent.shipmentsWon === 1 ? "shipment won" : "shipments won"}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <span className="font-mono text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                        +{bestAgent.totalProfit.toLocaleString(undefined, {
+                          maximumFractionDigits: 2,
+                        })}{" "}
+                        {agentBaseCurrency}
+                      </span>
+                      <p className="text-[10px] text-muted-foreground">
+                        avg. +
+                        {bestAgent.averageProfitPerShipment.toLocaleString(undefined, {
+                          maximumFractionDigits: 2,
+                        })}{" "}
+                        / shipment
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Agents Summary Table */}
+                <div className="overflow-x-auto rounded-lg border border-border/80">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-muted/50 border-b border-border text-[10px] text-muted-foreground uppercase font-semibold">
+                      <tr>
+                        <th className="py-2 px-3">Agent / Provider</th>
+                        <th className="py-2 px-3 text-center">Shipments Won</th>
+                        <th className="py-2 px-3 font-mono">Total Profit</th>
+                        <th className="py-2 px-3 font-mono text-right">Avg / Shipment</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/50">
+                      {agentSummary.map((ag, idx) => (
+                        <tr
+                          key={ag.providerId}
+                          className="hover:bg-muted/20 transition-colors"
+                        >
+                          <td className="py-2 px-3 font-semibold text-foreground flex items-center gap-1.5">
+                            <span className="flex size-4.5 shrink-0 items-center justify-center rounded-full bg-muted text-[9px] font-bold text-muted-foreground">
+                              {idx + 1}
+                            </span>
+                            <span className="truncate">{ag.providerName}</span>
+                          </td>
+                          <td className="py-2 px-3 text-center font-mono text-muted-foreground">
+                            {ag.shipmentsWon}
+                          </td>
+                          <td className="py-2 px-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                            +{ag.totalProfit.toLocaleString(undefined, {
+                              maximumFractionDigits: 2,
+                            })}{" "}
+                            {agentBaseCurrency}
+                          </td>
+                          <td className="py-2 px-3 font-mono text-right text-foreground">
+                            +{ag.averageProfitPerShipment.toLocaleString(undefined, {
+                              maximumFractionDigits: 2,
+                            })}{" "}
+                            {agentBaseCurrency}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Timestamps */}

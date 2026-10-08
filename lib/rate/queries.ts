@@ -9,6 +9,7 @@ import type {
   OverallProfitSummary,
   AgentComparisonSummary,
 } from "./types";
+import { rankRatesByProfit } from "./ranking";
 
 export async function getProviders(
   organizationId?: string | null,
@@ -256,28 +257,37 @@ export async function getShipmentRateComparison(
     };
   });
 
-  // Calculate best overall customer option (highest overall profit from freight totals)
-  let bestCustomerRateId: string | undefined;
-  let bestCustomerRateProfit: number | undefined;
-  let bestCustomerRateCarrier: string | undefined;
+  // Calculate best overall customer option using pure ranking logic
+  const ranking = rankRatesByProfit(rates, orgBaseCurrency, orgExchangeRates);
+  const bestCustomerRateId = ranking.winnerId || undefined;
+  const bestCustomerRateProfit = ranking.winnerRate
+    ? (ranking.breakdowns.find((b) => b.rateId === ranking.winnerId)?.totalProfit ?? 0)
+    : undefined;
+  const bestCustomerRateCarrier = ranking.winnerRate
+    ? (ranking.winnerRate.provider?.name ?? "Provider") +
+      (ranking.winnerRate.optionName ? ` (${ranking.winnerRate.optionName})` : "")
+    : undefined;
 
   let bestRateId: string | undefined;
   let highestMarginRateId: string | undefined;
   let lowestConsolidatedNet = Infinity;
-  let highestConsolidatedProfit = -Infinity;
+  let highestMarginPercent = -Infinity;
 
   rates.forEach((r) => {
-    if (r.freightItems.length > 0) {
+    const b = ranking.breakdowns.find((x) => x.rateId === r.id);
+    if (b) {
+      r.hasMissingExchangeRate = b.hasMissingExchangeRate;
+      r.missingCurrencies = b.missingCurrencies;
+    }
+
+    if (r.freightItems.length > 0 && !r.hasMissingExchangeRate) {
       if (r.consolidatedNet < lowestConsolidatedNet) {
         lowestConsolidatedNet = r.consolidatedNet;
         bestRateId = r.id;
       }
-      if (r.consolidatedProfit > highestConsolidatedProfit) {
-        highestConsolidatedProfit = r.consolidatedProfit;
+      if (r.consolidatedMarginPercent > highestMarginPercent) {
+        highestMarginPercent = r.consolidatedMarginPercent;
         highestMarginRateId = r.id;
-        bestCustomerRateId = r.id;
-        bestCustomerRateProfit = r.consolidatedProfit;
-        bestCustomerRateCarrier = r.provider.name + (r.optionName ? ` (${r.optionName})` : "");
       }
     }
   });
@@ -287,6 +297,7 @@ export async function getShipmentRateComparison(
     name: shipment.name,
     direction: shipment.direction,
     commodity: shipment.commodity,
+    selectedRateId: shipment.selectedRateId,
     customerId: shipment.customerId,
     customer: shipment.customer,
     baseCurrency: orgBaseCurrency,
@@ -294,6 +305,8 @@ export async function getShipmentRateComparison(
     bestCustomerRateId,
     bestCustomerRateProfit,
     bestCustomerRateCarrier,
+    tieBreakUsed: ranking.tieBreakUsed,
+    unrankedRateIds: ranking.unrankedRateIds,
     bestRateId,
     highestMarginRateId,
   };
@@ -541,27 +554,36 @@ export async function getAllShipmentsRateOverview(
       };
     });
 
-    let bestCustomerRateId: string | undefined;
-    let bestCustomerRateProfit: number | undefined;
-    let bestCustomerRateCarrier: string | undefined;
+    const ranking = rankRatesByProfit(rates, orgBaseCurrency, orgExchangeRates);
+    const bestCustomerRateId = ranking.winnerId || undefined;
+    const bestCustomerRateProfit = ranking.winnerRate
+      ? (ranking.breakdowns.find((b) => b.rateId === ranking.winnerId)?.totalProfit ?? 0)
+      : undefined;
+    const bestCustomerRateCarrier = ranking.winnerRate
+      ? (ranking.winnerRate.provider?.name ?? "Provider") +
+        (ranking.winnerRate.optionName ? ` (${ranking.winnerRate.optionName})` : "")
+      : undefined;
 
     let bestRateId: string | undefined;
     let highestMarginRateId: string | undefined;
     let lowestNet = Infinity;
-    let highestProfit = -Infinity;
+    let highestMarginPercent = -Infinity;
 
     rates.forEach((r) => {
-      if (r.freightItems.length > 0) {
+      const b = ranking.breakdowns.find((x) => x.rateId === r.id);
+      if (b) {
+        r.hasMissingExchangeRate = b.hasMissingExchangeRate;
+        r.missingCurrencies = b.missingCurrencies;
+      }
+
+      if (r.freightItems.length > 0 && !r.hasMissingExchangeRate) {
         if (r.consolidatedNet < lowestNet) {
           lowestNet = r.consolidatedNet;
           bestRateId = r.id;
         }
-        if (r.consolidatedProfit > highestProfit) {
-          highestProfit = r.consolidatedProfit;
+        if (r.consolidatedMarginPercent > highestMarginPercent) {
+          highestMarginPercent = r.consolidatedMarginPercent;
           highestMarginRateId = r.id;
-          bestCustomerRateId = r.id;
-          bestCustomerRateProfit = r.consolidatedProfit;
-          bestCustomerRateCarrier = r.provider.name + (r.optionName ? ` (${r.optionName})` : "");
         }
       }
     });
@@ -587,6 +609,7 @@ export async function getAllShipmentsRateOverview(
       name: s.name,
       direction: s.direction,
       commodity: s.commodity,
+      selectedRateId: s.selectedRateId,
       customerId: s.customerId,
       customer: s.customer,
       baseCurrency: orgBaseCurrency,
@@ -594,6 +617,8 @@ export async function getAllShipmentsRateOverview(
       bestCustomerRateId,
       bestCustomerRateProfit,
       bestCustomerRateCarrier,
+      tieBreakUsed: ranking.tieBreakUsed,
+      unrankedRateIds: ranking.unrankedRateIds,
       bestRateId,
       highestMarginRateId,
     };

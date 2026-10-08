@@ -154,6 +154,7 @@ export const ShipmentScalarFieldEnum = {
   name: 'name',
   direction: 'direction',
   commodity: 'commodity',
+  selectedRateId: 'selectedRateId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

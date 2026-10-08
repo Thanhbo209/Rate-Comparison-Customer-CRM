@@ -244,3 +244,100 @@ export async function deleteShipmentRateAction({
     };
   }
 }
+
+/**
+ * Select or clear the approved carrier rate for a shipment.
+ *
+ * Allowed roles: ADMIN and SALES_MANAGER.
+ */
+export async function selectShipmentRateAction({
+  shipmentId,
+  shipmentRateId,
+}: {
+  shipmentId: string;
+  shipmentRateId: string | null;
+}): Promise<RateActionResponse<{ shipmentId: string; selectedRateId: string | null }>> {
+  try {
+    const profile = await getCurrentProfile();
+    if (!profile) {
+      return { success: false, error: "Authentication required." };
+    }
+
+    if (!profile.organizationId && profile.role !== "ADMIN") {
+      return { success: false, error: "Organization required." };
+    }
+
+    // Role check: Only ADMIN and SALES_MANAGER can select a rate
+    if (profile.role !== "ADMIN" && profile.role !== "SALES_MANAGER") {
+      return {
+        success: false,
+        error: "Only Sales Managers and Administrators can select the carrier rate for a shipment.",
+      };
+    }
+
+    // Verify shipment exists and belongs to the user's organization
+    const shipment = await prisma.shipment.findUnique({
+      where: { id: shipmentId },
+      include: {
+        customer: true,
+        rates: {
+          select: { id: true },
+        },
+      },
+    });
+
+    if (!shipment) {
+      return { success: false, error: "Shipment not found." };
+    }
+
+    if (
+      profile.role !== "ADMIN" &&
+      shipment.customer.organizationId !== profile.organizationId
+    ) {
+      return { success: false, error: "Permission denied." };
+    }
+
+    // If shipmentRateId is provided, verify it belongs to this shipment
+    if (shipmentRateId) {
+      const rateBelongs = shipment.rates.some((r) => r.id === shipmentRateId);
+      if (!rateBelongs) {
+        return {
+          success: false,
+          error: "Selected rate does not belong to this shipment.",
+        };
+      }
+    }
+
+    await prisma.shipment.update({
+      where: { id: shipmentId },
+      data: {
+        selectedRateId: shipmentRateId,
+      },
+    });
+
+    revalidatePath("/dashboard/sales/rates");
+    revalidatePath("/dashboard/admin/rates");
+    revalidatePath("/dashboard/sales/shipments");
+    revalidatePath("/dashboard/admin/shipments");
+    revalidatePath("/dashboard/sales/customers");
+    revalidatePath("/dashboard/admin/customers");
+
+    return {
+      success: true,
+      data: {
+        shipmentId,
+        selectedRateId: shipmentRateId,
+      },
+    };
+  } catch (error) {
+    console.error("Failed to select shipment rate:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to select shipment rate.",
+    };
+  }
+}
+

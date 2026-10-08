@@ -106,15 +106,16 @@ model Customer {
 }
 
 model Shipment {
-  id          String            @id @default(cuid())
-  customerId  String
-  name        String
-  direction   ShipmentDirection
-  commodity   String?
+  id             String            @id @default(cuid())
+  customerId     String
+  name           String
+  direction      ShipmentDirection
+  commodity      String?
+  selectedRateId String?           @unique
 
-  customer Customer @relation(fields: [customerId],references: [id],onDelete: Cascade)
-
-  rates ShipmentRate[]
+  customer     Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  rates        ShipmentRate[] @relation("ShipmentRates")
+  selectedRate ShipmentRate?  @relation("ShipmentSelectedRate", fields: [selectedRateId], references: [id], onDelete: SetNull)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -127,7 +128,7 @@ model Provider {
   organizationId String
   name           String
 
-  organization Organization @relation(fields: [organizationId],references: [id],onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
   shipmentRates ShipmentRate[]
 
@@ -144,8 +145,9 @@ model ShipmentRate {
   providerId String
   optionName String?
 
-  shipment Shipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
-  provider Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  shipment            Shipment      @relation("ShipmentRates", fields: [shipmentId], references: [id], onDelete: Cascade)
+  selectedForShipment Shipment?     @relation("ShipmentSelectedRate")
+  provider            Provider      @relation(fields: [providerId], references: [id], onDelete: Cascade)
 
   freightItems FreightItem[]
 

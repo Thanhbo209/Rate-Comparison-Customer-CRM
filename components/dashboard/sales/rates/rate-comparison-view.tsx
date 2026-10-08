@@ -3,19 +3,13 @@
 import React, { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
-  Calculator,
   Truck,
   Plus,
   Trash2,
-  TrendingUp,
   Award,
   ArrowDownLeft,
   ArrowUpRight,
-  Building2,
   Tag,
-  DollarSign,
-  Percent,
-  CheckCircle2,
   Layers,
   ArrowLeftRight,
   LayoutGrid,
@@ -24,20 +18,32 @@ import {
   ChevronRight,
   ChevronLeft,
   Package,
-  BarChart3,
-  Users,
   Search,
+  Check,
+  CheckCircle2,
+  AlertTriangle,
+  Loader2,
 } from "lucide-react";
+import { OverallAnalytics } from "./overall-analytics";
 import { Button } from "@/components/ui/button";
 import { AddRateDialog } from "./add-rate-dialog";
 import { ManageFreightItemsDialog } from "./manage-freight-items-dialog";
-import { deleteShipmentRateAction } from "@/lib/rate/actions";
+import {
+  deleteShipmentRateAction,
+  selectShipmentRateAction,
+} from "@/lib/rate/actions";
 import type {
   ShipmentComparisonDetail,
   ProviderItem,
   ShipmentRateItem,
   MultiShipmentRateOverview,
 } from "@/lib/rate/types";
+import { rankShipments } from "@/lib/rate/shipment-ranking";
+import {
+  ShipmentProfitCell,
+  RatesTotalRow,
+  RatesTotalStrip,
+} from "@/components/rate/shipment-profit";
 
 interface RateComparisonViewProps {
   shipment: ShipmentComparisonDetail | null;
@@ -109,6 +115,35 @@ export function RateComparisonView({
     });
   };
 
+  const [selectingRateId, setSelectingRateId] = useState<string | null>(null);
+
+  const handleSelectRate = (shipmentId: string, rateId: string | null) => {
+    if (role !== "ADMIN" && role !== "SALES_MANAGER") {
+      alert(
+        "Only Sales Managers and Administrators have permission to select a carrier rate.",
+      );
+      return;
+    }
+    setSelectingRateId(rateId || "unselect");
+    startTransition(async () => {
+      try {
+        const res = await selectShipmentRateAction({
+          shipmentId,
+          shipmentRateId: rateId,
+        });
+        if (res.success) {
+          router.refresh();
+        } else {
+          alert(res.error || "Failed to select rate option.");
+        }
+      } catch {
+        alert("Failed to update carrier selection.");
+      } finally {
+        setSelectingRateId(null);
+      }
+    });
+  };
+
   // Pagination & Search state (limited to 10 items per page)
   const PAGE_SIZE = 10;
   const [currentPage, setCurrentPage] = useState(1);
@@ -120,6 +155,10 @@ export function RateComparisonView({
   const baseCurrency =
     overview?.baseCurrency || shipment?.baseCurrency || "USD";
   const overall = overview?.overall;
+
+  // Compute shipment-level profit rankings from the FULL list (pre-filter,
+  // pre-pagination) so that "Best choice" is globally correct.
+  const rankings = rankShipments(shipmentsToDisplay);
 
   // Filter shipments based on search query
   const filteredShipments = shipmentsToDisplay.filter((s) => {
@@ -161,168 +200,13 @@ export function RateComparisonView({
         </div>
       </div>
 
-      {/* OVERALL TOTALS & AGENT COMPARISON BANNER */}
+      {/* OVERALL TOTALS & AGENT ANALYTICS BANNER */}
       {overall && overall.totalRates > 0 && (
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-xs space-y-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-border/60 pb-4">
-            <div className="flex items-center gap-2">
-              <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <BarChart3 className="size-4.5" />
-              </div>
-              <div>
-                <h2 className="font-heading text-sm font-bold text-foreground">
-                  Overall Total & Agent Analytics
-                </h2>
-                <p className="text-[11px] text-muted-foreground">
-                  Consolidated profit across all active shipments converted into{" "}
-                  {baseCurrency}.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-lg bg-muted px-2.5 py-1 text-xs font-medium text-foreground">
-                {overall.totalShipments} Shipments
-              </span>
-              <span className="rounded-lg bg-muted px-2.5 py-1 text-xs font-medium text-foreground">
-                {overall.totalRates} Rate Quotes
-              </span>
-              <span className="rounded-lg bg-muted px-2.5 py-1 text-xs font-medium text-foreground">
-                {overall.totalFreightItems} Freight Items
-              </span>
-            </div>
-          </div>
-
-          {/* Aggregate Profit Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-            <div className="rounded-xl border border-border/80 bg-muted/20 p-3">
-              <span className="text-[11px] text-muted-foreground">
-                Total Buying Cost (Net)
-              </span>
-              <p className="font-mono text-sm font-bold text-foreground mt-0.5">
-                {overall.totalNet.toLocaleString(undefined, {
-                  maximumFractionDigits: 2,
-                })}{" "}
-                {baseCurrency}
-              </p>
-            </div>
-            <div className="rounded-xl border border-border/80 bg-muted/20 p-3">
-              <span className="text-[11px] text-muted-foreground">
-                Total Selling Quote (Gross)
-              </span>
-              <p className="font-mono text-sm font-bold text-foreground mt-0.5">
-                {overall.totalGross.toLocaleString(undefined, {
-                  maximumFractionDigits: 2,
-                })}{" "}
-                {baseCurrency}
-              </p>
-            </div>
-            <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3">
-              <span className="text-[11px] font-medium text-emerald-800 dark:text-emerald-300">
-                Total Profit Margin
-              </span>
-              <p className="font-mono text-sm font-bold text-emerald-700 dark:text-emerald-400 mt-0.5">
-                +
-                {overall.totalProfit.toLocaleString(undefined, {
-                  maximumFractionDigits: 2,
-                })}{" "}
-                {baseCurrency}
-              </p>
-            </div>
-            <div className="rounded-xl border border-primary/20 bg-primary/10 p-3">
-              <span className="text-[11px] font-medium text-primary">
-                Avg. Profit Margin %
-              </span>
-              <p className="font-mono text-sm font-bold text-foreground mt-0.5">
-                {overall.averageMarginPercent.toFixed(1)}%
-              </p>
-            </div>
-          </div>
-
-          {/* AGENT (CARRIER/PROVIDER) PROFIT COMPARISON TABLE */}
-          {overall.agentRankings.length > 0 && (
-            <div className="space-y-2 pt-1">
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-                <Users className="size-3.5 text-primary" />
-                <span>Agent Performance & Profit Comparison</span>
-              </div>
-              <div className="overflow-x-auto rounded-xl border border-border">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-muted/50 border-b border-border text-[11px] text-muted-foreground uppercase font-semibold">
-                    <tr>
-                      <th className="px-3.5 py-2.5">Agent / Carrier</th>
-                      <th className="px-3.5 py-2.5">Shipments</th>
-                      <th className="px-3.5 py-2.5">Quotes</th>
-                      <th className="px-3.5 py-2.5">Buying Net</th>
-                      <th className="px-3.5 py-2.5">Selling Gross</th>
-                      <th className="px-3.5 py-2.5">Total Profit</th>
-                      <th className="px-3.5 py-2.5">Margin %</th>
-                      <th className="px-3.5 py-2.5 text-right">Highlights</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border">
-                    {overall.agentRankings.map((agent, idx) => (
-                      <tr
-                        key={agent.providerId}
-                        className="hover:bg-muted/20 transition-colors"
-                      >
-                        <td className="px-3.5 py-2.5 font-semibold text-foreground flex items-center gap-2">
-                          <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-muted text-[10px] font-bold text-muted-foreground">
-                            {idx + 1}
-                          </span>
-                          <span>{agent.providerName}</span>
-                        </td>
-                        <td className="px-3.5 py-2.5 font-mono text-muted-foreground">
-                          {agent.shipmentCount}
-                        </td>
-                        <td className="px-3.5 py-2.5 font-mono text-muted-foreground">
-                          {agent.optionsCount} ({agent.totalFreightItems}{" "}
-                          charges)
-                        </td>
-                        <td className="px-3.5 py-2.5 font-mono text-foreground">
-                          {agent.totalNet.toLocaleString(undefined, {
-                            maximumFractionDigits: 2,
-                          })}{" "}
-                          {baseCurrency}
-                        </td>
-                        <td className="px-3.5 py-2.5 font-mono text-foreground font-semibold">
-                          {agent.totalGross.toLocaleString(undefined, {
-                            maximumFractionDigits: 2,
-                          })}{" "}
-                          {baseCurrency}
-                        </td>
-                        <td className="px-3.5 py-2.5 font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                          +
-                          {agent.totalProfit.toLocaleString(undefined, {
-                            maximumFractionDigits: 2,
-                          })}{" "}
-                          {baseCurrency}
-                        </td>
-                        <td className="px-3.5 py-2.5 font-mono text-foreground font-medium">
-                          {agent.averageMarginPercent.toFixed(1)}%
-                        </td>
-                        <td className="px-3.5 py-2.5 text-right">
-                          <div className="flex items-center justify-end gap-1.5">
-                            {agent.bestCostCount > 0 && (
-                              <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
-                                {agent.bestCostCount}x Lowest Cost
-                              </span>
-                            )}
-                            {agent.topMarginCount > 0 && (
-                              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
-                                {agent.topMarginCount}x Best Margin
-                              </span>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-        </div>
+        <OverallAnalytics
+          overall={overall}
+          baseCurrency={baseCurrency}
+          shipments={shipmentsToDisplay}
+        />
       )}
 
       {/* SHIPMENTS DIRECTORY TABLE WITH DROPDOWN OF FREIGHTS */}
@@ -403,9 +287,6 @@ export function RateComparisonView({
                 </Button>
               )}
             </div>
-            <span className="text-xs font-medium text-muted-foreground hidden sm:inline-block">
-              {totalItems} {totalItems === 1 ? "shipment" : "shipments"}
-            </span>
           </div>
         </div>
 
@@ -434,8 +315,8 @@ export function RateComparisonView({
                     <th className="py-3 px-4">Customer</th>
                     <th className="py-3 px-4">Direction</th>
                     <th className="py-3 px-4">Commodity</th>
-                    <th className="py-3 px-4">Carrier Quotes</th>
-                    <th className="py-3 px-4">Best for Customer</th>
+                    <th className="py-3 px-4">Total rates</th>
+                    <th className="py-3 px-4">Total Profit</th>
                     <th className="py-3 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -450,7 +331,7 @@ export function RateComparisonView({
                           onClick={() => toggleShipmentExpand(s.id)}
                           className={`cursor-pointer transition-colors ${
                             isExpanded
-                              ? "bg-muted/40 font-medium"
+                              ? "bg-muted-foreground/10 border-2 border-muted-foreground/40  font-medium"
                               : "hover:bg-muted/20"
                           }`}
                         >
@@ -461,10 +342,10 @@ export function RateComparisonView({
                                 e.stopPropagation();
                                 toggleShipmentExpand(s.id);
                               }}
-                              className="flex size-6 items-center justify-center rounded-md bg-muted text-muted-foreground hover:text-foreground transition-colors mx-auto"
+                              className="flex size-6 items-center justify-center rounded-md bg-background text-muted-foreground hover:text-foreground transition-colors mx-auto"
                             >
                               {isExpanded ? (
-                                <ChevronDown className="size-3.5" />
+                                <ChevronDown className="text-primary size-3.5" />
                               ) : (
                                 <ChevronRight className="size-3.5" />
                               )}
@@ -513,31 +394,16 @@ export function RateComparisonView({
                           <td className="py-3.5 px-4 font-mono">
                             <span className="rounded-full bg-muted/80 px-2.5 py-0.5 text-[11px] font-medium text-foreground">
                               {s.rates.length}{" "}
-                              {s.rates.length === 1 ? "quote" : "quotes"}
+                              {s.rates.length === 1 ? "rate" : "rates"}
                             </span>
                           </td>
                           <td className="py-3.5 px-4">
-                            {s.bestCustomerRateCarrier ? (
-                              <div className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs">
-                                <Award className="size-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                                <span className="font-semibold text-emerald-950 dark:text-emerald-100">
-                                  {s.bestCustomerRateCarrier}
-                                </span>
-                                <span className="font-mono text-emerald-700 dark:text-emerald-400 font-bold">
-                                  (+
-                                  {s.bestCustomerRateProfit?.toLocaleString(
-                                    undefined,
-                                    { maximumFractionDigits: 0 },
-                                  )}{" "}
-                                  {baseCurrency})
-                                </span>
-                              </div>
-                            ) : (
-                              <span className="text-muted-foreground/60 text-xs italic">
-                                No rates
-                              </span>
-                            )}
+                            <ShipmentProfitCell
+                              result={rankings.get(s.id)}
+                              baseCurrency={baseCurrency}
+                            />
                           </td>
+
                           <td
                             className="py-3.5 px-4 text-right"
                             onClick={(e) => e.stopPropagation()}
@@ -565,49 +431,34 @@ export function RateComparisonView({
                         {/* DROPDOWN SUB-ROW INSIDE THE TABLE: FREIGHTS & RATES */}
                         {isExpanded && (
                           <tr className="bg-muted/15 border-b border-border/80">
-                            <td colSpan={8} className="p-4 sm:p-6 space-y-4">
-                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border/60 pb-3">
-                                <div>
-                                  <div className="flex items-center gap-2">
-                                    <h3 className="font-heading text-sm font-bold text-foreground flex items-center gap-1.5">
-                                      <Truck className="size-4 text-primary" />
-                                      <span>
-                                        Carrier Rates & Freight Charges for
-                                        &ldquo;{s.name}&rdquo;
+                            <td colSpan={8} className="space-y-4">
+                              {/* Unranked rates warning banner */}
+                              {s.unrankedRateIds &&
+                                s.unrankedRateIds.length > 0 && (
+                                  <div className="mx-4 sm:mx-6 mt-4 p-3 rounded-xl border border-amber-500/30 bg-amber-500/10 text-xs text-amber-900 dark:text-amber-200 flex items-start gap-2.5">
+                                    <AlertTriangle className="size-4 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+                                    <div>
+                                      <span className="font-semibold block">
+                                        {s.unrankedRateIds.length} carrier quote
+                                        {s.unrankedRateIds.length > 1
+                                          ? "s"
+                                          : ""}{" "}
+                                        could not be ranked
                                       </span>
-                                    </h3>
-                                    <span className="rounded-md bg-muted px-2 py-0.5 text-[10px] font-semibold text-foreground">
-                                      {s.customer.companyName}
-                                    </span>
+                                      <span className="text-[11px] opacity-90 mt-0.5 block">
+                                        Foreign currency charges without
+                                        exchange rates cannot be converted into{" "}
+                                        {baseCurrency}. Please configure
+                                        organization exchange rates to include
+                                        them in profit ranking.
+                                      </span>
+                                    </div>
                                   </div>
-                                  <p className="text-[11px] text-muted-foreground mt-0.5">
-                                    Showing {s.rates.length} quote option
-                                    {s.rates.length !== 1 ? "s" : ""} converted
-                                    into {baseCurrency}.
-                                  </p>
-                                </div>
-
-                                <div className="flex items-center gap-2">
-                                  <Button
-                                    size="sm"
-                                    onClick={() => {
-                                      setTargetShipmentForAdd({
-                                        id: s.id,
-                                        name: s.name,
-                                      });
-                                      setAddRateOpen(true);
-                                    }}
-                                    className="h-8 gap-1.5 text-xs font-medium"
-                                  >
-                                    <Plus className="size-3.5" />
-                                    <span>Add Carrier Rate</span>
-                                  </Button>
-                                </div>
-                              </div>
+                                )}
 
                               {/* FREIGHT RATES CONTENT: CARDS OR TABLE VIEW */}
                               {s.rates.length === 0 ? (
-                                <div className="p-8 text-center rounded-xl border border-dashed border-border/80 bg-background/50">
+                                <div className="p-8 text-center  border border-dashed border-border/80 bg-background/50">
                                   <Truck className="size-8 mx-auto text-muted-foreground opacity-60" />
                                   <h4 className="mt-2 text-xs font-semibold text-foreground">
                                     No carrier rates added yet for this shipment
@@ -634,22 +485,32 @@ export function RateComparisonView({
                                 </div>
                               ) : viewMode === "card" ? (
                                 /* ─── CARD VIEW ─── */
-                                <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-                                  {s.rates.map((rate) => {
-                                    const isBestCustomerOption =
-                                      rate.id === s.bestCustomerRateId;
-                                    const isBestCost = rate.id === s.bestRateId;
-                                    const isBestMargin =
-                                      rate.id === s.highestMarginRateId;
+                                <>
+                                  <RatesTotalStrip
+                                    result={rankings.get(s.id)}
+                                    baseCurrency={baseCurrency}
+                                  />
+                                  <div className="sm:p-6 p-4 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+                                    {s.rates.map((rate) => {
+                                      const isWinner =
+                                        rate.id === s.bestCustomerRateId;
+                                      const isSelected =
+                                        rate.id === s.selectedRateId;
+                                      const isBestCost = rate.id === s.bestRateId;
+                                      const isBestMargin =
+                                        rate.id === s.highestMarginRateId;
+                                      const canSelect =
+                                        role === "ADMIN" ||
+                                        role === "SALES_MANAGER";
 
-                                    return (
+                                      return (
                                       <div
                                         key={rate.id}
                                         className={`rounded-2xl border bg-card p-5 shadow-xs flex flex-col justify-between transition-all ${
-                                          isBestCustomerOption
-                                            ? "border-emerald-500 ring-2 ring-emerald-500/20 bg-emerald-500/2"
-                                            : isBestCost
-                                              ? "border-emerald-500/50 ring-1 ring-emerald-500/30"
+                                          isSelected
+                                            ? "border-primary ring-2 ring-primary/40 bg-primary/5"
+                                            : isWinner
+                                              ? "border-emerald-500/50 ring-1 ring-emerald-500/30 bg-card"
                                               : "border-border"
                                         }`}
                                       >
@@ -661,17 +522,28 @@ export function RateComparisonView({
                                                 <h3 className="font-heading text-lg font-bold text-foreground">
                                                   {rate.provider.name}
                                                 </h3>
-                                                {isBestCustomerOption && (
-                                                  <span className="rounded-full bg-emerald-500 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-2xs">
-                                                    Best for Customer
+                                                {isSelected && (
+                                                  <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-0.5 text-[10px] font-bold text-primary-foreground shadow-2xs">
+                                                    <CheckCircle2 className="size-3" />
+                                                    Selected
                                                   </span>
                                                 )}
-                                                {isBestCost &&
-                                                  !isBestCustomerOption && (
-                                                    <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                                                      Lowest Cost
-                                                    </span>
-                                                  )}
+                                                {isWinner && (
+                                                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-2xs">
+                                                    <Award className="size-3" />
+                                                    Most Profit
+                                                    {s.tieBreakUsed && (
+                                                      <span className="text-[9px] opacity-90 ml-0.5 font-normal">
+                                                        (tie-break)
+                                                      </span>
+                                                    )}
+                                                  </span>
+                                                )}
+                                                {isBestCost && !isWinner && (
+                                                  <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                                                    Lowest Cost
+                                                  </span>
+                                                )}
                                                 {isBestMargin && (
                                                   <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
                                                     Top Margin
@@ -683,10 +555,6 @@ export function RateComparisonView({
                                                   {rate.optionName}
                                                 </p>
                                               )}
-                                              <span className="text-[11px] text-muted-foreground">
-                                                {rate.freightItems.length}{" "}
-                                                charge line items
-                                              </span>
                                             </div>
 
                                             <button
@@ -705,17 +573,38 @@ export function RateComparisonView({
                                             </button>
                                           </div>
 
+                                          {/* Warning for unranked rate with missing exchange rate */}
+                                          {rate.hasMissingExchangeRate && (
+                                            <div className="mt-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-2.5 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2">
+                                              <AlertTriangle className="size-3.5 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
+                                              <div>
+                                                <span className="font-semibold block">
+                                                  Missing exchange rate
+                                                </span>
+                                                <span className="text-[11px] opacity-90 block">
+                                                  Charges in{" "}
+                                                  {rate.missingCurrencies?.join(
+                                                    ", ",
+                                                  ) || "foreign currency"}{" "}
+                                                  cannot be converted to{" "}
+                                                  {baseCurrency}. Excluded from
+                                                  profit ranking.
+                                                </span>
+                                              </div>
+                                            </div>
+                                          )}
+
                                           {/* Pricing Comparison in System Base Currency */}
                                           <div className="mt-5 space-y-3">
-                                            <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-xs space-y-2.5">
+                                            <div className="rounded-xl border border-primary/20 bg-card p-4 text-xs space-y-2.5">
                                               <div className="flex items-center justify-between border-b border-primary/10 pb-2">
                                                 <span className="text-[11px] font-bold text-primary uppercase tracking-wider">
-                                                  Pricing ({rate.baseCurrency})
+                                                  Profit
                                                 </span>
                                                 <span
                                                   className={`font-mono font-bold text-xs ${
                                                     rate.consolidatedProfit >= 0
-                                                      ? "text-emerald-600 dark:text-emerald-400"
+                                                      ? "text-primary dark:text-emerald-400"
                                                       : "text-destructive"
                                                   }`}
                                                 >
@@ -738,7 +627,7 @@ export function RateComparisonView({
 
                                               <div className="flex items-center justify-between text-xs">
                                                 <span className="text-muted-foreground">
-                                                  Buying Cost (Net):
+                                                  Net:
                                                 </span>
                                                 <span className="font-mono font-bold text-foreground">
                                                   {rate.consolidatedNet.toLocaleString(
@@ -747,13 +636,15 @@ export function RateComparisonView({
                                                       maximumFractionDigits: 2,
                                                     },
                                                   )}{" "}
-                                                  {rate.baseCurrency}
+                                                  <span className="text-muted-foreground">
+                                                    {rate.baseCurrency}
+                                                  </span>
                                                 </span>
                                               </div>
 
                                               <div className="flex items-center justify-between text-xs">
                                                 <span className="text-muted-foreground">
-                                                  Selling Quote (Gross):
+                                                  Gross:
                                                 </span>
                                                 <span className="font-mono font-bold text-foreground">
                                                   {rate.consolidatedGross.toLocaleString(
@@ -762,7 +653,9 @@ export function RateComparisonView({
                                                       maximumFractionDigits: 2,
                                                     },
                                                   )}{" "}
-                                                  {rate.baseCurrency}
+                                                  <span className="text-muted-foreground">
+                                                    {rate.baseCurrency}
+                                                  </span>
                                                 </span>
                                               </div>
                                             </div>
@@ -824,8 +717,64 @@ export function RateComparisonView({
                                           </div>
                                         </div>
 
-                                        {/* Manage Items Action Button */}
-                                        <div className="mt-5 pt-3 border-t border-border/60">
+                                        {/* Card Action Buttons */}
+                                        <div className="mt-5 pt-3 border-t border-border/60 space-y-2">
+                                          <Button
+                                            type="button"
+                                            onClick={() =>
+                                              handleSelectRate(
+                                                s.id,
+                                                isSelected ? null : rate.id,
+                                              )
+                                            }
+                                            disabled={
+                                              isPending &&
+                                              selectingRateId ===
+                                                (isSelected
+                                                  ? "unselect"
+                                                  : rate.id)
+                                            }
+                                            variant={
+                                              isSelected
+                                                ? "default"
+                                                : "secondary"
+                                            }
+                                            size="sm"
+                                            className={`w-full text-xs font-semibold gap-1.5 transition-all ${
+                                              !canSelect
+                                                ? "opacity-60 cursor-not-allowed"
+                                                : ""
+                                            }`}
+                                            title={
+                                              !canSelect
+                                                ? "Sales Manager or Admin role required to select rate"
+                                                : isSelected
+                                                  ? "Click to unselect this agent"
+                                                  : "Select this agent for this shipment"
+                                            }
+                                          >
+                                            {isPending &&
+                                            selectingRateId ===
+                                              (isSelected
+                                                ? "unselect"
+                                                : rate.id) ? (
+                                              <>
+                                                <Loader2 className="size-3.5 animate-spin" />
+                                                <span>Updating...</span>
+                                              </>
+                                            ) : isSelected ? (
+                                              <>
+                                                <Check className="size-3.5" />
+                                                <span>Selected Agent</span>
+                                              </>
+                                            ) : (
+                                              <>
+                                                <CheckCircle2 className="size-3.5 text-primary" />
+                                                <span>Select this agent</span>
+                                              </>
+                                            )}
+                                          </Button>
+
                                           <Button
                                             onClick={() => {
                                               setActiveManageRate(rate);
@@ -848,28 +797,21 @@ export function RateComparisonView({
                                     );
                                   })}
                                 </div>
+                               </>
                               ) : (
                                 /* ─── TABLE VIEW ─── */
                                 <div className="space-y-4">
-                                  <div className="overflow-x-auto rounded-xl border border-border bg-card">
+                                  <div className="overflow-x-auto border border-border bg-card">
                                     <table className="w-full text-left text-xs">
                                       <thead className="bg-muted/50 border-b border-border text-[11px] text-muted-foreground uppercase font-semibold">
                                         <tr>
-                                          <th className="px-4 py-3">
-                                            Carrier / Quote Option
-                                          </th>
+                                          <th className="px-4 py-3">Freight</th>
                                           <th className="px-4 py-3">
                                             Charges Breakdown
                                           </th>
-                                          <th className="px-4 py-3">
-                                            Buying Cost (Net)
-                                          </th>
-                                          <th className="px-4 py-3">
-                                            Selling Quote (Gross)
-                                          </th>
-                                          <th className="px-4 py-3">
-                                            Profit Spread
-                                          </th>
+                                          <th className="px-4 py-3">Net</th>
+                                          <th className="px-4 py-3">Gross</th>
+                                          <th className="px-4 py-3">Profit</th>
                                           <th className="px-4 py-3">
                                             Margin %
                                           </th>
@@ -880,20 +822,27 @@ export function RateComparisonView({
                                       </thead>
                                       <tbody className="divide-y divide-border">
                                         {s.rates.map((rate) => {
-                                          const isBestCustomerOption =
+                                          const isWinner =
                                             rate.id === s.bestCustomerRateId;
+                                          const isSelected =
+                                            rate.id === s.selectedRateId;
                                           const isBestCost =
                                             rate.id === s.bestRateId;
                                           const isBestMargin =
                                             rate.id === s.highestMarginRateId;
+                                          const canSelect =
+                                            role === "ADMIN" ||
+                                            role === "SALES_MANAGER";
 
                                           return (
                                             <tr
                                               key={rate.id}
                                               className={`hover:bg-muted/20 transition-colors ${
-                                                isBestCustomerOption
-                                                  ? "bg-emerald-500/5 font-medium"
-                                                  : ""
+                                                isSelected
+                                                  ? "bg-primary/5 font-medium"
+                                                  : isWinner
+                                                    ? "bg-emerald-500/5 font-medium"
+                                                    : ""
                                               }`}
                                             >
                                               <td className="px-4 py-3">
@@ -901,20 +850,40 @@ export function RateComparisonView({
                                                   <span className="font-bold text-foreground font-heading">
                                                     {rate.provider.name}
                                                   </span>
-                                                  {isBestCustomerOption && (
-                                                    <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-bold text-white shadow-2xs">
-                                                      Best for Customer
+                                                  {isSelected && (
+                                                    <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-0.5 text-[10px] font-bold text-primary-foreground shadow-2xs">
+                                                      <CheckCircle2 className="size-2.5" />
+                                                      Selected
                                                     </span>
                                                   )}
-                                                  {isBestCost &&
-                                                    !isBestCustomerOption && (
-                                                      <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                                                        Lowest Cost
-                                                      </span>
-                                                    )}
+                                                  {isWinner && (
+                                                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-2xs">
+                                                      <Award className="size-2.5" />
+                                                      Most Profit
+                                                      {s.tieBreakUsed && (
+                                                        <span className="text-[9px] opacity-90 ml-0.5 font-normal">
+                                                          (tie-break)
+                                                        </span>
+                                                      )}
+                                                    </span>
+                                                  )}
+                                                  {isBestCost && !isWinner && (
+                                                    <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                                                      Lowest Cost
+                                                    </span>
+                                                  )}
                                                   {isBestMargin && (
                                                     <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
                                                       Top Margin
+                                                    </span>
+                                                  )}
+                                                  {rate.hasMissingExchangeRate && (
+                                                    <span
+                                                      className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:text-amber-400"
+                                                      title={`Missing exchange rates: ${rate.missingCurrencies?.join(", ") || "foreign currency"}. Excluded from ranking.`}
+                                                    >
+                                                      <AlertTriangle className="size-2.5" />
+                                                      Missing FX
                                                     </span>
                                                   )}
                                                 </div>
@@ -923,10 +892,6 @@ export function RateComparisonView({
                                                     {rate.optionName}
                                                   </span>
                                                 )}
-                                                <span className="text-[10px] text-muted-foreground">
-                                                  {rate.freightItems.length}{" "}
-                                                  charge line items
-                                                </span>
                                               </td>
 
                                               {/* Freight Charges Pills */}
@@ -994,6 +959,60 @@ export function RateComparisonView({
                                               <td className="px-4 py-3 text-right">
                                                 <div className="flex items-center justify-end gap-1.5">
                                                   <Button
+                                                    type="button"
+                                                    size="sm"
+                                                    variant={
+                                                      isSelected
+                                                        ? "default"
+                                                        : "outline"
+                                                    }
+                                                    disabled={
+                                                      isPending &&
+                                                      selectingRateId ===
+                                                        (isSelected
+                                                          ? "unselect"
+                                                          : rate.id)
+                                                    }
+                                                    onClick={() =>
+                                                      handleSelectRate(
+                                                        s.id,
+                                                        isSelected
+                                                          ? null
+                                                          : rate.id,
+                                                      )
+                                                    }
+                                                    className={`h-7 px-2.5 text-[11px] gap-1 ${
+                                                      !canSelect
+                                                        ? "opacity-60 cursor-not-allowed"
+                                                        : ""
+                                                    }`}
+                                                    title={
+                                                      !canSelect
+                                                        ? "Sales Manager or Admin role required to select rate"
+                                                        : isSelected
+                                                          ? "Click to unselect this agent"
+                                                          : "Select this agent for this shipment"
+                                                    }
+                                                  >
+                                                    {isPending &&
+                                                    selectingRateId ===
+                                                      (isSelected
+                                                        ? "unselect"
+                                                        : rate.id) ? (
+                                                      <Loader2 className="size-3 animate-spin" />
+                                                    ) : isSelected ? (
+                                                      <>
+                                                        <Check className="size-3" />
+                                                        <span>Selected</span>
+                                                      </>
+                                                    ) : (
+                                                      <>
+                                                        <CheckCircle2 className="size-3 text-primary" />
+                                                        <span>Select</span>
+                                                      </>
+                                                    )}
+                                                  </Button>
+                                                  <Button
                                                     size="sm"
                                                     variant="outline"
                                                     onClick={() => {
@@ -1030,6 +1049,13 @@ export function RateComparisonView({
                                           );
                                         })}
                                       </tbody>
+                                      <tfoot>
+                                        <RatesTotalRow
+                                          result={rankings.get(s.id)}
+                                          baseCurrency={baseCurrency}
+                                          colCount={7}
+                                        />
+                                      </tfoot>
                                     </table>
                                   </div>
                                 </div>
