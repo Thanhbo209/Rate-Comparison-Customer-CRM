@@ -19,19 +19,13 @@ import {
   ChevronLeft,
   Package,
   Search,
-  Check,
-  CheckCircle2,
   AlertTriangle,
-  Loader2,
 } from "lucide-react";
 import { OverallAnalytics } from "./overall-analytics";
 import { Button } from "@/components/ui/button";
 import { AddRateDialog } from "./add-rate-dialog";
 import { ManageFreightItemsDialog } from "./manage-freight-items-dialog";
-import {
-  deleteShipmentRateAction,
-  selectShipmentRateAction,
-} from "@/lib/rate/actions";
+import { deleteShipmentRateAction } from "@/lib/rate/actions";
 import type {
   ShipmentComparisonDetail,
   ProviderItem,
@@ -66,7 +60,6 @@ export function RateComparisonView({
   availableShipments,
   providers,
   overview,
-  role,
   organizationName,
   onManageFreightItems,
 }: RateComparisonViewProps) {
@@ -111,35 +104,6 @@ export function RateComparisonView({
       const res = await deleteShipmentRateAction({ shipmentRateId: rateId });
       if (res.success) {
         router.refresh();
-      }
-    });
-  };
-
-  const [selectingRateId, setSelectingRateId] = useState<string | null>(null);
-
-  const handleSelectRate = (shipmentId: string, rateId: string | null) => {
-    if (role !== "ADMIN" && role !== "SALES_MANAGER") {
-      alert(
-        "Only Sales Managers and Administrators have permission to select a carrier rate.",
-      );
-      return;
-    }
-    setSelectingRateId(rateId || "unselect");
-    startTransition(async () => {
-      try {
-        const res = await selectShipmentRateAction({
-          shipmentId,
-          shipmentRateId: rateId,
-        });
-        if (res.success) {
-          router.refresh();
-        } else {
-          alert(res.error || "Failed to select rate option.");
-        }
-      } catch {
-        alert("Failed to update carrier selection.");
-      } finally {
-        setSelectingRateId(null);
       }
     });
   };
@@ -494,24 +458,17 @@ export function RateComparisonView({
                                     {s.rates.map((rate) => {
                                       const isWinner =
                                         rate.id === s.bestCustomerRateId;
-                                      const isSelected =
-                                        rate.id === s.selectedRateId;
                                       const isBestCost = rate.id === s.bestRateId;
                                       const isBestMargin =
                                         rate.id === s.highestMarginRateId;
-                                      const canSelect =
-                                        role === "ADMIN" ||
-                                        role === "SALES_MANAGER";
 
                                       return (
                                       <div
                                         key={rate.id}
                                         className={`rounded-2xl border bg-card p-5 shadow-xs flex flex-col justify-between transition-all ${
-                                          isSelected
-                                            ? "border-primary ring-2 ring-primary/40 bg-primary/5"
-                                            : isWinner
-                                              ? "border-emerald-500/50 ring-1 ring-emerald-500/30 bg-card"
-                                              : "border-border"
+                                          isWinner
+                                            ? "border-emerald-500/50 ring-1 ring-emerald-500/30 bg-card"
+                                            : "border-border"
                                         }`}
                                       >
                                         <div>
@@ -522,12 +479,6 @@ export function RateComparisonView({
                                                 <h3 className="font-heading text-lg font-bold text-foreground">
                                                   {rate.provider.name}
                                                 </h3>
-                                                {isSelected && (
-                                                  <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-0.5 text-[10px] font-bold text-primary-foreground shadow-2xs">
-                                                    <CheckCircle2 className="size-3" />
-                                                    Selected
-                                                  </span>
-                                                )}
                                                 {isWinner && (
                                                   <span className="inline-flex items-center gap-1 rounded-full bg-emerald-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-2xs">
                                                     <Award className="size-3" />
@@ -718,63 +669,7 @@ export function RateComparisonView({
                                         </div>
 
                                         {/* Card Action Buttons */}
-                                        <div className="mt-5 pt-3 border-t border-border/60 space-y-2">
-                                          <Button
-                                            type="button"
-                                            onClick={() =>
-                                              handleSelectRate(
-                                                s.id,
-                                                isSelected ? null : rate.id,
-                                              )
-                                            }
-                                            disabled={
-                                              isPending &&
-                                              selectingRateId ===
-                                                (isSelected
-                                                  ? "unselect"
-                                                  : rate.id)
-                                            }
-                                            variant={
-                                              isSelected
-                                                ? "default"
-                                                : "secondary"
-                                            }
-                                            size="sm"
-                                            className={`w-full text-xs font-semibold gap-1.5 transition-all ${
-                                              !canSelect
-                                                ? "opacity-60 cursor-not-allowed"
-                                                : ""
-                                            }`}
-                                            title={
-                                              !canSelect
-                                                ? "Sales Manager or Admin role required to select rate"
-                                                : isSelected
-                                                  ? "Click to unselect this agent"
-                                                  : "Select this agent for this shipment"
-                                            }
-                                          >
-                                            {isPending &&
-                                            selectingRateId ===
-                                              (isSelected
-                                                ? "unselect"
-                                                : rate.id) ? (
-                                              <>
-                                                <Loader2 className="size-3.5 animate-spin" />
-                                                <span>Updating...</span>
-                                              </>
-                                            ) : isSelected ? (
-                                              <>
-                                                <Check className="size-3.5" />
-                                                <span>Selected Agent</span>
-                                              </>
-                                            ) : (
-                                              <>
-                                                <CheckCircle2 className="size-3.5 text-primary" />
-                                                <span>Select this agent</span>
-                                              </>
-                                            )}
-                                          </Button>
-
+                                        <div className="mt-5 pt-3 border-t border-border/60">
                                           <Button
                                             onClick={() => {
                                               setActiveManageRate(rate);
@@ -824,25 +719,18 @@ export function RateComparisonView({
                                         {s.rates.map((rate) => {
                                           const isWinner =
                                             rate.id === s.bestCustomerRateId;
-                                          const isSelected =
-                                            rate.id === s.selectedRateId;
                                           const isBestCost =
                                             rate.id === s.bestRateId;
                                           const isBestMargin =
                                             rate.id === s.highestMarginRateId;
-                                          const canSelect =
-                                            role === "ADMIN" ||
-                                            role === "SALES_MANAGER";
 
                                           return (
                                             <tr
                                               key={rate.id}
                                               className={`hover:bg-muted/20 transition-colors ${
-                                                isSelected
-                                                  ? "bg-primary/5 font-medium"
-                                                  : isWinner
-                                                    ? "bg-emerald-500/5 font-medium"
-                                                    : ""
+                                                isWinner
+                                                  ? "bg-emerald-500/5 font-medium"
+                                                  : ""
                                               }`}
                                             >
                                               <td className="px-4 py-3">
@@ -850,12 +738,6 @@ export function RateComparisonView({
                                                   <span className="font-bold text-foreground font-heading">
                                                     {rate.provider.name}
                                                   </span>
-                                                  {isSelected && (
-                                                    <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-0.5 text-[10px] font-bold text-primary-foreground shadow-2xs">
-                                                      <CheckCircle2 className="size-2.5" />
-                                                      Selected
-                                                    </span>
-                                                  )}
                                                   {isWinner && (
                                                     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-2xs">
                                                       <Award className="size-2.5" />
@@ -958,60 +840,6 @@ export function RateComparisonView({
 
                                               <td className="px-4 py-3 text-right">
                                                 <div className="flex items-center justify-end gap-1.5">
-                                                  <Button
-                                                    type="button"
-                                                    size="sm"
-                                                    variant={
-                                                      isSelected
-                                                        ? "default"
-                                                        : "outline"
-                                                    }
-                                                    disabled={
-                                                      isPending &&
-                                                      selectingRateId ===
-                                                        (isSelected
-                                                          ? "unselect"
-                                                          : rate.id)
-                                                    }
-                                                    onClick={() =>
-                                                      handleSelectRate(
-                                                        s.id,
-                                                        isSelected
-                                                          ? null
-                                                          : rate.id,
-                                                      )
-                                                    }
-                                                    className={`h-7 px-2.5 text-[11px] gap-1 ${
-                                                      !canSelect
-                                                        ? "opacity-60 cursor-not-allowed"
-                                                        : ""
-                                                    }`}
-                                                    title={
-                                                      !canSelect
-                                                        ? "Sales Manager or Admin role required to select rate"
-                                                        : isSelected
-                                                          ? "Click to unselect this agent"
-                                                          : "Select this agent for this shipment"
-                                                    }
-                                                  >
-                                                    {isPending &&
-                                                    selectingRateId ===
-                                                      (isSelected
-                                                        ? "unselect"
-                                                        : rate.id) ? (
-                                                      <Loader2 className="size-3 animate-spin" />
-                                                    ) : isSelected ? (
-                                                      <>
-                                                        <Check className="size-3" />
-                                                        <span>Selected</span>
-                                                      </>
-                                                    ) : (
-                                                      <>
-                                                        <CheckCircle2 className="size-3 text-primary" />
-                                                        <span>Select</span>
-                                                      </>
-                                                    )}
-                                                  </Button>
                                                   <Button
                                                     size="sm"
                                                     variant="outline"
