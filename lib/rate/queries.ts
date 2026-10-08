@@ -145,6 +145,7 @@ export async function getShipmentRateComparison(
       id: rate.id,
       shipmentId: rate.shipmentId,
       providerId: rate.providerId,
+      optionName: rate.optionName,
       provider: {
         id: rate.provider.id,
         name: rate.provider.name,

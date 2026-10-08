@@ -22,6 +22,7 @@ export interface ShipmentRateItem {
   id: string;
   shipmentId: string;
   providerId: string;
+  optionName: string | null;
   provider: ProviderItem;
   freightItems: FreightItemSummary[];
   totalNet: number;

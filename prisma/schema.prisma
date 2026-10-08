@@ -122,13 +122,13 @@ model Provider {
 }
 
 model ShipmentRate {
-  id         String @id @default(cuid())
+  id         String  @id @default(cuid())
   shipmentId String
   providerId String
+  optionName String?
 
-  shipment Shipment @relation(fields: [shipmentId],references: [id],onDelete: Cascade)
-
-  provider Provider @relation(fields: [providerId],references: [id],onDelete: Cascade)
+  shipment Shipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  provider Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
 
   freightItems FreightItem[]
 
@@ -137,7 +137,6 @@ model ShipmentRate {
 
   @@index([shipmentId])
   @@index([providerId])
-  @@unique([shipmentId, providerId])
 }
 
 model FreightItem {

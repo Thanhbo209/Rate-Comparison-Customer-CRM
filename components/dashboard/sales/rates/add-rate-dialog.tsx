@@ -37,6 +37,7 @@ export function AddRateDialog({
     existingProviders[0]?.id || ""
   );
   const [newProviderName, setNewProviderName] = useState("");
+  const [optionName, setOptionName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -60,6 +61,7 @@ export function AddRateDialog({
         shipmentId,
         providerId: mode === "select" ? selectedProviderId : undefined,
         providerName: mode === "new" ? newProviderName.trim() : undefined,
+        optionName: optionName.trim() || undefined,
       });
 
       if (!res.success) {
@@ -69,6 +71,7 @@ export function AddRateDialog({
       }
 
       setNewProviderName("");
+      setOptionName("");
       onOpenChange(false);
       onSuccess();
     } catch (err) {
@@ -169,6 +172,19 @@ export function AddRateDialog({
               />
             </div>
           )}
+
+          <div className="space-y-1.5">
+            <label className="font-medium text-foreground flex items-center justify-between">
+              <span>Option / Routing Label <span className="text-muted-foreground font-normal">(optional)</span></span>
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. Direct — 18 days, Via Singapore, Spot Rate"
+              value={optionName}
+              onChange={(e) => setOptionName(e.target.value)}
+              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
+            />
+          </div>
 
           <DialogFooter>
             <button

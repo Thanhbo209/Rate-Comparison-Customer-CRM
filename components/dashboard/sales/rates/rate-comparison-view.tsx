@@ -279,6 +279,11 @@ export function RateComparisonView({
                               </span>
                             )}
                           </div>
+                          {rate.optionName && (
+                            <p className="text-xs font-medium text-primary">
+                              {rate.optionName}
+                            </p>
+                          )}
                           <span className="text-[11px] text-muted-foreground">
                             {rate.freightItems.length} line items configured
                           </span>

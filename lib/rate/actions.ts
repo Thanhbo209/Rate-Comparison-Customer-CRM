@@ -85,10 +85,12 @@ export async function addShipmentRateAction({
   shipmentId,
   providerId,
   providerName,
+  optionName,
 }: {
   shipmentId: string;
   providerId?: string;
   providerName?: string;
+  optionName?: string;
 }): Promise<RateActionResponse<{ id: string; providerName: string }>> {
   try {
     const profile = await getCurrentProfile();
@@ -152,28 +154,13 @@ export async function addShipmentRateAction({
       };
     }
 
-    // Check if this provider already has a rate on this shipment
-    const duplicate = await prisma.shipmentRate.findUnique({
-      where: {
-        shipmentId_providerId: {
-          shipmentId,
-          providerId: targetProviderId,
-        },
-      },
-      include: { provider: true },
-    });
-
-    if (duplicate) {
-      return {
-        success: false,
-        error: `A rate comparison for ${duplicate.provider.name} already exists on this shipment.`,
-      };
-    }
+    const trimmedOptionName = optionName?.trim() || null;
 
     const rate = await prisma.shipmentRate.create({
       data: {
         shipmentId,
         providerId: targetProviderId,
+        optionName: trimmedOptionName,
       },
       include: {
         provider: true,
