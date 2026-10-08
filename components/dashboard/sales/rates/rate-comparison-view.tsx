@@ -385,17 +385,22 @@ export function RateComparisonView({
                     </div>
                   </div>
 
-                  {/* Shipment Right Controls / Quick Totals */}
-                  <div className="flex items-center gap-3 self-end sm:self-center">
-                    {hasRates && (
-                      <div className="hidden md:flex items-center gap-3 text-xs font-mono mr-2">
-                        <span className="text-muted-foreground">
-                          Cost: {s.rates[0]?.consolidatedNet.toLocaleString(undefined, { maximumFractionDigits: 0 })} {baseCurrency}
-                        </span>
-                        <span>&bull;</span>
-                        <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
-                          Spread: +{s.rates[0]?.consolidatedProfit.toLocaleString(undefined, { maximumFractionDigits: 0 })} {baseCurrency}
-                        </span>
+                  {/* Shipment Right Controls / Quick Totals & Best for Customer Decision */}
+                  <div className="flex flex-wrap items-center gap-3 self-start sm:self-center">
+                    {s.bestCustomerRateCarrier && (
+                      <div className="flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs">
+                        <Award className="size-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                        <div>
+                          <div className="text-[10px] font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">
+                            Best for Customer
+                          </div>
+                          <div className="font-semibold text-emerald-950 dark:text-emerald-100 flex items-center gap-1">
+                            <span>{s.bestCustomerRateCarrier}</span>
+                            <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400">
+                              (+{s.bestCustomerRateProfit?.toLocaleString(undefined, { maximumFractionDigits: 0 })} {baseCurrency} profit)
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     )}
 
@@ -443,6 +448,7 @@ export function RateComparisonView({
                       /* ─── CARD VIEW ─── */
                       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
                         {s.rates.map((rate) => {
+                          const isBestCustomerOption = rate.id === s.bestCustomerRateId;
                           const isBestCost = rate.id === s.bestRateId;
                           const isBestMargin = rate.id === s.highestMarginRateId;
 
@@ -450,7 +456,9 @@ export function RateComparisonView({
                             <div
                               key={rate.id}
                               className={`rounded-2xl border bg-card p-5 shadow-xs flex flex-col justify-between transition-all ${
-                                isBestCost
+                                isBestCustomerOption
+                                  ? "border-emerald-500 ring-2 ring-emerald-500/20 bg-emerald-500/2"
+                                  : isBestCost
                                   ? "border-emerald-500/50 ring-1 ring-emerald-500/30"
                                   : "border-border"
                               }`}
@@ -459,13 +467,18 @@ export function RateComparisonView({
                                 {/* Carrier Title & Badges */}
                                 <div className="flex items-start justify-between">
                                   <div>
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-2 flex-wrap">
                                       <h3 className="font-heading text-lg font-bold text-foreground">
                                         {rate.provider.name}
                                       </h3>
-                                      {isBestCost && (
+                                      {isBestCustomerOption && (
+                                        <span className="rounded-full bg-emerald-500 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-2xs">
+                                          Best for Customer
+                                        </span>
+                                      )}
+                                      {isBestCost && !isBestCustomerOption && (
                                         <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                                          Best Cost
+                                          Lowest Cost
                                         </span>
                                       )}
                                       {isBestMargin && (
@@ -611,19 +624,30 @@ export function RateComparisonView({
                             </thead>
                             <tbody className="divide-y divide-border">
                               {s.rates.map((rate) => {
+                                const isBestCustomerOption = rate.id === s.bestCustomerRateId;
                                 const isBestCost = rate.id === s.bestRateId;
                                 const isBestMargin = rate.id === s.highestMarginRateId;
 
                                 return (
-                                  <tr key={rate.id} className="hover:bg-muted/20 transition-colors">
+                                  <tr
+                                    key={rate.id}
+                                    className={`hover:bg-muted/20 transition-colors ${
+                                      isBestCustomerOption ? "bg-emerald-500/5 font-medium" : ""
+                                    }`}
+                                  >
                                     <td className="px-4 py-3">
-                                      <div className="flex items-center gap-2">
+                                      <div className="flex items-center gap-2 flex-wrap">
                                         <span className="font-bold text-foreground font-heading">
                                           {rate.provider.name}
                                         </span>
-                                        {isBestCost && (
+                                        {isBestCustomerOption && (
+                                          <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-bold text-white shadow-2xs">
+                                            Best for Customer
+                                          </span>
+                                        )}
+                                        {isBestCost && !isBestCustomerOption && (
                                           <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                                            Best Cost
+                                            Lowest Cost
                                           </span>
                                         )}
                                         {isBestMargin && (

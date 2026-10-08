@@ -70,6 +70,11 @@ export interface ShipmentComparisonDetail {
   };
   baseCurrency: string;
   rates: ShipmentRateItem[];
+  // Best overall recommendation for customer based on maximum freight profit
+  bestCustomerRateId?: string;
+  bestCustomerRateProfit?: number;
+  bestCustomerRateCarrier?: string;
+  // Lowest buying cost option
   bestRateId?: string;
   highestMarginRateId?: string;
 }

@@ -256,7 +256,11 @@ export async function getShipmentRateComparison(
     };
   });
 
-  // Calculate best rate (lowest consolidated net) and highest margin
+  // Calculate best overall customer option (highest overall profit from freight totals)
+  let bestCustomerRateId: string | undefined;
+  let bestCustomerRateProfit: number | undefined;
+  let bestCustomerRateCarrier: string | undefined;
+
   let bestRateId: string | undefined;
   let highestMarginRateId: string | undefined;
   let lowestConsolidatedNet = Infinity;
@@ -271,6 +275,9 @@ export async function getShipmentRateComparison(
       if (r.consolidatedProfit > highestConsolidatedProfit) {
         highestConsolidatedProfit = r.consolidatedProfit;
         highestMarginRateId = r.id;
+        bestCustomerRateId = r.id;
+        bestCustomerRateProfit = r.consolidatedProfit;
+        bestCustomerRateCarrier = r.provider.name + (r.optionName ? ` (${r.optionName})` : "");
       }
     }
   });
@@ -284,6 +291,9 @@ export async function getShipmentRateComparison(
     customer: shipment.customer,
     baseCurrency: orgBaseCurrency,
     rates,
+    bestCustomerRateId,
+    bestCustomerRateProfit,
+    bestCustomerRateCarrier,
     bestRateId,
     highestMarginRateId,
   };
@@ -531,6 +541,10 @@ export async function getAllShipmentsRateOverview(
       };
     });
 
+    let bestCustomerRateId: string | undefined;
+    let bestCustomerRateProfit: number | undefined;
+    let bestCustomerRateCarrier: string | undefined;
+
     let bestRateId: string | undefined;
     let highestMarginRateId: string | undefined;
     let lowestNet = Infinity;
@@ -545,6 +559,9 @@ export async function getAllShipmentsRateOverview(
         if (r.consolidatedProfit > highestProfit) {
           highestProfit = r.consolidatedProfit;
           highestMarginRateId = r.id;
+          bestCustomerRateId = r.id;
+          bestCustomerRateProfit = r.consolidatedProfit;
+          bestCustomerRateCarrier = r.provider.name + (r.optionName ? ` (${r.optionName})` : "");
         }
       }
     });
@@ -574,6 +591,9 @@ export async function getAllShipmentsRateOverview(
       customer: s.customer,
       baseCurrency: orgBaseCurrency,
       rates,
+      bestCustomerRateId,
+      bestCustomerRateProfit,
+      bestCustomerRateCarrier,
       bestRateId,
       highestMarginRateId,
     };
