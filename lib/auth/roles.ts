@@ -18,7 +18,7 @@ export type NavItem = { label: string; href?: string };
 
 const SALES_NAV: NavItem[] = [
   { label: "Overview", href: "/dashboard/sales" },
-  { label: "My customers" },
+  { label: "My customers", href: "/dashboard/sales/customers" },
   { label: "My RFQs" },
   { label: "My quotations" },
 ];
@@ -26,7 +26,7 @@ const SALES_NAV: NavItem[] = [
 export const NAV: Record<AppRole, NavItem[]> = {
   ADMIN: [
     { label: "Overview", href: "/dashboard/admin" },
-    { label: "Customers" },
+    { label: "Customers", href: "/dashboard/admin/customers" },
     { label: "RFQs" },
     { label: "Quotations" },
     { label: "Reports" },

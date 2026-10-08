@@ -1,0 +1,191 @@
+"use client";
+
+import React from "react";
+import {
+  Building2,
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Tag,
+  Package,
+  Calendar,
+  ExternalLink,
+} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import type { CustomerItem } from "@/lib/customer/types";
+
+interface CustomerViewDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  customer: CustomerItem | null;
+  onEdit: (customer: CustomerItem) => void;
+}
+
+export function CustomerViewDialog({
+  open,
+  onOpenChange,
+  customer,
+  onEdit,
+}: CustomerViewDialogProps) {
+  if (!customer) return null;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent onClose={() => onOpenChange(false)} className="max-w-lg">
+        <DialogHeader>
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary font-bold text-base">
+              {customer.companyName.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <DialogTitle>{customer.companyName}</DialogTitle>
+              <DialogDescription>
+                Customer ID: {customer.id}
+              </DialogDescription>
+            </div>
+          </div>
+        </DialogHeader>
+
+        <div className="mt-4 space-y-4 text-xs">
+          {/* Key Info Cards */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-xl border border-border/70 bg-muted/20 p-3">
+              <span className="text-[11px] font-medium text-muted-foreground">
+                Primary Commodity
+              </span>
+              <p className="mt-1 flex items-center gap-1.5 font-semibold text-foreground">
+                <Tag className="size-3.5 text-primary" />
+                <span>{customer.commodity || "Not specified"}</span>
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-border/70 bg-muted/20 p-3">
+              <span className="text-[11px] font-medium text-muted-foreground">
+                Active Shipments
+              </span>
+              <p className="mt-1 flex items-center gap-1.5 font-semibold text-foreground">
+                <Package className="size-3.5 text-sky-500" />
+                <span>{customer._count?.shipments ?? 0} freight flows</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Contact Details */}
+          <div className="rounded-xl border border-border bg-card p-4 space-y-2.5">
+            <h4 className="font-heading text-xs font-semibold text-foreground uppercase tracking-wider text-muted-foreground">
+              Contact Person
+            </h4>
+
+            <div className="flex items-center gap-2">
+              <User className="size-3.5 text-muted-foreground" />
+              <span className="font-medium text-foreground">
+                {customer.contactPerson || "No contact person listed"}
+              </span>
+            </div>
+
+            {customer.email && (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Mail className="size-3.5 text-muted-foreground" />
+                  <a
+                    href={`mailto:${customer.email}`}
+                    className="text-primary hover:underline"
+                  >
+                    {customer.email}
+                  </a>
+                </div>
+                <a
+                  href={`mailto:${customer.email}`}
+                  className="text-[11px] text-muted-foreground hover:text-foreground"
+                >
+                  <ExternalLink className="size-3" />
+                </a>
+              </div>
+            )}
+
+            {customer.cellPhone && (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Phone className="size-3.5 text-muted-foreground" />
+                  <a
+                    href={`tel:${customer.cellPhone}`}
+                    className="text-primary hover:underline font-mono"
+                  >
+                    {customer.cellPhone}
+                  </a>
+                </div>
+                <a
+                  href={`tel:${customer.cellPhone}`}
+                  className="text-[11px] text-muted-foreground hover:text-foreground"
+                >
+                  <ExternalLink className="size-3" />
+                </a>
+              </div>
+            )}
+          </div>
+
+          {/* Location & Industrial Zone */}
+          <div className="rounded-xl border border-border bg-card p-4 space-y-2.5">
+            <h4 className="font-heading text-xs font-semibold text-foreground uppercase tracking-wider text-muted-foreground">
+              Facility Location
+            </h4>
+
+            <div className="flex items-start gap-2">
+              <MapPin className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
+              <div>
+                <p className="font-medium text-foreground">
+                  {customer.industrialZone || "No Industrial Zone specified"}
+                  {customer.location && ` • ${customer.location}`}
+                </p>
+                {customer.address && (
+                  <p className="mt-0.5 text-muted-foreground">
+                    {customer.address}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Timestamps */}
+          <div className="flex items-center justify-between border-t border-border/70 pt-2 text-[11px] text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <Calendar className="size-3" />
+              Created {new Date(customer.createdAt).toLocaleDateString()}
+            </span>
+            <span>
+              Updated {new Date(customer.updatedAt).toLocaleDateString()}
+            </span>
+          </div>
+        </div>
+
+        <DialogFooter>
+          <button
+            type="button"
+            onClick={() => onOpenChange(false)}
+            className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-background px-4 text-xs font-medium text-foreground transition-colors hover:bg-muted"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              onOpenChange(false);
+              onEdit(customer);
+            }}
+            className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
+          >
+            Edit Customer
+          </button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

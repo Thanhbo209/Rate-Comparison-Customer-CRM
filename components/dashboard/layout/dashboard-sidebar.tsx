@@ -38,7 +38,6 @@ const ADMIN_NAV_ITEMS: NavConfigItem[] = [
     label: "Customers",
     href: "/dashboard/admin/customers",
     icon: Users,
-    badge: "Soon",
   },
   {
     label: "RFQs",
@@ -106,7 +105,6 @@ const SALES_NAV_ITEMS: NavConfigItem[] = [
     label: "My customers",
     href: "/dashboard/sales/customers",
     icon: Users,
-    badge: "Soon",
   },
   {
     label: "My RFQs",
