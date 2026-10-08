@@ -16,6 +16,7 @@ import {
   CircleHelp,
   Building2,
   UserPlus,
+  Package,
 } from "lucide-react";
 import { BRAND, Logo } from "@/components/shared/brand";
 import { SignOutButton } from "../shared/sign-out-button";
@@ -39,6 +40,11 @@ const ADMIN_NAV_ITEMS: NavConfigItem[] = [
     label: "Customers",
     href: "/dashboard/admin/customers",
     icon: Users,
+  },
+  {
+    label: "Shipments",
+    href: "/dashboard/admin/shipments",
+    icon: Package,
   },
   {
     label: "RFQs",
@@ -106,6 +112,11 @@ const SALES_NAV_ITEMS: NavConfigItem[] = [
     label: "My customers",
     href: "/dashboard/sales/customers",
     icon: Users,
+  },
+  {
+    label: "Shipments",
+    href: "/dashboard/sales/shipments",
+    icon: Package,
   },
   {
     label: "Team members",
