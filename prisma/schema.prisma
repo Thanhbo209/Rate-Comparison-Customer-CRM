@@ -13,13 +13,20 @@ enum Role {
   SALES
 }
 
+enum ShipmentDirection {
+  IMPORT
+  EXPORT
+}
+
 model Organization {
   id        String   @id @default(cuid())
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users User[]
+  users     User[]
+  customers Customer[]
+  providers Provider[]
 }
 
 model User {
@@ -35,3 +42,124 @@ model User {
 
   @@index([organizationId])
 }
+
+model Customer {
+  id             String   @id @default(cuid())
+  organizationId String
+
+  companyName    String
+  industrialZone String?
+  location       String?
+  address        String?
+  commodity      String?
+  contactPerson  String?
+  cellPhone      String?
+  email          String?
+
+  organization Organization @relation(fields: [organizationId],references: [id],onDelete: Cascade)
+
+  shipments Shipment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+}
+
+model Shipment {
+  id          String            @id @default(cuid())
+  customerId  String
+  name        String
+  direction   ShipmentDirection
+  commodity   String?
+
+  customer Customer @relation(fields: [customerId],references: [id],onDelete: Cascade)
+
+  rates ShipmentRate[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([customerId])
+}
+
+model Provider {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+
+  organization Organization @relation(fields: [organizationId],references: [id],onDelete: Cascade)
+
+  shipmentRates ShipmentRate[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([organizationId])
+  @@unique([organizationId, name])
+}
+
+model ShipmentRate {
+  id         String @id @default(cuid())
+  shipmentId String
+  providerId String
+
+  shipment Shipment @relation(fields: [shipmentId],references: [id],onDelete: Cascade)
+
+  provider Provider @relation(fields: [providerId],references: [id],onDelete: Cascade)
+
+  freightItems FreightItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([shipmentId])
+  @@index([providerId])
+  @@unique([shipmentId, providerId])
+}
+
+model FreightItem {
+  id             String @id @default(cuid())
+  shipmentRateId String
+
+  freight  String
+  unit     String?
+  net      Decimal
+  quantity Decimal
+  gross    Decimal
+  profit   Decimal
+  currency String
+
+  shipmentRate ShipmentRate @relation(fields: [shipmentRateId],references: [id],onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([shipmentRateId])
+}
+
+// model Customer (
+//     Industrial_Zone
+//     Location
+//     CompanyName
+//     Address
+//     Commodity
+//     IMP
+//     EXP
+//     Contact Person
+//     CellPhone
+//     Email?
+//     Shipment []
+// )
+
+// model Shipment (
+//     Name 
+//     FREIGHT []
+//     Unit
+//     NET
+//     QUANTITY
+//     GROSS
+//     PROFIT
+//     CURRENCY
+// )
+
