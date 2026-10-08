@@ -138,28 +138,3 @@ model FreightItem {
   @@index([shipmentRateId])
 }
 
-// model Customer (
-//     Industrial_Zone
-//     Location
-//     CompanyName
-//     Address
-//     Commodity
-//     IMP
-//     EXP
-//     Contact Person
-//     CellPhone
-//     Email?
-//     Shipment []
-// )
-
-// model Shipment (
-//     Name 
-//     FREIGHT []
-//     Unit
-//     NET
-//     QUANTITY
-//     GROSS
-//     PROFIT
-//     CURRENCY
-// )
-
