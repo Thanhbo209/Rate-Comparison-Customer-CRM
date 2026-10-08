@@ -4,6 +4,7 @@ import {
   getAvailableShipmentsForRates,
   getShipmentRateComparison,
   getProviders,
+  getAllShipmentsRateOverview,
 } from "@/lib/rate/queries";
 import { RateComparisonView } from "@/components/dashboard/sales/rates/rate-comparison-view";
 
@@ -23,9 +24,10 @@ export default async function AdminRatesPage({
   const isPlatformAdmin = !profile.organizationId || profile.role === "ADMIN";
   const params = searchParams ? await searchParams : undefined;
 
-  const [availableShipments, providers] = await Promise.all([
+  const [availableShipments, providers, overview] = await Promise.all([
     getAvailableShipmentsForRates(profile.organizationId, isPlatformAdmin),
     getProviders(profile.organizationId, isPlatformAdmin),
+    getAllShipmentsRateOverview(profile.organizationId, isPlatformAdmin),
   ]);
 
   const targetShipmentId =
@@ -44,6 +46,7 @@ export default async function AdminRatesPage({
       shipment={comparison}
       availableShipments={availableShipments}
       providers={providers}
+      overview={overview}
       role="ADMIN"
       organizationName={profile.organization?.name ?? "Platform Directory"}
     />

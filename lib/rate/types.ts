@@ -73,3 +73,35 @@ export interface ShipmentComparisonDetail {
   bestRateId?: string;
   highestMarginRateId?: string;
 }
+
+export interface AgentComparisonSummary {
+  providerId: string;
+  providerName: string;
+  shipmentCount: number;
+  optionsCount: number;
+  totalFreightItems: number;
+  totalNet: number;
+  totalGross: number;
+  totalProfit: number;
+  averageMarginPercent: number;
+  bestCostCount: number;
+  topMarginCount: number;
+}
+
+export interface OverallProfitSummary {
+  baseCurrency: string;
+  totalShipments: number;
+  totalRates: number;
+  totalFreightItems: number;
+  totalNet: number;
+  totalGross: number;
+  totalProfit: number;
+  averageMarginPercent: number;
+  agentRankings: AgentComparisonSummary[];
+}
+
+export interface MultiShipmentRateOverview {
+  baseCurrency: string;
+  shipments: ShipmentComparisonDetail[];
+  overall: OverallProfitSummary;
+}
