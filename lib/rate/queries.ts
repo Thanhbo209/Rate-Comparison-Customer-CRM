@@ -4,6 +4,7 @@ import type {
   ShipmentRateItem,
   ShipmentComparisonDetail,
   FreightItemSummary,
+  CurrencyFinancialBucket,
 } from "./types";
 
 export async function getProviders(
@@ -91,6 +92,8 @@ export async function getShipmentRateComparison(
             select: {
               id: true,
               name: true,
+              baseCurrency: true,
+              exchangeRates: true,
             },
           },
         },
@@ -109,22 +112,62 @@ export async function getShipmentRateComparison(
 
   if (!shipment) return null;
 
+  const orgBaseCurrency = shipment.customer.organization?.baseCurrency || "USD";
+  const orgExchangeRates = shipment.customer.organization?.exchangeRates || [];
+
+  // Helper map for currency conversion to baseCurrency
+  const getFxRateToBase = (fromCurrency: string): number => {
+    if (fromCurrency === orgBaseCurrency) return 1;
+    // Check direct rate: fromCurrency -> orgBaseCurrency
+    const direct = orgExchangeRates.find(
+      (r) => r.fromCurrency === fromCurrency && r.toCurrency === orgBaseCurrency
+    );
+    if (direct) return Number(direct.rate) || 1;
+
+    // Check inverse rate: orgBaseCurrency -> fromCurrency
+    const inverse = orgExchangeRates.find(
+      (r) => r.fromCurrency === orgBaseCurrency && r.toCurrency === fromCurrency
+    );
+    if (inverse && Number(inverse.rate) > 0) {
+      return 1 / Number(inverse.rate);
+    }
+
+    // Default fallback: 1 (if no rate configured yet)
+    return 1;
+  };
+
   const rates: ShipmentRateItem[] = shipment.rates.map((rate) => {
-    let totalNet = 0;
-    let totalGross = 0;
-    let totalProfit = 0;
-    let primaryCurrency = "USD";
+    // 1. Group by currency bucket
+    const bucketsMap = new Map<
+      string,
+      { totalNet: number; totalGross: number; totalProfit: number }
+    >();
+
+    let primaryCurrency = orgBaseCurrency;
 
     const freightItems: FreightItemSummary[] = rate.freightItems.map((fi) => {
       const net = Number(fi.net) || 0;
       const quantity = Number(fi.quantity) || 0;
       const gross = Number(fi.gross) || 0;
-      const profit = Number(fi.profit) || 0;
+      const profit = gross - net;
+      const itemCurrency = fi.currency?.trim() || orgBaseCurrency;
 
-      totalNet += net * quantity;
-      totalGross += gross * quantity;
-      totalProfit += profit * quantity;
-      if (fi.currency) primaryCurrency = fi.currency;
+      primaryCurrency = itemCurrency;
+
+      const lineNet = net * quantity;
+      const lineGross = gross * quantity;
+      const lineProfit = profit * quantity;
+
+      const existingBucket = bucketsMap.get(itemCurrency) || {
+        totalNet: 0,
+        totalGross: 0,
+        totalProfit: 0,
+      };
+
+      existingBucket.totalNet += lineNet;
+      existingBucket.totalGross += lineGross;
+      existingBucket.totalProfit += lineProfit;
+      bucketsMap.set(itemCurrency, existingBucket);
 
       return {
         id: fi.id,
@@ -134,12 +177,47 @@ export async function getShipmentRateComparison(
         quantity,
         gross,
         profit,
-        currency: fi.currency,
+        currency: itemCurrency,
       };
     });
 
-    const marginPercent =
-      totalGross > 0 ? (totalProfit / totalGross) * 100 : 0;
+    const currencies: CurrencyFinancialBucket[] = Array.from(
+      bucketsMap.entries()
+    ).map(([curr, b]) => {
+      const margin =
+        b.totalGross > 0 ? (b.totalProfit / b.totalGross) * 100 : 0;
+      return {
+        currency: curr,
+        totalNet: b.totalNet,
+        totalGross: b.totalGross,
+        totalProfit: b.totalProfit,
+        marginPercent: margin,
+      };
+    });
+
+    // 2. Compute consolidated totals converted to organization baseCurrency
+    let consolidatedNet = 0;
+    let consolidatedGross = 0;
+    let consolidatedProfit = 0;
+
+    currencies.forEach((b) => {
+      const rateToBase = getFxRateToBase(b.currency);
+      consolidatedNet += b.totalNet * rateToBase;
+      consolidatedGross += b.totalGross * rateToBase;
+      consolidatedProfit += b.totalProfit * rateToBase;
+    });
+
+    const consolidatedMarginPercent =
+      consolidatedGross > 0
+        ? (consolidatedProfit / consolidatedGross) * 100
+        : 0;
+
+    // Fallback unweighted totals (for single-currency or backward compat)
+    const fallbackBucket = currencies[0];
+    const totalNet = fallbackBucket ? fallbackBucket.totalNet : 0;
+    const totalGross = fallbackBucket ? fallbackBucket.totalGross : 0;
+    const totalProfit = fallbackBucket ? fallbackBucket.totalProfit : 0;
+    const marginPercent = fallbackBucket ? fallbackBucket.marginPercent : 0;
 
     return {
       id: rate.id,
@@ -152,6 +230,12 @@ export async function getShipmentRateComparison(
         organizationId: rate.provider.organizationId,
       },
       freightItems,
+      currencies,
+      baseCurrency: orgBaseCurrency,
+      consolidatedNet,
+      consolidatedGross,
+      consolidatedProfit,
+      consolidatedMarginPercent,
       totalNet,
       totalGross,
       totalProfit,
@@ -161,20 +245,20 @@ export async function getShipmentRateComparison(
     };
   });
 
-  // Calculate best rate (lowest total net) and highest margin
+  // Calculate best rate (lowest consolidated net) and highest margin
   let bestRateId: string | undefined;
   let highestMarginRateId: string | undefined;
-  let lowestNet = Infinity;
-  let highestProfit = -Infinity;
+  let lowestConsolidatedNet = Infinity;
+  let highestConsolidatedProfit = -Infinity;
 
   rates.forEach((r) => {
     if (r.freightItems.length > 0) {
-      if (r.totalNet < lowestNet) {
-        lowestNet = r.totalNet;
+      if (r.consolidatedNet < lowestConsolidatedNet) {
+        lowestConsolidatedNet = r.consolidatedNet;
         bestRateId = r.id;
       }
-      if (r.totalProfit > highestProfit) {
-        highestProfit = r.totalProfit;
+      if (r.consolidatedProfit > highestConsolidatedProfit) {
+        highestConsolidatedProfit = r.consolidatedProfit;
         highestMarginRateId = r.id;
       }
     }
@@ -187,6 +271,7 @@ export async function getShipmentRateComparison(
     commodity: shipment.commodity,
     customerId: shipment.customerId,
     customer: shipment.customer,
+    baseCurrency: orgBaseCurrency,
     rates,
     bestRateId,
     highestMarginRateId,

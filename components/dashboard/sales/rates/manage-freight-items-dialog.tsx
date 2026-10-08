@@ -76,6 +76,7 @@ export function ManageFreightItemsDialog({
   const [editQuantity, setEditQuantity] = useState("1");
   const [editNet, setEditNet] = useState("");
   const [editGross, setEditGross] = useState("");
+  const [editCurrency, setEditCurrency] = useState("USD");
 
   const [formError, setFormError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -83,7 +84,7 @@ export function ManageFreightItemsDialog({
   React.useEffect(() => {
     if (rate) {
       setItems(rate.freightItems);
-      setCurrency(rate.primaryCurrency || "USD");
+      setCurrency(rate.primaryCurrency || rate.baseCurrency || "USD");
     }
     setEditingId(null);
     setFormError(null);
@@ -91,11 +92,30 @@ export function ManageFreightItemsDialog({
 
   if (!rate) return null;
 
-  // Compute live totals
-  const totalNet = items.reduce((acc, i) => acc + i.net * i.quantity, 0);
-  const totalGross = items.reduce((acc, i) => acc + i.gross * i.quantity, 0);
-  const totalProfit = totalGross - totalNet;
-  const marginPercent = totalGross > 0 ? (totalProfit / totalGross) * 100 : 0;
+  // Group items by currency
+  const currencyTotalsMap = new Map<
+    string,
+    { net: number; gross: number; profit: number }
+  >();
+
+  items.forEach((item) => {
+    const c = item.currency || "USD";
+    const cur = currencyTotalsMap.get(c) || { net: 0, gross: 0, profit: 0 };
+    cur.net += item.net * item.quantity;
+    cur.gross += item.gross * item.quantity;
+    cur.profit += (item.gross - item.net) * item.quantity;
+    currencyTotalsMap.set(c, cur);
+  });
+
+  const currencyBuckets = Array.from(currencyTotalsMap.entries()).map(
+    ([curr, val]) => ({
+      currency: curr,
+      totalNet: val.net,
+      totalGross: val.gross,
+      totalProfit: val.profit,
+      marginPercent: val.gross > 0 ? (val.profit / val.gross) * 100 : 0,
+    })
+  );
 
   // New item preview profit
   const newNetVal = parseFloat(net) || 0;
@@ -171,6 +191,7 @@ export function ManageFreightItemsDialog({
     setEditQuantity(String(item.quantity));
     setEditNet(String(item.net));
     setEditGross(String(item.gross));
+    setEditCurrency(item.currency || "USD");
   };
 
   const handleSaveEdit = (itemId: string) => {
@@ -181,6 +202,7 @@ export function ManageFreightItemsDialog({
         quantity: parseFloat(editQuantity) || 1,
         net: parseFloat(editNet) || 0,
         gross: parseFloat(editGross) || 0,
+        currency: editCurrency.trim(),
       });
 
       if (!res.success || !res.data) {
@@ -199,6 +221,7 @@ export function ManageFreightItemsDialog({
                 net: res.data!.net,
                 gross: res.data!.gross,
                 profit: res.data!.profit,
+                currency: res.data!.currency,
               }
             : i
         )
@@ -229,32 +252,46 @@ export function ManageFreightItemsDialog({
         </DialogHeader>
 
         <div className="mt-4 space-y-5 text-xs">
-          {/* Running Totals Banner */}
-          <div className="grid grid-cols-3 gap-3 rounded-xl border border-border/80 bg-muted/30 p-3.5">
-            <div>
-              <span className="text-muted-foreground text-[11px]">
-                Total Buying Net:
-              </span>
-              <p className="font-mono font-bold text-foreground text-sm mt-0.5">
-                {totalNet.toLocaleString()} {currency}
-              </p>
-            </div>
-            <div>
-              <span className="text-muted-foreground text-[11px]">
-                Total Selling Gross:
-              </span>
-              <p className="font-mono font-bold text-foreground text-sm mt-0.5">
-                {totalGross.toLocaleString()} {currency}
-              </p>
-            </div>
-            <div>
-              <span className="text-muted-foreground text-[11px]">
-                Net Profit Spread:
-              </span>
-              <p className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-sm mt-0.5">
-                +{totalProfit.toLocaleString()} {currency} ({marginPercent.toFixed(1)}%)
-              </p>
-            </div>
+          {/* Running Totals Banner per Currency */}
+          <div className="space-y-2">
+            <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Totals By Currency
+            </span>
+            {currencyBuckets.length === 0 ? (
+              <div className="rounded-xl border border-border/80 bg-muted/20 p-3 text-muted-foreground italic">
+                No items added yet.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {currencyBuckets.map((b) => (
+                  <div
+                    key={b.currency}
+                    className="rounded-xl border border-border/80 bg-muted/30 p-3 space-y-1.5"
+                  >
+                    <div className="flex items-center justify-between font-bold">
+                      <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-foreground">
+                        {b.currency}
+                      </span>
+                      <span
+                        className={`font-mono text-xs ${
+                          b.totalProfit >= 0
+                            ? "text-emerald-600 dark:text-emerald-400"
+                            : "text-destructive"
+                        }`}
+                      >
+                        {b.totalProfit >= 0 ? "+" : ""}
+                        {b.totalProfit.toLocaleString()}{" "}
+                        ({b.marginPercent.toFixed(1)}%)
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                      <span>Net: {b.totalNet.toLocaleString()}</span>
+                      <span>Gross: {b.totalGross.toLocaleString()}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {formError && (
@@ -285,6 +322,7 @@ export function ManageFreightItemsDialog({
                       <th className="py-2.5 px-3 font-medium">Unit & Qty</th>
                       <th className="py-2.5 px-3 font-medium">Net (Buy)</th>
                       <th className="py-2.5 px-3 font-medium">Gross (Sell)</th>
+                      <th className="py-2.5 px-3 font-medium">Currency</th>
                       <th className="py-2.5 px-3 font-medium">Total Profit</th>
                       <th className="py-2.5 px-3 text-right font-medium">Actions</th>
                     </tr>
@@ -317,7 +355,7 @@ export function ManageFreightItemsDialog({
                                   type="number"
                                   value={editQuantity}
                                   onChange={(e) => setEditQuantity(e.target.value)}
-                                  className="w-12 rounded border border-border bg-background px-1 py-1 text-xs"
+                                  className="w-12 rounded border border-border bg-background px-1 py-1 text-xs font-mono"
                                 />
                               </div>
                             </td>
@@ -337,7 +375,19 @@ export function ManageFreightItemsDialog({
                                 className="w-20 rounded border border-border bg-background px-1 py-1 text-xs font-mono"
                               />
                             </td>
-                            <td className="p-2 font-mono text-muted-foreground">
+                            <td className="p-2">
+                              <select
+                                value={editCurrency}
+                                onChange={(e) => setEditCurrency(e.target.value)}
+                                className="w-16 rounded border border-border bg-background px-1 py-1 text-xs font-mono"
+                              >
+                                <option value="USD">USD</option>
+                                <option value="VND">VND</option>
+                                <option value="EUR">EUR</option>
+                                <option value="SGD">SGD</option>
+                              </select>
+                            </td>
+                            <td className="p-2 font-mono text-muted-foreground text-xs">
                               {((parseFloat(editGross) || 0) - (parseFloat(editNet) || 0)) *
                                 (parseFloat(editQuantity) || 1)}
                             </td>
@@ -374,10 +424,15 @@ export function ManageFreightItemsDialog({
                             {item.quantity} &times; {item.unit || "UNIT"}
                           </td>
                           <td className="py-2.5 px-3 font-mono text-foreground">
-                            {item.net.toLocaleString()} {item.currency}
+                            {item.net.toLocaleString()}
                           </td>
                           <td className="py-2.5 px-3 font-mono text-foreground font-semibold">
-                            {item.gross.toLocaleString()} {item.currency}
+                            {item.gross.toLocaleString()}
+                          </td>
+                          <td className="py-2.5 px-3">
+                            <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[11px] font-medium text-foreground">
+                              {item.currency}
+                            </span>
                           </td>
                           <td className="py-2.5 px-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">
                             +{lineProfit.toLocaleString()} {item.currency}

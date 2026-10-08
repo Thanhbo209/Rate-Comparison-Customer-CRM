@@ -58,8 +58,7 @@ export async function createFreightItemAction(
 
     const net = Number(data.net) || 0;
     const gross = Number(data.gross) || 0;
-    const quantity = Math.max(1, Number(data.quantity) || 1);
-    const profit = gross - net;
+    const quantity = Math.max(0.001, Number(data.quantity) || 1);
     const currency = data.currency?.trim() || "USD";
 
     const item = await prisma.freightItem.create({
@@ -70,7 +69,6 @@ export async function createFreightItemAction(
         quantity,
         net,
         gross,
-        profit,
         currency,
       },
     });
@@ -89,7 +87,7 @@ export async function createFreightItemAction(
         quantity: Number(item.quantity),
         net: Number(item.net),
         gross: Number(item.gross),
-        profit: Number(item.profit),
+        profit: Number(item.gross) - Number(item.net),
         currency: item.currency,
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,
@@ -150,9 +148,8 @@ export async function updateFreightItemAction(
       data.gross !== undefined ? Number(data.gross) : Number(existing.gross);
     const quantity =
       data.quantity !== undefined
-        ? Math.max(1, Number(data.quantity))
+        ? Math.max(0.001, Number(data.quantity))
         : Number(existing.quantity);
-    const profit = gross - net;
 
     const updated = await prisma.freightItem.update({
       where: { id },
@@ -162,7 +159,6 @@ export async function updateFreightItemAction(
         quantity,
         net,
         gross,
-        profit,
         currency: data.currency?.trim() || existing.currency,
       },
     });
@@ -181,7 +177,7 @@ export async function updateFreightItemAction(
         quantity: Number(updated.quantity),
         net: Number(updated.net),
         gross: Number(updated.gross),
-        profit: Number(updated.profit),
+        profit: Number(updated.gross) - Number(updated.net),
         currency: updated.currency,
         createdAt: updated.createdAt,
         updatedAt: updated.updatedAt,

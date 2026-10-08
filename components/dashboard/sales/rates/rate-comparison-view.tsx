@@ -302,32 +302,82 @@ export function RateComparisonView({
                         </button>
                       </div>
 
-                      {/* Pricing Comparison Stats */}
-                      <div className="mt-5 space-y-3 rounded-xl border border-border/80 bg-muted/20 p-3.5 text-xs">
-                        <div className="flex items-center justify-between">
-                          <span className="text-muted-foreground">
-                            Net Buying Cost:
-                          </span>
-                          <span className="font-mono font-bold text-foreground">
-                            {rate.totalNet.toLocaleString()} {rate.primaryCurrency}
-                          </span>
-                        </div>
+                      {/* Currency Breakdown & Consolidated Totals */}
+                      <div className="mt-5 space-y-3">
+                        {/* Currency-Grouped Sections */}
+                        {rate.currencies.length > 0 && (
+                          <div className="space-y-2">
+                            {rate.currencies.map((b) => (
+                              <div
+                                key={b.currency}
+                                className="rounded-xl border border-border/70 bg-muted/20 p-3 text-xs space-y-1.5"
+                              >
+                                <div className="flex items-center justify-between font-semibold">
+                                  <span className="rounded-md bg-muted px-1.5 py-0.5 font-mono text-[11px] text-foreground">
+                                    {b.currency}
+                                  </span>
+                                  <span
+                                    className={`font-mono text-xs ${
+                                      b.totalProfit >= 0
+                                        ? "text-emerald-600 dark:text-emerald-400"
+                                        : "text-destructive"
+                                    }`}
+                                  >
+                                    {b.totalProfit >= 0 ? "+" : ""}
+                                    {b.totalProfit.toLocaleString()}{" "}
+                                    ({b.marginPercent.toFixed(1)}%)
+                                  </span>
+                                </div>
+                                <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                                  <span>Net: {b.totalNet.toLocaleString()}</span>
+                                  <span>Gross: {b.totalGross.toLocaleString()}</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
 
-                        <div className="flex items-center justify-between">
-                          <span className="text-muted-foreground">
-                            Gross Selling Quote:
-                          </span>
-                          <span className="font-mono font-bold text-foreground">
-                            {rate.totalGross.toLocaleString()} {rate.primaryCurrency}
-                          </span>
-                        </div>
+                        {/* Consolidated Base Currency Total Banner */}
+                        <div className="rounded-xl border border-primary/20 bg-primary/5 p-3.5 text-xs space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[11px] font-semibold text-primary uppercase tracking-wider">
+                              Consolidated ({rate.baseCurrency})
+                            </span>
+                            <span
+                              className={`font-mono font-bold ${
+                                rate.consolidatedProfit >= 0
+                                  ? "text-emerald-600 dark:text-emerald-400"
+                                  : "text-destructive"
+                              }`}
+                            >
+                              {rate.consolidatedProfit >= 0 ? "+" : ""}
+                              {rate.consolidatedProfit.toLocaleString(undefined, {
+                                maximumFractionDigits: 2,
+                              })}{" "}
+                              {rate.baseCurrency} (
+                              {rate.consolidatedMarginPercent.toFixed(1)}%)
+                            </span>
+                          </div>
 
-                        <div className="flex items-center justify-between border-t border-border/60 pt-2 font-medium">
-                          <span className="text-foreground">Profit Spread:</span>
-                          <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                            +{rate.totalProfit.toLocaleString()}{" "}
-                            {rate.primaryCurrency} ({rate.marginPercent.toFixed(1)}%)
-                          </span>
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="text-muted-foreground">Total Net Cost:</span>
+                            <span className="font-mono font-semibold text-foreground">
+                              {rate.consolidatedNet.toLocaleString(undefined, {
+                                maximumFractionDigits: 2,
+                              })}{" "}
+                              {rate.baseCurrency}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="text-muted-foreground">Total Selling Quote:</span>
+                            <span className="font-mono font-semibold text-foreground">
+                              {rate.consolidatedGross.toLocaleString(undefined, {
+                                maximumFractionDigits: 2,
+                              })}{" "}
+                              {rate.baseCurrency}
+                            </span>
+                          </div>
                         </div>
                       </div>
 

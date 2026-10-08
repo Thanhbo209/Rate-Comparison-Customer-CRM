@@ -1,7 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Loader2, Package, Building2, Tag, ArrowDownLeft, ArrowUpRight } from "lucide-react";
+import {
+  Loader2,
+  Package,
+  Building2,
+  Tag,
+  ArrowDownLeft,
+  ArrowUpRight,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -10,8 +17,11 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { createShipmentAction, updateShipmentAction } from "@/lib/shipment/actions";
-import type { ShipmentItem, ShipmentFormData, ShipmentDirection } from "@/lib/shipment/types";
+import {
+  createShipmentAction,
+  updateShipmentAction,
+} from "@/lib/shipment/actions";
+import type { ShipmentItem, ShipmentFormData } from "@/lib/shipment/types";
 
 interface CustomerOption {
   id: string;
@@ -47,6 +57,7 @@ export function ShipmentDialog({
 
   useEffect(() => {
     if (shipment) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         name: shipment.name,
         customerId: shipment.customerId,
@@ -94,7 +105,9 @@ export function ShipmentDialog({
       onOpenChange(false);
       onSuccess();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An unexpected error occurred.");
+      setError(
+        err instanceof Error ? err.message : "An unexpected error occurred.",
+      );
     } finally {
       setLoading(false);
     }
@@ -132,7 +145,8 @@ export function ShipmentDialog({
           <div className="space-y-1.5">
             <label className="font-medium text-foreground flex items-center gap-1.5">
               <Building2 className="size-3.5 text-muted-foreground" />
-              Shipper / Customer Account <span className="text-destructive">*</span>
+              Shipper / Customer Account{" "}
+              <span className="text-destructive">*</span>
             </label>
             {customers.length === 0 ? (
               <p className="text-xs text-amber-600 dark:text-amber-400">
@@ -142,7 +156,10 @@ export function ShipmentDialog({
               <select
                 value={formData.customerId}
                 onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, customerId: e.target.value }))
+                  setFormData((prev) => ({
+                    ...prev,
+                    customerId: e.target.value,
+                  }))
                 }
                 required
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
@@ -163,7 +180,8 @@ export function ShipmentDialog({
           <div className="space-y-1.5">
             <label className="font-medium text-foreground flex items-center gap-1.5">
               <Package className="size-3.5 text-muted-foreground" />
-              Shipment Name / Order Ref <span className="text-destructive">*</span>
+              Shipment Name / Order Ref{" "}
+              <span className="text-destructive">*</span>
             </label>
             <input
               type="text"

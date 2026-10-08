@@ -82,7 +82,6 @@ const ADMIN_BOTTOM_ITEMS: NavConfigItem[] = [
     label: "Settings",
     href: "/dashboard/admin/settings",
     icon: Settings,
-    badge: "Soon",
   },
   {
     label: "Help & Support",
@@ -97,7 +96,6 @@ const SALES_BOTTOM_ITEMS: NavConfigItem[] = [
     label: "Settings",
     href: "/dashboard/sales/settings",
     icon: Settings,
-    badge: "Soon",
   },
   {
     label: "Help & Support",
@@ -124,6 +122,11 @@ const SALES_NAV_ITEMS: NavConfigItem[] = [
     icon: Package,
   },
   {
+    label: "Rate comparison",
+    href: "/dashboard/sales/rates",
+    icon: ArrowLeftRight,
+  },
+  {
     label: "Team members",
     href: "/dashboard/sales/team",
     icon: UserPlus,
@@ -140,11 +143,7 @@ const SALES_NAV_ITEMS: NavConfigItem[] = [
     icon: Calculator,
     badge: "Soon",
   },
-  {
-    label: "Rate comparison",
-    href: "/dashboard/sales/rates",
-    icon: ArrowLeftRight,
-  },
+
   {
     label: "Sales targets",
     href: "/dashboard/sales/targets",

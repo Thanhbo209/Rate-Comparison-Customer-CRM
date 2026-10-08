@@ -30,14 +30,12 @@ export type FreightItemAvgAggregateOutputType = {
   net: runtime.Decimal | null
   quantity: runtime.Decimal | null
   gross: runtime.Decimal | null
-  profit: runtime.Decimal | null
 }
 
 export type FreightItemSumAggregateOutputType = {
   net: runtime.Decimal | null
   quantity: runtime.Decimal | null
   gross: runtime.Decimal | null
-  profit: runtime.Decimal | null
 }
 
 export type FreightItemMinAggregateOutputType = {
@@ -48,7 +46,6 @@ export type FreightItemMinAggregateOutputType = {
   net: runtime.Decimal | null
   quantity: runtime.Decimal | null
   gross: runtime.Decimal | null
-  profit: runtime.Decimal | null
   currency: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -62,7 +59,6 @@ export type FreightItemMaxAggregateOutputType = {
   net: runtime.Decimal | null
   quantity: runtime.Decimal | null
   gross: runtime.Decimal | null
-  profit: runtime.Decimal | null
   currency: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -76,7 +72,6 @@ export type FreightItemCountAggregateOutputType = {
   net: number
   quantity: number
   gross: number
-  profit: number
   currency: number
   createdAt: number
   updatedAt: number
@@ -88,14 +83,12 @@ export type FreightItemAvgAggregateInputType = {
   net?: true
   quantity?: true
   gross?: true
-  profit?: true
 }
 
 export type FreightItemSumAggregateInputType = {
   net?: true
   quantity?: true
   gross?: true
-  profit?: true
 }
 
 export type FreightItemMinAggregateInputType = {
@@ -106,7 +99,6 @@ export type FreightItemMinAggregateInputType = {
   net?: true
   quantity?: true
   gross?: true
-  profit?: true
   currency?: true
   createdAt?: true
   updatedAt?: true
@@ -120,7 +112,6 @@ export type FreightItemMaxAggregateInputType = {
   net?: true
   quantity?: true
   gross?: true
-  profit?: true
   currency?: true
   createdAt?: true
   updatedAt?: true
@@ -134,7 +125,6 @@ export type FreightItemCountAggregateInputType = {
   net?: true
   quantity?: true
   gross?: true
-  profit?: true
   currency?: true
   createdAt?: true
   updatedAt?: true
@@ -235,7 +225,6 @@ export type FreightItemGroupByOutputType = {
   net: runtime.Decimal
   quantity: runtime.Decimal
   gross: runtime.Decimal
-  profit: runtime.Decimal
   currency: string
   createdAt: Date
   updatedAt: Date
@@ -272,7 +261,6 @@ export type FreightItemWhereInput = {
   net?: Prisma.DecimalFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.DecimalFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  profit?: Prisma.DecimalFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFilter<"FreightItem"> | string
   createdAt?: Prisma.DateTimeFilter<"FreightItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FreightItem"> | Date | string
@@ -287,7 +275,6 @@ export type FreightItemOrderByWithRelationInput = {
   net?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   gross?: Prisma.SortOrder
-  profit?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -305,7 +292,6 @@ export type FreightItemWhereUniqueInput = Prisma.AtLeast<{
   net?: Prisma.DecimalFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.DecimalFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  profit?: Prisma.DecimalFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFilter<"FreightItem"> | string
   createdAt?: Prisma.DateTimeFilter<"FreightItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FreightItem"> | Date | string
@@ -320,7 +306,6 @@ export type FreightItemOrderByWithAggregationInput = {
   net?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   gross?: Prisma.SortOrder
-  profit?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -342,7 +327,6 @@ export type FreightItemScalarWhereWithAggregatesInput = {
   net?: Prisma.DecimalWithAggregatesFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.DecimalWithAggregatesFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalWithAggregatesFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  profit?: Prisma.DecimalWithAggregatesFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringWithAggregatesFilter<"FreightItem"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"FreightItem"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"FreightItem"> | Date | string
@@ -355,7 +339,6 @@ export type FreightItemCreateInput = {
   net: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   gross: runtime.Decimal | runtime.DecimalJsLike | number | string
-  profit: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -370,7 +353,6 @@ export type FreightItemUncheckedCreateInput = {
   net: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   gross: runtime.Decimal | runtime.DecimalJsLike | number | string
-  profit: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -383,7 +365,6 @@ export type FreightItemUpdateInput = {
   net?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  profit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -398,7 +379,6 @@ export type FreightItemUncheckedUpdateInput = {
   net?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  profit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -412,7 +392,6 @@ export type FreightItemCreateManyInput = {
   net: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   gross: runtime.Decimal | runtime.DecimalJsLike | number | string
-  profit: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -425,7 +404,6 @@ export type FreightItemUpdateManyMutationInput = {
   net?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  profit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -439,7 +417,6 @@ export type FreightItemUncheckedUpdateManyInput = {
   net?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  profit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -463,7 +440,6 @@ export type FreightItemCountOrderByAggregateInput = {
   net?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   gross?: Prisma.SortOrder
-  profit?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -473,7 +449,6 @@ export type FreightItemAvgOrderByAggregateInput = {
   net?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   gross?: Prisma.SortOrder
-  profit?: Prisma.SortOrder
 }
 
 export type FreightItemMaxOrderByAggregateInput = {
@@ -484,7 +459,6 @@ export type FreightItemMaxOrderByAggregateInput = {
   net?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   gross?: Prisma.SortOrder
-  profit?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -498,7 +472,6 @@ export type FreightItemMinOrderByAggregateInput = {
   net?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   gross?: Prisma.SortOrder
-  profit?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -508,7 +481,6 @@ export type FreightItemSumOrderByAggregateInput = {
   net?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   gross?: Prisma.SortOrder
-  profit?: Prisma.SortOrder
 }
 
 export type FreightItemCreateNestedManyWithoutShipmentRateInput = {
@@ -553,14 +525,6 @@ export type FreightItemUncheckedUpdateManyWithoutShipmentRateNestedInput = {
   deleteMany?: Prisma.FreightItemScalarWhereInput | Prisma.FreightItemScalarWhereInput[]
 }
 
-export type DecimalFieldUpdateOperationsInput = {
-  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
-}
-
 export type FreightItemCreateWithoutShipmentRateInput = {
   id?: string
   freight: string
@@ -568,7 +532,6 @@ export type FreightItemCreateWithoutShipmentRateInput = {
   net: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   gross: runtime.Decimal | runtime.DecimalJsLike | number | string
-  profit: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -581,7 +544,6 @@ export type FreightItemUncheckedCreateWithoutShipmentRateInput = {
   net: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   gross: runtime.Decimal | runtime.DecimalJsLike | number | string
-  profit: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -624,7 +586,6 @@ export type FreightItemScalarWhereInput = {
   net?: Prisma.DecimalFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.DecimalFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  profit?: Prisma.DecimalFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFilter<"FreightItem"> | string
   createdAt?: Prisma.DateTimeFilter<"FreightItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FreightItem"> | Date | string
@@ -637,7 +598,6 @@ export type FreightItemCreateManyShipmentRateInput = {
   net: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   gross: runtime.Decimal | runtime.DecimalJsLike | number | string
-  profit: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -650,7 +610,6 @@ export type FreightItemUpdateWithoutShipmentRateInput = {
   net?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  profit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -663,7 +622,6 @@ export type FreightItemUncheckedUpdateWithoutShipmentRateInput = {
   net?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  profit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -676,7 +634,6 @@ export type FreightItemUncheckedUpdateManyWithoutShipmentRateInput = {
   net?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  profit?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -692,7 +649,6 @@ export type FreightItemSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   net?: boolean
   quantity?: boolean
   gross?: boolean
-  profit?: boolean
   currency?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -707,7 +663,6 @@ export type FreightItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   net?: boolean
   quantity?: boolean
   gross?: boolean
-  profit?: boolean
   currency?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -722,7 +677,6 @@ export type FreightItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   net?: boolean
   quantity?: boolean
   gross?: boolean
-  profit?: boolean
   currency?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -737,13 +691,12 @@ export type FreightItemSelectScalar = {
   net?: boolean
   quantity?: boolean
   gross?: boolean
-  profit?: boolean
   currency?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type FreightItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "shipmentRateId" | "freight" | "unit" | "net" | "quantity" | "gross" | "profit" | "currency" | "createdAt" | "updatedAt", ExtArgs["result"]["freightItem"]>
+export type FreightItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "shipmentRateId" | "freight" | "unit" | "net" | "quantity" | "gross" | "currency" | "createdAt" | "updatedAt", ExtArgs["result"]["freightItem"]>
 export type FreightItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   shipmentRate?: boolean | Prisma.ShipmentRateDefaultArgs<ExtArgs>
 }
@@ -767,7 +720,6 @@ export type $FreightItemPayload<ExtArgs extends runtime.Types.Extensions.Interna
     net: runtime.Decimal
     quantity: runtime.Decimal
     gross: runtime.Decimal
-    profit: runtime.Decimal
     currency: string
     createdAt: Date
     updatedAt: Date
@@ -1202,7 +1154,6 @@ export interface FreightItemFieldRefs {
   readonly net: Prisma.FieldRef<"FreightItem", 'Decimal'>
   readonly quantity: Prisma.FieldRef<"FreightItem", 'Decimal'>
   readonly gross: Prisma.FieldRef<"FreightItem", 'Decimal'>
-  readonly profit: Prisma.FieldRef<"FreightItem", 'Decimal'>
   readonly currency: Prisma.FieldRef<"FreightItem", 'String'>
   readonly createdAt: Prisma.FieldRef<"FreightItem", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"FreightItem", 'DateTime'>

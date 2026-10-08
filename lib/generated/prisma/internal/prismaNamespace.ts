@@ -398,6 +398,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   Organization: 'Organization',
+  OrganizationExchangeRate: 'OrganizationExchangeRate',
   User: 'User',
   OrganizationInvitation: 'OrganizationInvitation',
   Customer: 'Customer',
@@ -420,7 +421,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "organization" | "user" | "organizationInvitation" | "customer" | "shipment" | "provider" | "shipmentRate" | "freightItem"
+    modelProps: "organization" | "organizationExchangeRate" | "user" | "organizationInvitation" | "customer" | "shipment" | "provider" | "shipmentRate" | "freightItem"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -495,6 +496,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.OrganizationCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.OrganizationCountAggregateOutputType> | number
+        }
+      }
+    }
+    OrganizationExchangeRate: {
+      payload: Prisma.$OrganizationExchangeRatePayload<ExtArgs>
+      fields: Prisma.OrganizationExchangeRateFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OrganizationExchangeRateFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationExchangeRatePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OrganizationExchangeRateFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationExchangeRatePayload>
+        }
+        findFirst: {
+          args: Prisma.OrganizationExchangeRateFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationExchangeRatePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OrganizationExchangeRateFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationExchangeRatePayload>
+        }
+        findMany: {
+          args: Prisma.OrganizationExchangeRateFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationExchangeRatePayload>[]
+        }
+        create: {
+          args: Prisma.OrganizationExchangeRateCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationExchangeRatePayload>
+        }
+        createMany: {
+          args: Prisma.OrganizationExchangeRateCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OrganizationExchangeRateCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationExchangeRatePayload>[]
+        }
+        delete: {
+          args: Prisma.OrganizationExchangeRateDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationExchangeRatePayload>
+        }
+        update: {
+          args: Prisma.OrganizationExchangeRateUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationExchangeRatePayload>
+        }
+        deleteMany: {
+          args: Prisma.OrganizationExchangeRateDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OrganizationExchangeRateUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OrganizationExchangeRateUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationExchangeRatePayload>[]
+        }
+        upsert: {
+          args: Prisma.OrganizationExchangeRateUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrganizationExchangeRatePayload>
+        }
+        aggregate: {
+          args: Prisma.OrganizationExchangeRateAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOrganizationExchangeRate>
+        }
+        groupBy: {
+          args: Prisma.OrganizationExchangeRateGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OrganizationExchangeRateGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OrganizationExchangeRateCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OrganizationExchangeRateCountAggregateOutputType> | number
         }
       }
     }
@@ -1058,11 +1133,25 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const OrganizationScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  baseCurrency: 'baseCurrency',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
+
+
+export const OrganizationExchangeRateScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  fromCurrency: 'fromCurrency',
+  toCurrency: 'toCurrency',
+  rate: 'rate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OrganizationExchangeRateScalarFieldEnum = (typeof OrganizationExchangeRateScalarFieldEnum)[keyof typeof OrganizationExchangeRateScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
@@ -1155,7 +1244,6 @@ export const FreightItemScalarFieldEnum = {
   net: 'net',
   quantity: 'quantity',
   gross: 'gross',
-  profit: 'profit',
   currency: 'currency',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1223,6 +1311,20 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'Decimal'
+ */
+export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal[]'
+ */
+export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+/**
  * Reference to a field of type 'Role'
  */
 export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
@@ -1247,20 +1349,6 @@ export type EnumShipmentDirectionFieldRefInput<$PrismaModel> = FieldRefInputType
  * Reference to a field of type 'ShipmentDirection[]'
  */
 export type ListEnumShipmentDirectionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ShipmentDirection[]'>
-    
-
-
-/**
- * Reference to a field of type 'Decimal'
- */
-export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
-    
-
-
-/**
- * Reference to a field of type 'Decimal[]'
- */
-export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
     
 
 
@@ -1429,6 +1517,7 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
 export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
   organization?: Prisma.OrganizationOmit
+  organizationExchangeRate?: Prisma.OrganizationExchangeRateOmit
   user?: Prisma.UserOmit
   organizationInvitation?: Prisma.OrganizationInvitationOmit
   customer?: Prisma.CustomerOmit

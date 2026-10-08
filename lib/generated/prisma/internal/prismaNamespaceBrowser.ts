@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Organization: 'Organization',
+  OrganizationExchangeRate: 'OrganizationExchangeRate',
   User: 'User',
   OrganizationInvitation: 'OrganizationInvitation',
   Customer: 'Customer',
@@ -80,11 +81,25 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const OrganizationScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  baseCurrency: 'baseCurrency',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
+
+
+export const OrganizationExchangeRateScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  fromCurrency: 'fromCurrency',
+  toCurrency: 'toCurrency',
+  rate: 'rate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OrganizationExchangeRateScalarFieldEnum = (typeof OrganizationExchangeRateScalarFieldEnum)[keyof typeof OrganizationExchangeRateScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
@@ -177,7 +192,6 @@ export const FreightItemScalarFieldEnum = {
   net: 'net',
   quantity: 'quantity',
   gross: 'gross',
-  profit: 'profit',
   currency: 'currency',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

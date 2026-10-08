@@ -18,6 +18,14 @@ export interface FreightItemSummary {
   currency: string;
 }
 
+export interface CurrencyFinancialBucket {
+  currency: string;
+  totalNet: number;
+  totalGross: number;
+  totalProfit: number;
+  marginPercent: number;
+}
+
 export interface ShipmentRateItem {
   id: string;
   shipmentId: string;
@@ -25,6 +33,15 @@ export interface ShipmentRateItem {
   optionName: string | null;
   provider: ProviderItem;
   freightItems: FreightItemSummary[];
+  // Currency-grouped totals
+  currencies: CurrencyFinancialBucket[];
+  // Consolidated totals converted to organization baseCurrency
+  baseCurrency: string;
+  consolidatedNet: number;
+  consolidatedGross: number;
+  consolidatedProfit: number;
+  consolidatedMarginPercent: number;
+  // Legacy / fallback primary figures
   totalNet: number;
   totalGross: number;
   totalProfit: number;
@@ -45,8 +62,10 @@ export interface ShipmentComparisonDetail {
     organization?: {
       id: string;
       name: string;
+      baseCurrency?: string;
     };
   };
+  baseCurrency: string;
   rates: ShipmentRateItem[];
   bestRateId?: string;
   highestMarginRateId?: string;
