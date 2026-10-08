@@ -194,3 +194,244 @@ export async function joinOrganizationAction({
     };
   }
 }
+
+/**
+ * Generate a new single-use, expiring invitation code for the current organization.
+ * Only SALES_MANAGER or ADMIN of that organization can generate invitations.
+ */
+export async function generateInvitationAction({
+  role = "SALES",
+  expiresInDays = 7,
+}: {
+  role?: "SALES" | "SALES_MANAGER";
+  expiresInDays?: number;
+}): Promise<OrganizationActionResponse<{ code: string; expiresAt: Date }>> {
+  try {
+    const profile = await getCurrentProfile();
+    if (!profile || !profile.organizationId) {
+      return { success: false, error: "Authentication required." };
+    }
+
+    if (profile.role !== "SALES_MANAGER" && profile.role !== "ADMIN") {
+      return {
+        success: false,
+        error: "Only organization managers can generate invitation codes.",
+      };
+    }
+
+    const invitation = await prisma.$transaction(async (tx) => {
+      const crypto = await import("crypto");
+      const code = `INV-${crypto.randomBytes(8).toString("hex").toUpperCase()}`;
+      const expiresAt = new Date(Date.now() + expiresInDays * 24 * 60 * 60 * 1000);
+
+      return tx.organizationInvitation.create({
+        data: {
+          organizationId: profile.organizationId!,
+          code,
+          role,
+          createdById: profile.id,
+          expiresAt,
+        },
+      });
+    });
+
+    revalidatePath("/dashboard/sales/team");
+
+    return {
+      success: true,
+      data: { code: invitation.code, expiresAt: invitation.expiresAt },
+    };
+  } catch (error) {
+    console.error("Failed to generate invitation:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to generate invitation.",
+    };
+  }
+}
+
+/**
+ * Revoke an unredeemed invitation.
+ */
+export async function revokeInvitationAction({
+  invitationId,
+}: {
+  invitationId: string;
+}): Promise<OrganizationActionResponse> {
+  try {
+    const profile = await getCurrentProfile();
+    if (!profile || !profile.organizationId) {
+      return { success: false, error: "Authentication required." };
+    }
+
+    if (profile.role !== "SALES_MANAGER" && profile.role !== "ADMIN") {
+      return {
+        success: false,
+        error: "Only organization managers can revoke invitations.",
+      };
+    }
+
+    const invitation = await prisma.organizationInvitation.findUnique({
+      where: { id: invitationId },
+    });
+
+    if (!invitation || invitation.organizationId !== profile.organizationId) {
+      return { success: false, error: "Invitation not found." };
+    }
+
+    if (invitation.usedAt || invitation.usedById) {
+      return {
+        success: false,
+        error: "Cannot revoke an invitation that has already been redeemed.",
+      };
+    }
+
+    await prisma.organizationInvitation.delete({
+      where: { id: invitationId },
+    });
+
+    revalidatePath("/dashboard/sales/team");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to revoke invitation:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to revoke invitation.",
+    };
+  }
+}
+
+/**
+ * Update an organization member's role (SALES <-> SALES_MANAGER).
+ */
+export async function updateMemberRoleAction({
+  targetUserId,
+  newRole,
+}: {
+  targetUserId: string;
+  newRole: "SALES" | "SALES_MANAGER";
+}): Promise<OrganizationActionResponse> {
+  try {
+    const profile = await getCurrentProfile();
+    if (!profile || !profile.organizationId) {
+      return { success: false, error: "Authentication required." };
+    }
+
+    if (profile.role !== "SALES_MANAGER" && profile.role !== "ADMIN") {
+      return {
+        success: false,
+        error: "Only organization managers can update member roles.",
+      };
+    }
+
+    const targetUser = await prisma.user.findUnique({
+      where: { id: targetUserId },
+    });
+
+    if (!targetUser || targetUser.organizationId !== profile.organizationId) {
+      return { success: false, error: "User is not a member of your organization." };
+    }
+
+    // If demoting oneself, verify there is at least one other manager
+    if (targetUser.id === profile.id && newRole !== "SALES_MANAGER") {
+      const otherManagers = await prisma.user.count({
+        where: {
+          organizationId: profile.organizationId,
+          role: "SALES_MANAGER",
+          id: { not: profile.id },
+        },
+      });
+
+      if (otherManagers === 0) {
+        return {
+          success: false,
+          error: "You cannot demote yourself because you are the only Sales Manager.",
+        };
+      }
+    }
+
+    await prisma.user.update({
+      where: { id: targetUserId },
+      data: { role: newRole },
+    });
+
+    revalidatePath("/dashboard/sales/team");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update member role:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to update member role.",
+    };
+  }
+}
+
+/**
+ * Remove a member from the organization.
+ */
+export async function removeMemberAction({
+  targetUserId,
+}: {
+  targetUserId: string;
+}): Promise<OrganizationActionResponse> {
+  try {
+    const profile = await getCurrentProfile();
+    if (!profile || !profile.organizationId) {
+      return { success: false, error: "Authentication required." };
+    }
+
+    if (profile.role !== "SALES_MANAGER" && profile.role !== "ADMIN") {
+      return {
+        success: false,
+        error: "Only organization managers can remove members.",
+      };
+    }
+
+    if (targetUserId === profile.id) {
+      return {
+        success: false,
+        error: "You cannot remove yourself from your organization.",
+      };
+    }
+
+    const targetUser = await prisma.user.findUnique({
+      where: { id: targetUserId },
+    });
+
+    if (!targetUser || targetUser.organizationId !== profile.organizationId) {
+      return { success: false, error: "User is not a member of your organization." };
+    }
+
+    await prisma.user.update({
+      where: { id: targetUserId },
+      data: {
+        organizationId: null,
+        role: "SALES",
+      },
+    });
+
+    revalidatePath("/dashboard/sales/team");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to remove member:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to remove member.",
+    };
+  }
+}

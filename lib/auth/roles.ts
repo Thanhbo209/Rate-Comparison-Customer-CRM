@@ -19,6 +19,7 @@ export type NavItem = { label: string; href?: string };
 const SALES_NAV: NavItem[] = [
   { label: "Overview", href: "/dashboard/sales" },
   { label: "My customers", href: "/dashboard/sales/customers" },
+  { label: "Team members", href: "/dashboard/sales/team" },
   { label: "My RFQs" },
   { label: "My quotations" },
 ];

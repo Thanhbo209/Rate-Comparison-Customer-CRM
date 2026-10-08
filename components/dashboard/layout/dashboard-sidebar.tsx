@@ -15,6 +15,7 @@ import {
   Settings,
   CircleHelp,
   Building2,
+  UserPlus,
 } from "lucide-react";
 import { BRAND, Logo } from "@/components/shared/brand";
 import { SignOutButton } from "../shared/sign-out-button";
@@ -105,6 +106,11 @@ const SALES_NAV_ITEMS: NavConfigItem[] = [
     label: "My customers",
     href: "/dashboard/sales/customers",
     icon: Users,
+  },
+  {
+    label: "Team members",
+    href: "/dashboard/sales/team",
+    icon: UserPlus,
   },
   {
     label: "My RFQs",
