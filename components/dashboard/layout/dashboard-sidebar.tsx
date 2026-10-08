@@ -47,6 +47,11 @@ const ADMIN_NAV_ITEMS: NavConfigItem[] = [
     icon: Package,
   },
   {
+    label: "Rate comparison",
+    href: "/dashboard/admin/rates",
+    icon: ArrowLeftRight,
+  },
+  {
     label: "RFQs",
     href: "/dashboard/admin/rfqs",
     icon: FileSpreadsheet,
@@ -139,7 +144,6 @@ const SALES_NAV_ITEMS: NavConfigItem[] = [
     label: "Rate comparison",
     href: "/dashboard/sales/rates",
     icon: ArrowLeftRight,
-    badge: "Soon",
   },
   {
     label: "Sales targets",
