@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AddRateDialog } from "./add-rate-dialog";
+import { ManageFreightItemsDialog } from "./manage-freight-items-dialog";
 import { deleteShipmentRateAction } from "@/lib/rate/actions";
 import type {
   ShipmentComparisonDetail,
@@ -53,6 +54,7 @@ export function RateComparisonView({
 }: RateComparisonViewProps) {
   const router = useRouter();
   const [addRateOpen, setAddRateOpen] = useState(false);
+  const [activeManageRate, setActiveManageRate] = useState<ShipmentRateItem | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const handleSelectShipment = (id: string) => {
@@ -362,7 +364,10 @@ export function RateComparisonView({
                     {/* Manage Items Action Button */}
                     <div className="mt-5 pt-3 border-t border-border/60">
                       <Button
-                        onClick={() => onManageFreightItems?.(rate)}
+                        onClick={() => {
+                          setActiveManageRate(rate);
+                          onManageFreightItems?.(rate);
+                        }}
                         variant="outline"
                         size="sm"
                         className="w-full text-xs font-semibold gap-1.5"
@@ -387,6 +392,17 @@ export function RateComparisonView({
           shipmentId={shipment.id}
           shipmentName={shipment.name}
           existingProviders={providers}
+          onSuccess={() => router.refresh()}
+        />
+      )}
+
+      {/* Manage Freight Line Items Modal */}
+      {activeManageRate && shipment && (
+        <ManageFreightItemsDialog
+          open={!!activeManageRate}
+          onOpenChange={(open) => !open && setActiveManageRate(null)}
+          rate={activeManageRate}
+          shipmentName={shipment.name}
           onSuccess={() => router.refresh()}
         />
       )}
