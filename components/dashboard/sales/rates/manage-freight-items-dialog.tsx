@@ -140,7 +140,7 @@ export function ManageFreightItemsDialog({
         quantity: parseFloat(quantity) || 1,
         net: parseFloat(net) || 0,
         gross: parseFloat(gross) || 0,
-        currency,
+        currency: rate.baseCurrency,
       });
 
       if (!res.success || !res.data) {
@@ -158,7 +158,10 @@ export function ManageFreightItemsDialog({
           net: res.data!.net,
           gross: res.data!.gross,
           profit: res.data!.profit,
-          currency: res.data!.currency,
+          currency: rate.baseCurrency,
+          originalNet: res.data!.net,
+          originalGross: res.data!.gross,
+          originalCurrency: rate.baseCurrency,
         },
       ]);
 
@@ -252,46 +255,47 @@ export function ManageFreightItemsDialog({
         </DialogHeader>
 
         <div className="mt-4 space-y-5 text-xs">
-          {/* Running Totals Banner per Currency */}
-          <div className="space-y-2">
-            <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-              Totals By Currency
-            </span>
-            {currencyBuckets.length === 0 ? (
-              <div className="rounded-xl border border-border/80 bg-muted/20 p-3 text-muted-foreground italic">
-                No items added yet.
+          {/* Running Totals Banner in System Base Currency */}
+          <div className="rounded-xl border border-border/80 bg-muted/30 p-4 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Total Carrier Pricing ({rate.baseCurrency})
+              </span>
+              <span
+                className={`font-mono text-xs font-bold ${
+                  rate.consolidatedProfit >= 0
+                    ? "text-emerald-600 dark:text-emerald-400"
+                    : "text-destructive"
+                }`}
+              >
+                Profit: {rate.consolidatedProfit >= 0 ? "+" : ""}
+                {rate.consolidatedProfit.toLocaleString(undefined, {
+                  maximumFractionDigits: 2,
+                })}{" "}
+                {rate.baseCurrency} ({rate.consolidatedMarginPercent.toFixed(1)}%)
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 pt-1">
+              <div>
+                <span className="text-[11px] text-muted-foreground">Buying Cost (Net):</span>
+                <p className="font-mono font-bold text-foreground text-sm mt-0.5">
+                  {rate.consolidatedNet.toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  })}{" "}
+                  {rate.baseCurrency}
+                </p>
               </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {currencyBuckets.map((b) => (
-                  <div
-                    key={b.currency}
-                    className="rounded-xl border border-border/80 bg-muted/30 p-3 space-y-1.5"
-                  >
-                    <div className="flex items-center justify-between font-bold">
-                      <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-foreground">
-                        {b.currency}
-                      </span>
-                      <span
-                        className={`font-mono text-xs ${
-                          b.totalProfit >= 0
-                            ? "text-emerald-600 dark:text-emerald-400"
-                            : "text-destructive"
-                        }`}
-                      >
-                        {b.totalProfit >= 0 ? "+" : ""}
-                        {b.totalProfit.toLocaleString()}{" "}
-                        ({b.marginPercent.toFixed(1)}%)
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                      <span>Net: {b.totalNet.toLocaleString()}</span>
-                      <span>Gross: {b.totalGross.toLocaleString()}</span>
-                    </div>
-                  </div>
-                ))}
+              <div>
+                <span className="text-[11px] text-muted-foreground">Selling Quote (Gross):</span>
+                <p className="font-mono font-bold text-foreground text-sm mt-0.5">
+                  {rate.consolidatedGross.toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  })}{" "}
+                  {rate.baseCurrency}
+                </p>
               </div>
-            )}
+            </div>
           </div>
 
           {formError && (
@@ -376,16 +380,9 @@ export function ManageFreightItemsDialog({
                               />
                             </td>
                             <td className="p-2">
-                              <select
-                                value={editCurrency}
-                                onChange={(e) => setEditCurrency(e.target.value)}
-                                className="w-16 rounded border border-border bg-background px-1 py-1 text-xs font-mono"
-                              >
-                                <option value="USD">USD</option>
-                                <option value="VND">VND</option>
-                                <option value="EUR">EUR</option>
-                                <option value="SGD">SGD</option>
-                              </select>
+                              <div className="flex h-7 items-center justify-center rounded border border-border bg-muted/40 px-2 font-mono text-[11px] font-bold text-foreground">
+                                {rate.baseCurrency}
+                              </div>
                             </td>
                             <td className="p-2 font-mono text-muted-foreground text-xs">
                               {((parseFloat(editGross) || 0) - (parseFloat(editNet) || 0)) *
@@ -415,27 +412,36 @@ export function ManageFreightItemsDialog({
                         );
                       }
 
+                      const hasOriginal =
+                        item.originalCurrency &&
+                        item.originalCurrency !== rate.baseCurrency;
+
                       return (
                         <tr key={item.id} className="hover:bg-muted/20">
                           <td className="py-2.5 px-3 font-semibold text-foreground">
-                            {item.freight}
+                            <div>{item.freight}</div>
+                            {hasOriginal && (
+                              <div className="text-[10px] text-muted-foreground font-normal">
+                                Orig: {item.originalNet.toLocaleString()} net / {item.originalGross.toLocaleString()} gross ({item.originalCurrency})
+                              </div>
+                            )}
                           </td>
                           <td className="py-2.5 px-3 text-muted-foreground font-mono">
                             {item.quantity} &times; {item.unit || "UNIT"}
                           </td>
                           <td className="py-2.5 px-3 font-mono text-foreground">
-                            {item.net.toLocaleString()}
+                            {item.net.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                           </td>
                           <td className="py-2.5 px-3 font-mono text-foreground font-semibold">
-                            {item.gross.toLocaleString()}
+                            {item.gross.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                           </td>
                           <td className="py-2.5 px-3">
                             <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[11px] font-medium text-foreground">
-                              {item.currency}
+                              {rate.baseCurrency}
                             </span>
                           </td>
                           <td className="py-2.5 px-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                            +{lineProfit.toLocaleString()} {item.currency}
+                            +{lineProfit.toLocaleString(undefined, { maximumFractionDigits: 2 })} {rate.baseCurrency}
                           </td>
                           <td className="py-2.5 px-3 text-right">
                             <div className="flex items-center justify-end gap-1">
@@ -575,20 +581,16 @@ export function ManageFreightItemsDialog({
                 />
               </div>
 
-              {/* Currency & Add Button */}
+              {/* System Base Currency Display & Add Button */}
               <div className="space-y-1">
-                <label className="text-[11px] text-muted-foreground">Currency</label>
+                <label className="text-[11px] text-muted-foreground flex items-center justify-between">
+                  <span>Currency</span>
+                  <span className="text-[10px] text-primary font-medium">System fixed</span>
+                </label>
                 <div className="flex gap-2">
-                  <select
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
-                    className="w-20 rounded-lg border border-border bg-background px-2 py-1.5 text-xs text-foreground focus:border-primary focus:outline-hidden font-mono"
-                  >
-                    <option value="USD">USD</option>
-                    <option value="VND">VND</option>
-                    <option value="EUR">EUR</option>
-                    <option value="SGD">SGD</option>
-                  </select>
+                  <div className="flex h-8 items-center justify-center rounded-lg border border-border bg-muted/40 px-3 text-xs font-mono font-bold text-foreground">
+                    {rate.baseCurrency}
+                  </div>
 
                   <Button
                     type="submit"

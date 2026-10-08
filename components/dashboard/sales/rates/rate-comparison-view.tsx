@@ -302,49 +302,15 @@ export function RateComparisonView({
                         </button>
                       </div>
 
-                      {/* Currency Breakdown & Consolidated Totals */}
+                      {/* Pricing Comparison in System Base Currency */}
                       <div className="mt-5 space-y-3">
-                        {/* Currency-Grouped Sections */}
-                        {rate.currencies.length > 0 && (
-                          <div className="space-y-2">
-                            {rate.currencies.map((b) => (
-                              <div
-                                key={b.currency}
-                                className="rounded-xl border border-border/70 bg-muted/20 p-3 text-xs space-y-1.5"
-                              >
-                                <div className="flex items-center justify-between font-semibold">
-                                  <span className="rounded-md bg-muted px-1.5 py-0.5 font-mono text-[11px] text-foreground">
-                                    {b.currency}
-                                  </span>
-                                  <span
-                                    className={`font-mono text-xs ${
-                                      b.totalProfit >= 0
-                                        ? "text-emerald-600 dark:text-emerald-400"
-                                        : "text-destructive"
-                                    }`}
-                                  >
-                                    {b.totalProfit >= 0 ? "+" : ""}
-                                    {b.totalProfit.toLocaleString()}{" "}
-                                    ({b.marginPercent.toFixed(1)}%)
-                                  </span>
-                                </div>
-                                <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                                  <span>Net: {b.totalNet.toLocaleString()}</span>
-                                  <span>Gross: {b.totalGross.toLocaleString()}</span>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-
-                        {/* Consolidated Base Currency Total Banner */}
-                        <div className="rounded-xl border border-primary/20 bg-primary/5 p-3.5 text-xs space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-[11px] font-semibold text-primary uppercase tracking-wider">
-                              Consolidated ({rate.baseCurrency})
+                        <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-xs space-y-2.5">
+                          <div className="flex items-center justify-between border-b border-primary/10 pb-2">
+                            <span className="text-[11px] font-bold text-primary uppercase tracking-wider flex items-center gap-1.5">
+                              Pricing ({rate.baseCurrency})
                             </span>
                             <span
-                              className={`font-mono font-bold ${
+                              className={`font-mono font-bold text-xs ${
                                 rate.consolidatedProfit >= 0
                                   ? "text-emerald-600 dark:text-emerald-400"
                                   : "text-destructive"
@@ -359,9 +325,9 @@ export function RateComparisonView({
                             </span>
                           </div>
 
-                          <div className="flex items-center justify-between text-[11px]">
-                            <span className="text-muted-foreground">Total Net Cost:</span>
-                            <span className="font-mono font-semibold text-foreground">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-muted-foreground">Buying Cost (Net):</span>
+                            <span className="font-mono font-bold text-foreground">
                               {rate.consolidatedNet.toLocaleString(undefined, {
                                 maximumFractionDigits: 2,
                               })}{" "}
@@ -369,9 +335,9 @@ export function RateComparisonView({
                             </span>
                           </div>
 
-                          <div className="flex items-center justify-between text-[11px]">
-                            <span className="text-muted-foreground">Total Selling Quote:</span>
-                            <span className="font-mono font-semibold text-foreground">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-muted-foreground">Selling Quote (Gross):</span>
+                            <span className="font-mono font-bold text-foreground">
                               {rate.consolidatedGross.toLocaleString(undefined, {
                                 maximumFractionDigits: 2,
                               })}{" "}
@@ -379,6 +345,22 @@ export function RateComparisonView({
                             </span>
                           </div>
                         </div>
+
+                        {/* Optional Foreign Currency Subtotals Badge */}
+                        {rate.currencies.length > 1 && (
+                          <div className="flex flex-wrap gap-1.5 pt-1">
+                            {rate.currencies
+                              .filter((c) => c.currency !== rate.baseCurrency)
+                              .map((c) => (
+                                <span
+                                  key={c.currency}
+                                  className="rounded-md border border-border bg-muted/40 px-2 py-0.5 text-[10px] font-mono text-muted-foreground"
+                                >
+                                  Orig: {c.totalGross.toLocaleString()} {c.currency}
+                                </span>
+                              ))}
+                          </div>
+                        )}
                       </div>
 
                       {/* Line Item Previews */}

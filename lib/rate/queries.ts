@@ -169,15 +169,23 @@ export async function getShipmentRateComparison(
       existingBucket.totalProfit += lineProfit;
       bucketsMap.set(itemCurrency, existingBucket);
 
+      const fxRate = getFxRateToBase(itemCurrency);
+      const convertedNet = net * fxRate;
+      const convertedGross = gross * fxRate;
+      const convertedProfit = convertedGross - convertedNet;
+
       return {
         id: fi.id,
         freight: fi.freight,
         unit: fi.unit,
-        net,
+        net: convertedNet,
         quantity,
-        gross,
-        profit,
-        currency: itemCurrency,
+        gross: convertedGross,
+        profit: convertedProfit,
+        currency: orgBaseCurrency,
+        originalNet: net,
+        originalGross: gross,
+        originalCurrency: itemCurrency,
       };
     });
 

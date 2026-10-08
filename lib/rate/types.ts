@@ -11,11 +11,14 @@ export interface FreightItemSummary {
   id: string;
   freight: string;
   unit: string | null;
-  net: number;
+  net: number; // Converted to system baseCurrency
   quantity: number;
-  gross: number;
-  profit: number;
-  currency: string;
+  gross: number; // Converted to system baseCurrency
+  profit: number; // Converted to system baseCurrency
+  currency: string; // The system baseCurrency it is currently displayed in
+  originalNet: number;
+  originalGross: number;
+  originalCurrency: string;
 }
 
 export interface CurrencyFinancialBucket {

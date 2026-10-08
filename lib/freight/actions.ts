@@ -40,7 +40,13 @@ export async function createFreightItemAction(
       where: { id: data.shipmentRateId },
       include: {
         shipment: {
-          include: { customer: true },
+          include: {
+            customer: {
+              include: {
+                organization: true,
+              },
+            },
+          },
         },
       },
     });
@@ -56,10 +62,13 @@ export async function createFreightItemAction(
       return { success: false, error: "Permission denied." };
     }
 
+    const orgBaseCurrency =
+      rate.shipment.customer.organization?.baseCurrency || "USD";
+
     const net = Number(data.net) || 0;
     const gross = Number(data.gross) || 0;
     const quantity = Math.max(0.001, Number(data.quantity) || 1);
-    const currency = data.currency?.trim() || "USD";
+    const currency = orgBaseCurrency;
 
     const item = await prisma.freightItem.create({
       data: {
