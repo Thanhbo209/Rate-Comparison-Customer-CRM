@@ -131,18 +131,6 @@ const SALES_NAV_ITEMS: NavConfigItem[] = [
     href: "/dashboard/sales/team",
     icon: UserPlus,
   },
-  {
-    label: "My RFQs",
-    href: "/dashboard/sales/rfqs",
-    icon: FileSpreadsheet,
-    badge: "Soon",
-  },
-  {
-    label: "My quotations",
-    href: "/dashboard/sales/quotations",
-    icon: Calculator,
-    badge: "Soon",
-  },
 
   {
     label: "Sales targets",

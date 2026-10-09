@@ -309,6 +309,7 @@ export async function getShipmentRateComparison(
     unrankedRateIds: ranking.unrankedRateIds,
     bestRateId,
     highestMarginRateId,
+    createdAt: shipment.createdAt,
   };
 }
 
@@ -621,6 +622,7 @@ export async function getAllShipmentsRateOverview(
       unrankedRateIds: ranking.unrankedRateIds,
       bestRateId,
       highestMarginRateId,
+      createdAt: s.createdAt,
     };
   });
 

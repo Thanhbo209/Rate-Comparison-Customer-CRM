@@ -25,7 +25,7 @@ export function DashboardBanner({
     <div
       className={cn(
         "relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-xs sm:p-7",
-        className
+        className,
       )}
     >
       <div className="flex flex-col-reverse gap-6 md:flex-row md:items-center md:justify-between">

@@ -82,6 +82,7 @@ export interface ShipmentComparisonDetail {
   // Lowest buying cost option
   bestRateId?: string;
   highestMarginRateId?: string;
+  createdAt?: Date | string;
 }
 
 export interface AgentComparisonSummary {

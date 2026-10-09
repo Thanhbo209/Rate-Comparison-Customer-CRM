@@ -1,5 +1,13 @@
 import React from "react";
-import { BarChart3, Award } from "lucide-react";
+import {
+  BarChart3,
+  Award,
+  Wallet,
+  ArrowUpRight,
+  TrendingUp,
+  Percent,
+} from "lucide-react";
+import { StatCard } from "@/components/dashboard/overview/stat-card";
 
 export interface MinimalFreightItem {
   freight: string;
@@ -162,49 +170,6 @@ export function getTopProviders(
     }));
 }
 
-interface StatCardProps {
-  label: string;
-  value: string;
-  hint: string;
-  tone?: "default" | "success" | "primary";
-}
-
-function StatCard({ label, value, hint, tone = "default" }: StatCardProps) {
-  const toneStyles = {
-    default: {
-      card: "border-border/80 bg-muted/20",
-      label: "text-muted-foreground",
-      value: "text-foreground",
-    },
-    success: {
-      card: "border-emerald-500/20 bg-emerald-500/10",
-      label: "text-emerald-800 dark:text-emerald-300 font-medium",
-      value: "text-emerald-700 dark:text-emerald-400 font-bold",
-    },
-    primary: {
-      card: "border-primary/20 bg-primary/10",
-      label: "text-primary font-medium",
-      value: "text-foreground font-bold",
-    },
-  }[tone];
-
-  return (
-    <div
-      className={`rounded-xl border p-3.5 flex flex-col justify-between ${toneStyles.card}`}
-    >
-      <div>
-        <span className={`text-[11px] block ${toneStyles.label}`}>{label}</span>
-        <p className={`font-mono text-base font-bold mt-1 ${toneStyles.value}`}>
-          {value}
-        </p>
-      </div>
-      <p className="text-[10px] text-muted-foreground mt-2 line-clamp-1">
-        {hint}
-      </p>
-    </div>
-  );
-}
-
 export function OverallAnalytics({
   overall,
   baseCurrency,
@@ -249,34 +214,38 @@ export function OverallAnalytics({
         {/* 4 Stat Cards in 2x2 grid (1 col on mobile) */}
         <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
           <StatCard
-            label="Total Buying Cost (Net)"
+            title="Total Buying Cost (Net)"
             value={`${overall.totalNet.toLocaleString(undefined, {
               maximumFractionDigits: 2,
             })} ${baseCurrency}`}
-            hint="Consolidated carrier purchasing cost across all quotes"
-            tone="default"
+            icon={Wallet}
+            variant="sky"
+            description="Consolidated carrier purchasing cost across all quotes"
           />
           <StatCard
-            label="Total Selling Quote (Gross)"
+            title="Total Selling Quote (Gross)"
             value={`${overall.totalGross.toLocaleString(undefined, {
               maximumFractionDigits: 2,
             })} ${baseCurrency}`}
-            hint="Total quotation value presented to customers"
-            tone="default"
+            icon={ArrowUpRight}
+            variant="primary"
+            description="Total quotation value presented to customers"
           />
           <StatCard
-            label="Total Profit"
+            title="Total Profit"
             value={`+${overall.totalProfit.toLocaleString(undefined, {
               maximumFractionDigits: 2,
             })} ${baseCurrency}`}
-            hint="Net profit spread across all carrier quote lines"
-            tone="success"
+            icon={TrendingUp}
+            variant="emerald"
+            description="Net profit spread across all carrier quote lines"
           />
           <StatCard
-            label="Avg. Profit Margin %"
+            title="Avg. Profit Margin %"
             value={`${overall.averageMarginPercent.toFixed(1)}%`}
-            hint="Average return on gross quoted revenue"
-            tone="primary"
+            icon={Percent}
+            variant="purple"
+            description="Average return on gross quoted revenue"
           />
         </div>
 
