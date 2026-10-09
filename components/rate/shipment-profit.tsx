@@ -10,7 +10,7 @@
  */
 
 import React from "react";
-import { TrendingUp, Trophy, Minus } from "lucide-react";
+import { TrendingUp, TrendingDown, Trophy, Minus } from "lucide-react";
 import type { ShipmentRankResult } from "@/lib/rate/shipment-ranking";
 
 // ─── Shared helpers ───────────────────────────────────────────────────────────
@@ -55,8 +55,18 @@ export function ShipmentProfitCell({
     <div className="flex flex-col gap-0.5">
       {/* Profit + margin */}
       <div className="inline-flex items-center gap-1.5">
-        <TrendingUp className="size-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-        <span className="font-mono font-bold text-xs text-emerald-700 dark:text-emerald-400">
+        {result.profit >= 0 ? (
+          <TrendingUp className="size-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+        ) : (
+          <TrendingDown className="size-3.5 text-destructive shrink-0" />
+        )}
+        <span
+          className={`font-mono font-bold text-xs ${
+            result.profit >= 0
+              ? "text-emerald-600 dark:text-emerald-400"
+              : "text-destructive"
+          }`}
+        >
           {profitStr}
         </span>
         <span className="text-[10px] text-muted-foreground font-medium">
@@ -102,32 +112,32 @@ interface RatesTotalRowProps {
  *   Provider | Option | Net | Gross | Profit | Margin | Actions
  * Caller wraps this in <tfoot>.
  */
-export function RatesTotalRow({
-  result,
-  baseCurrency,
-}: RatesTotalRowProps) {
+export function RatesTotalRow({ result, baseCurrency }: RatesTotalRowProps) {
   if (!result || result.rateCount === 0) return null;
 
   return (
-    <tr className="border-t-2 border-border bg-muted/40 text-xs font-semibold">
-      <td
-        colSpan={2}
-        className="px-4 py-3 text-foreground font-semibold"
-      >
+    <tr className="border-2 border-primary bg-primary/20 text-[15px] font-semibold">
+      <td colSpan={2} className="px-4 py-3 text-foreground font-semibold">
         Shipment Total ({result.rateCount}{" "}
         {result.rateCount === 1 ? "rate" : "rates"})
       </td>
-      <td className="px-4 py-3 font-mono font-medium text-foreground">
+      <td className="px-4 py-3 font-mono font-semibold text-destructive">
         {fmt(result.net)} {baseCurrency}
       </td>
-      <td className="px-4 py-3 font-mono font-bold text-foreground">
+      <td className="px-4 py-3 font-mono font-bold text-primary">
         {fmt(result.gross)} {baseCurrency}
       </td>
-      <td className="px-4 py-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">
+      <td
+        className={`px-4 py-3 font-mono font-bold ${
+          result.profit >= 0
+            ? "text-emerald-600 dark:text-emerald-400"
+            : "text-destructive"
+        }`}
+      >
         {sign(result.profit)}
         {fmt(result.profit)} {baseCurrency}
       </td>
-      <td className="px-4 py-3 font-mono text-foreground font-semibold">
+      <td className="px-4 py-3  text-foreground font-semibold">
         {result.marginPercent.toFixed(1)}%
       </td>
       <td className="px-4 py-3 text-right" />
@@ -154,7 +164,7 @@ export function RatesTotalStrip({
   if (!result || result.rateCount === 0) return null;
 
   return (
-    <div className="mx-4 sm:mx-6 mt-4 rounded-xl border border-border/80 bg-muted/30 px-4 py-2.5 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs">
+    <div className="mx-4 sm:mx-6 mt-4 rounded-xl border border-border/80 bg-primary/30 px-4 py-2.5 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs">
       {/* Label */}
       <span className="font-semibold text-foreground shrink-0">
         Shipment Total
@@ -162,21 +172,27 @@ export function RatesTotalStrip({
 
       <span className="text-muted-foreground shrink-0">
         Net:{" "}
-        <span className="font-mono font-medium text-foreground">
+        <span className="font-mono font-semibold text-destructive">
           {fmt(result.net)} {baseCurrency}
         </span>
       </span>
 
       <span className="text-muted-foreground shrink-0">
         Gross:{" "}
-        <span className="font-mono font-medium text-foreground">
+        <span className="font-mono font-bold text-primary">
           {fmt(result.gross)} {baseCurrency}
         </span>
       </span>
 
       <span className="text-muted-foreground shrink-0">
         Profit:{" "}
-        <span className="font-mono font-bold text-emerald-700 dark:text-emerald-400">
+        <span
+          className={`font-mono font-bold ${
+            result.profit >= 0
+              ? "text-emerald-700 dark:text-emerald-400"
+              : "text-destructive"
+          }`}
+        >
           {sign(result.profit)}
           {fmt(result.profit)} {baseCurrency}
         </span>
@@ -184,7 +200,7 @@ export function RatesTotalStrip({
 
       <span className="text-muted-foreground shrink-0">
         Margin:{" "}
-        <span className="font-mono font-medium text-foreground">
+        <span className=" font-medium text-foreground">
           {result.marginPercent.toFixed(1)}%
         </span>
       </span>

@@ -12,8 +12,6 @@ import {
   Tag,
   Layers,
   ArrowLeftRight,
-  LayoutGrid,
-  Table as TableIcon,
   ChevronDown,
   ChevronRight,
   ChevronLeft,
@@ -36,7 +34,6 @@ import { rankShipments } from "@/lib/rate/shipment-ranking";
 import {
   ShipmentProfitCell,
   RatesTotalRow,
-  RatesTotalStrip,
 } from "@/components/rate/shipment-profit";
 
 interface RateComparisonViewProps {
@@ -64,7 +61,6 @@ export function RateComparisonView({
   onManageFreightItems,
 }: RateComparisonViewProps) {
   const router = useRouter();
-  const [viewMode, setViewMode] = useState<"card" | "table">("card");
   const [expandedShipments, setExpandedShipments] = useState<
     Record<string, boolean>
   >(() => {
@@ -202,36 +198,7 @@ export function RateComparisonView({
                 className="h-8.5 w-56 sm:w-64 rounded-xl border border-border bg-background px-3 pl-8 text-xs placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-primary/20"
               />
             </div>
-            {/* View Switcher: Card vs Table */}
-            <div className="flex items-center gap-3">
-              <div className="flex items-center rounded-xl border border-border bg-muted/40 p-1 shadow-2xs">
-                <button
-                  type="button"
-                  onClick={() => setViewMode("card")}
-                  className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
-                    viewMode === "card"
-                      ? "bg-background text-foreground shadow-xs font-semibold"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <LayoutGrid className="size-3.5" />
-                  <span>Cards</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewMode("table")}
-                  className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
-                    viewMode === "table"
-                      ? "bg-background text-foreground shadow-xs font-semibold"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <TableIcon className="size-3.5" />
-                  <span>Table</span>
-                </button>
-              </div>
-
-              {availableShipments.length > 0 && (
+            {availableShipments.length > 0 && (
                 <Button
                   onClick={() => {
                     const target = shipment || shipmentsToDisplay[0];
@@ -252,7 +219,6 @@ export function RateComparisonView({
               )}
             </div>
           </div>
-        </div>
 
         {totalItems === 0 ? (
           <div className="rounded-2xl border border-border bg-card p-12 text-center">
@@ -355,7 +321,7 @@ export function RateComparisonView({
                               </span>
                             )}
                           </td>
-                          <td className="py-3.5 px-4 font-mono">
+                          <td className="py-3.5 px-4 ">
                             <span className="rounded-full bg-muted/80 px-2.5 py-0.5 text-[11px] font-medium text-foreground">
                               {s.rates.length}{" "}
                               {s.rates.length === 1 ? "rate" : "rates"}
@@ -447,258 +413,11 @@ export function RateComparisonView({
                                     <span>Add Carrier Rate</span>
                                   </Button>
                                 </div>
-                              ) : viewMode === "card" ? (
-                                /* ─── CARD VIEW ─── */
-                                <>
-                                  <RatesTotalStrip
-                                    result={rankings.get(s.id)}
-                                    baseCurrency={baseCurrency}
-                                  />
-                                  <div className="sm:p-6 p-4 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-                                    {s.rates.map((rate) => {
-                                      const isWinner =
-                                        rate.id === s.bestCustomerRateId;
-                                      const isBestCost = rate.id === s.bestRateId;
-                                      const isBestMargin =
-                                        rate.id === s.highestMarginRateId;
-
-                                      return (
-                                      <div
-                                        key={rate.id}
-                                        className={`rounded-2xl border bg-card p-5 shadow-xs flex flex-col justify-between transition-all ${
-                                          isWinner
-                                            ? "border-emerald-500/50 ring-1 ring-emerald-500/30 bg-card"
-                                            : "border-border"
-                                        }`}
-                                      >
-                                        <div>
-                                          {/* Carrier Title & Badges */}
-                                          <div className="flex items-start justify-between">
-                                            <div>
-                                              <div className="flex items-center gap-2 flex-wrap">
-                                                <h3 className="font-heading text-lg font-bold text-foreground">
-                                                  {rate.provider.name}
-                                                </h3>
-                                                {isWinner && (
-                                                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-2xs">
-                                                    <Award className="size-3" />
-                                                    Most Profit
-                                                    {s.tieBreakUsed && (
-                                                      <span className="text-[9px] opacity-90 ml-0.5 font-normal">
-                                                        (tie-break)
-                                                      </span>
-                                                    )}
-                                                  </span>
-                                                )}
-                                                {isBestCost && !isWinner && (
-                                                  <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                                                    Lowest Cost
-                                                  </span>
-                                                )}
-                                                {isBestMargin && (
-                                                  <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
-                                                    Top Margin
-                                                  </span>
-                                                )}
-                                              </div>
-                                              {rate.optionName && (
-                                                <p className="text-xs font-medium text-primary">
-                                                  {rate.optionName}
-                                                </p>
-                                              )}
-                                            </div>
-
-                                            <button
-                                              type="button"
-                                              onClick={() =>
-                                                handleDeleteRate(
-                                                  rate.id,
-                                                  rate.provider.name,
-                                                )
-                                              }
-                                              disabled={isPending}
-                                              title="Remove Carrier Rate"
-                                              className="text-muted-foreground hover:text-destructive transition-colors p-1"
-                                            >
-                                              <Trash2 className="size-4" />
-                                            </button>
-                                          </div>
-
-                                          {/* Warning for unranked rate with missing exchange rate */}
-                                          {rate.hasMissingExchangeRate && (
-                                            <div className="mt-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-2.5 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2">
-                                              <AlertTriangle className="size-3.5 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
-                                              <div>
-                                                <span className="font-semibold block">
-                                                  Missing exchange rate
-                                                </span>
-                                                <span className="text-[11px] opacity-90 block">
-                                                  Charges in{" "}
-                                                  {rate.missingCurrencies?.join(
-                                                    ", ",
-                                                  ) || "foreign currency"}{" "}
-                                                  cannot be converted to{" "}
-                                                  {baseCurrency}. Excluded from
-                                                  profit ranking.
-                                                </span>
-                                              </div>
-                                            </div>
-                                          )}
-
-                                          {/* Pricing Comparison in System Base Currency */}
-                                          <div className="mt-5 space-y-3">
-                                            <div className="rounded-xl border border-primary/20 bg-card p-4 text-xs space-y-2.5">
-                                              <div className="flex items-center justify-between border-b border-primary/10 pb-2">
-                                                <span className="text-[11px] font-bold text-primary uppercase tracking-wider">
-                                                  Profit
-                                                </span>
-                                                <span
-                                                  className={`font-mono font-bold text-xs ${
-                                                    rate.consolidatedProfit >= 0
-                                                      ? "text-primary dark:text-emerald-400"
-                                                      : "text-destructive"
-                                                  }`}
-                                                >
-                                                  {rate.consolidatedProfit >= 0
-                                                    ? "+"
-                                                    : ""}
-                                                  {rate.consolidatedProfit.toLocaleString(
-                                                    undefined,
-                                                    {
-                                                      maximumFractionDigits: 2,
-                                                    },
-                                                  )}{" "}
-                                                  {rate.baseCurrency} (
-                                                  {rate.consolidatedMarginPercent.toFixed(
-                                                    1,
-                                                  )}
-                                                  %)
-                                                </span>
-                                              </div>
-
-                                              <div className="flex items-center justify-between text-xs">
-                                                <span className="text-muted-foreground">
-                                                  Net:
-                                                </span>
-                                                <span className="font-mono font-bold text-foreground">
-                                                  {rate.consolidatedNet.toLocaleString(
-                                                    undefined,
-                                                    {
-                                                      maximumFractionDigits: 2,
-                                                    },
-                                                  )}{" "}
-                                                  <span className="text-muted-foreground">
-                                                    {rate.baseCurrency}
-                                                  </span>
-                                                </span>
-                                              </div>
-
-                                              <div className="flex items-center justify-between text-xs">
-                                                <span className="text-muted-foreground">
-                                                  Gross:
-                                                </span>
-                                                <span className="font-mono font-bold text-foreground">
-                                                  {rate.consolidatedGross.toLocaleString(
-                                                    undefined,
-                                                    {
-                                                      maximumFractionDigits: 2,
-                                                    },
-                                                  )}{" "}
-                                                  <span className="text-muted-foreground">
-                                                    {rate.baseCurrency}
-                                                  </span>
-                                                </span>
-                                              </div>
-                                            </div>
-                                          </div>
-
-                                          {/* Line Item Previews */}
-                                          <div className="mt-4 space-y-1.5">
-                                            <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-                                              Item Breakdown (
-                                              {rate.baseCurrency})
-                                            </div>
-                                            {rate.freightItems.length === 0 ? (
-                                              <p className="text-xs text-muted-foreground italic">
-                                                No freight items added yet.
-                                                Click &quot;Manage Line
-                                                Items&quot; below.
-                                              </p>
-                                            ) : (
-                                              <div className="space-y-1 max-h-36 overflow-y-auto pr-1">
-                                                {rate.freightItems
-                                                  .slice(0, 4)
-                                                  .map((fi) => (
-                                                    <div
-                                                      key={fi.id}
-                                                      className="flex items-center justify-between text-xs py-1 border-b border-border/40"
-                                                    >
-                                                      <span className="font-medium text-foreground truncate max-w-[140px]">
-                                                        {fi.freight}
-                                                      </span>
-                                                      <span className="font-mono text-muted-foreground text-[11px]">
-                                                        {fi.net.toLocaleString(
-                                                          undefined,
-                                                          {
-                                                            maximumFractionDigits: 1,
-                                                          },
-                                                        )}{" "}
-                                                        /{" "}
-                                                        {fi.gross.toLocaleString(
-                                                          undefined,
-                                                          {
-                                                            maximumFractionDigits: 1,
-                                                          },
-                                                        )}{" "}
-                                                        {fi.currency}
-                                                      </span>
-                                                    </div>
-                                                  ))}
-                                                {rate.freightItems.length >
-                                                  4 && (
-                                                  <p className="text-[10px] text-muted-foreground text-center pt-1">
-                                                    +{" "}
-                                                    {rate.freightItems.length -
-                                                      4}{" "}
-                                                    more items
-                                                  </p>
-                                                )}
-                                              </div>
-                                            )}
-                                          </div>
-                                        </div>
-
-                                        {/* Card Action Buttons */}
-                                        <div className="mt-5 pt-3 border-t border-border/60">
-                                          <Button
-                                            onClick={() => {
-                                              setActiveManageRate(rate);
-                                              setActiveManageShipmentName(
-                                                s.name,
-                                              );
-                                              onManageFreightItems?.(rate);
-                                            }}
-                                            variant="outline"
-                                            size="sm"
-                                            className="w-full text-xs font-semibold gap-1.5"
-                                          >
-                                            <Layers className="size-3.5" />
-                                            <span>
-                                              Manage Freight Line Items
-                                            </span>
-                                          </Button>
-                                        </div>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                               </>
                               ) : (
-                                /* ─── TABLE VIEW ─── */
                                 <div className="space-y-4">
                                   <div className="overflow-x-auto border border-border bg-card">
                                     <table className="w-full text-left text-xs">
-                                      <thead className="bg-muted/50 border-b border-border text-[11px] text-muted-foreground uppercase font-semibold">
+                                      <thead className="bg-muted/50 border-b border-border text-[13px] text-muted-foreground uppercase font-semibold">
                                         <tr>
                                           <th className="px-4 py-3">Freight</th>
                                           <th className="px-4 py-3">
@@ -728,14 +447,12 @@ export function RateComparisonView({
                                             <tr
                                               key={rate.id}
                                               className={`hover:bg-muted/20 transition-colors ${
-                                                isWinner
-                                                  ? "bg-emerald-500/5 font-medium"
-                                                  : ""
+                                                isWinner ? " font-medium" : ""
                                               }`}
                                             >
                                               <td className="px-4 py-3">
                                                 <div className="flex items-center gap-2 flex-wrap">
-                                                  <span className="font-bold text-foreground font-heading">
+                                                  <span className="font-bold text-[17px] text-foreground font-heading">
                                                     {rate.provider.name}
                                                   </span>
                                                   {isWinner && (
@@ -789,16 +506,9 @@ export function RateComparisonView({
                                                       (fi) => (
                                                         <span
                                                           key={fi.id}
-                                                          className="inline-flex items-center rounded-md border border-border bg-muted/40 px-2 py-0.5 text-[10px] text-foreground font-mono"
+                                                          className="inline-flex items-center rounded-md bg-muted/40 px-2 py-0.5 text-[12px] text-foreground"
                                                         >
-                                                          {fi.freight} (
-                                                          {fi.gross.toLocaleString(
-                                                            undefined,
-                                                            {
-                                                              maximumFractionDigits: 1,
-                                                            },
-                                                          )}{" "}
-                                                          {fi.currency})
+                                                          {fi.freight}
                                                         </span>
                                                       ),
                                                     )}
@@ -806,7 +516,7 @@ export function RateComparisonView({
                                                 )}
                                               </td>
 
-                                              <td className="px-4 py-3 font-mono font-medium text-foreground">
+                                              <td className="px-4 py-3 text-[13px] font-mono font-semibold text-destructive">
                                                 {rate.consolidatedNet.toLocaleString(
                                                   undefined,
                                                   { maximumFractionDigits: 2 },
@@ -814,7 +524,7 @@ export function RateComparisonView({
                                                 {baseCurrency}
                                               </td>
 
-                                              <td className="px-4 py-3 font-mono font-bold text-foreground">
+                                              <td className="px-4 py-3 text-[13px] font-mono font-bold text-primary">
                                                 {rate.consolidatedGross.toLocaleString(
                                                   undefined,
                                                   { maximumFractionDigits: 2 },
@@ -822,8 +532,14 @@ export function RateComparisonView({
                                                 {baseCurrency}
                                               </td>
 
-                                              <td className="px-4 py-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                                                +
+                                              <td
+                                                className={`px-4 py-3 text-[13px] font-mono font-bold ${
+                                                  rate.consolidatedProfit >= 0
+                                                    ? "text-emerald-600 dark:text-emerald-400"
+                                                    : "text-destructive"
+                                                }`}
+                                              >
+                                                {rate.consolidatedProfit >= 0 ? "+" : ""}
                                                 {rate.consolidatedProfit.toLocaleString(
                                                   undefined,
                                                   { maximumFractionDigits: 2 },
@@ -831,7 +547,7 @@ export function RateComparisonView({
                                                 {baseCurrency}
                                               </td>
 
-                                              <td className="px-4 py-3 font-mono text-foreground font-semibold">
+                                              <td className="px-4 py-3  text-foreground font-semibold">
                                                 {rate.consolidatedMarginPercent.toFixed(
                                                   1,
                                                 )}
@@ -902,17 +618,9 @@ export function RateComparisonView({
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-3.5 border-t border-border bg-muted/20 text-xs">
               <span className="text-muted-foreground">
                 Showing{" "}
-                <strong className="text-foreground font-mono">
-                  {startIndex + 1}
-                </strong>{" "}
-                to{" "}
-                <strong className="text-foreground font-mono">
-                  {endIndex}
-                </strong>{" "}
-                of{" "}
-                <strong className="text-foreground font-mono">
-                  {totalItems}
-                </strong>{" "}
+                <strong className="text-foreground ">{startIndex + 1}</strong>{" "}
+                to <strong className="text-foreground ">{endIndex}</strong> of{" "}
+                <strong className="text-foreground ">{totalItems}</strong>{" "}
                 shipments
               </span>
 
