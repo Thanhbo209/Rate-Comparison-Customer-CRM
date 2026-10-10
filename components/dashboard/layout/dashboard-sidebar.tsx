@@ -17,6 +17,7 @@ import {
   Building2,
   UserPlus,
   Package,
+  Bot,
 } from "lucide-react";
 import { BRAND, Logo } from "@/components/shared/brand";
 import { SignOutButton } from "../shared/sign-out-button";
@@ -136,6 +137,12 @@ const SALES_NAV_ITEMS: NavConfigItem[] = [
     label: "Sales targets",
     href: "/dashboard/sales/targets",
     icon: Target,
+    badge: "Soon",
+  },
+  {
+    label: "AI Asking",
+    href: "/dashboard/sales/targets",
+    icon: Bot,
     badge: "Soon",
   },
 ];
