@@ -536,7 +536,7 @@ export function ManageFreightItemsDialog({
                                       />
                                     </Field>
                                     <Field
-                                      label={`Buy per unit (${baseCurrency})`}
+                                      label={`Buy per unit (${baseCurrency}, optional)`}
                                       htmlFor={`edit-net-${item.id}`}
                                       className="sm:col-span-3"
                                     >
@@ -552,7 +552,7 @@ export function ManageFreightItemsDialog({
                                       />
                                     </Field>
                                     <Field
-                                      label={`Sell per unit (${baseCurrency})`}
+                                      label={`Sell per unit (${baseCurrency}, optional)`}
                                       htmlFor={`edit-gross-${item.id}`}
                                       className="sm:col-span-3"
                                     >
@@ -796,7 +796,7 @@ export function ManageFreightItemsDialog({
                   />
                 </Field>
                 <Field
-                  label={`Buy per unit (${baseCurrency})`}
+                  label={`Buy per unit (${baseCurrency}, optional)`}
                   htmlFor="new-net"
                 >
                   <Input
@@ -807,12 +807,11 @@ export function ManageFreightItemsDialog({
                     placeholder="0.00"
                     value={net}
                     onChange={(e) => setNet(e.target.value)}
-                    required
                     className="h-10"
                   />
                 </Field>
                 <Field
-                  label={`Sell per unit (${baseCurrency})`}
+                  label={`Sell per unit (${baseCurrency}, optional)`}
                   htmlFor="new-gross"
                 >
                   <Input
@@ -822,7 +821,6 @@ export function ManageFreightItemsDialog({
                     placeholder="0.00"
                     value={gross}
                     onChange={(e) => setGross(e.target.value)}
-                    required
                     className="h-10"
                   />
                 </Field>
