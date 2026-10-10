@@ -35,6 +35,7 @@ import {
 import { AddRateDialog } from "./add-rate-dialog";
 import { ManageFreightItemsDialog } from "./manage-freight-items-dialog";
 import { deleteShipmentRateAction } from "@/lib/rate/actions";
+import { toast } from "react-toastify";
 import type {
   ShipmentComparisonDetail,
   ProviderItem,
@@ -114,6 +115,7 @@ export function RateComparisonView({
     startTransition(async () => {
       const res = await deleteShipmentRateAction({ shipmentRateId: rateId });
       if (res.success) {
+        toast.success("Rate deleted");
         router.refresh();
       }
     });

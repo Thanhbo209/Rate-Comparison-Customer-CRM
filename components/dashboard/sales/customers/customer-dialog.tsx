@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { createCustomerAction, updateCustomerAction } from "@/lib/customer/actions";
 import type { CustomerItem, CustomerFormData } from "@/lib/customer/types";
+import { toast } from "react-toastify";
 
 interface CustomerDialogProps {
   open: boolean;
@@ -90,6 +91,7 @@ export function CustomerDialog({
         return;
       }
 
+      toast.success(isEdit ? "Customer updated" : "Customer added");
       onOpenChange(false);
       onSuccess();
     } catch (err) {

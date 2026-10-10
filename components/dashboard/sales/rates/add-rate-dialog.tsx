@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { addShipmentRateAction } from "@/lib/rate/actions";
 import type { ProviderItem } from "@/lib/rate/types";
+import { toast } from "react-toastify";
 
 interface AddRateDialogProps {
   open: boolean;
@@ -70,6 +71,7 @@ export function AddRateDialog({
         return;
       }
 
+      toast.success(mode === "new" ? "Carrier and rate added" : "Rate added");
       setNewProviderName("");
       setOptionName("");
       onOpenChange(false);

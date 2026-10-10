@@ -20,6 +20,7 @@ import {
   deleteFreightItemAction,
 } from "@/lib/freight/actions";
 import type { ShipmentRateItem, FreightItemSummary } from "@/lib/rate/types";
+import { toast } from "react-toastify";
 
 interface ManageFreightItemsDialogProps {
   open: boolean;
@@ -230,6 +231,7 @@ export function ManageFreightItemsDialog({
       setNet("");
       setGross("");
       setQuantity("1");
+      toast.success("Charge added");
       onSuccess();
       nameRef.current?.focus(); // ready for the next charge
     });
@@ -246,6 +248,7 @@ export function ManageFreightItemsDialog({
         return;
       }
       setItems((prev) => prev.filter((i) => i.id !== itemId));
+      toast.success("Charge deleted");
       onSuccess();
     });
   };
@@ -297,6 +300,7 @@ export function ManageFreightItemsDialog({
       );
 
       setEditingId(null);
+      toast.success("Charge updated");
       onSuccess();
     });
   };

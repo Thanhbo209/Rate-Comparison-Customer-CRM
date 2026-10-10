@@ -29,6 +29,7 @@ import {
   updateShipmentAction,
 } from "@/lib/shipment/actions";
 import type { ShipmentItem, ShipmentFormData } from "@/lib/shipment/types";
+import { toast } from "react-toastify";
 
 interface CustomerOption {
   id: string;
@@ -109,6 +110,7 @@ export function ShipmentDialog({
         return;
       }
 
+      toast.success(isEdit ? "Shipment updated" : "Shipment added");
       onOpenChange(false);
       onSuccess();
     } catch (err) {

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { deleteShipmentAction } from "@/lib/shipment/actions";
 import type { ShipmentItem } from "@/lib/shipment/types";
+import { toast } from "react-toastify";
 
 interface ShipmentDeleteDialogProps {
   open: boolean;
@@ -41,6 +42,7 @@ export function ShipmentDeleteDialog({
         setLoading(false);
         return;
       }
+      toast.success("Shipment deleted");
       onOpenChange(false);
       onSuccess();
     } catch (err) {

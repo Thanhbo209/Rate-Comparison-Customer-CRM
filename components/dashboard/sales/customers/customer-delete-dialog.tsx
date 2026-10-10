@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { deleteCustomerAction } from "@/lib/customer/actions";
 import type { CustomerItem } from "@/lib/customer/types";
+import { toast } from "react-toastify";
 
 interface CustomerDeleteDialogProps {
   open: boolean;
@@ -41,6 +42,7 @@ export function CustomerDeleteDialog({
         setLoading(false);
         return;
       }
+      toast.success("Customer deleted");
       onOpenChange(false);
       onSuccess();
     } catch (err) {
