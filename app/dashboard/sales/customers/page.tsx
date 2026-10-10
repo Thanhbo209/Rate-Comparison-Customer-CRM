@@ -8,7 +8,7 @@ export default async function SalesCustomersPage() {
   const profile = await requireRole(["SALES", "SALES_MANAGER"]);
 
   const [customers, stats] = await Promise.all([
-    getCustomers(profile.organizationId),
+    getCustomers(profile.organizationId!),
     getCustomerStats(profile.organizationId),
   ]);
 
