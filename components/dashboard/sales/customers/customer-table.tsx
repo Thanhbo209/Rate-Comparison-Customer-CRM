@@ -112,7 +112,7 @@ export function CustomerTable({
   };
 
   return (
-    <div className="rounded-xl border border-border bg-card shadow-xs">
+    <div className="rounded-md border border-border bg-card shadow-xs">
       {/* Search and Filters Bar */}
       <div className="flex flex-col gap-3 border-b border-border p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1 max-w-sm">
@@ -144,7 +144,7 @@ export function CustomerTable({
                     }}
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="rounded-xl max-h-72">
+                <SelectContent className="rounded-md max-h-72">
                   <SelectItem value="ALL">All Industrial Zones</SelectItem>
                   {industrialZones.map((z) => (
                     <SelectItem key={z} value={z}>
@@ -173,7 +173,7 @@ export function CustomerTable({
                     }}
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="rounded-xl max-h-72">
+                <SelectContent className="rounded-md max-h-72">
                   <SelectItem value="ALL">All Commodities</SelectItem>
                   {commodities.map((comm) => (
                     <SelectItem key={comm} value={comm}>
