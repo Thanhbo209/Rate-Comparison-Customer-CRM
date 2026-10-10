@@ -1,7 +1,17 @@
-import { type NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/proxy";
 
 export async function proxy(request: NextRequest) {
+  // If an OAuth provider redirected to the root with a code parameter, forward to /auth/callback
+  if (
+    request.nextUrl.pathname === "/" &&
+    request.nextUrl.searchParams.has("code")
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth/callback";
+    return NextResponse.redirect(url);
+  }
+
   return await updateSession(request);
 }
 
