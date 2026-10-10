@@ -61,7 +61,7 @@ export function ShipmentProfitCell({
           <TrendingDown className="size-3.5 text-destructive shrink-0" />
         )}
         <span
-          className={`font-mono font-bold text-xs ${
+          className={`font-bold text-xs ${
             result.profit >= 0
               ? "text-emerald-600 dark:text-emerald-400"
               : "text-destructive"
@@ -121,14 +121,14 @@ export function RatesTotalRow({ result, baseCurrency }: RatesTotalRowProps) {
         Shipment Total ({result.rateCount}{" "}
         {result.rateCount === 1 ? "rate" : "rates"})
       </td>
-      <td className="px-4 py-3 font-mono font-semibold text-destructive">
+      <td className="px-4 py-3 font-semibold text-destructive">
         {fmt(result.net)} {baseCurrency}
       </td>
-      <td className="px-4 py-3 font-mono font-bold text-primary">
+      <td className="px-4 py-3 font-bold text-primary">
         {fmt(result.gross)} {baseCurrency}
       </td>
       <td
-        className={`px-4 py-3 font-mono font-bold ${
+        className={`px-4 py-3 font-bold ${
           result.profit >= 0
             ? "text-emerald-600 dark:text-emerald-400"
             : "text-destructive"
@@ -172,14 +172,14 @@ export function RatesTotalStrip({
 
       <span className="text-muted-foreground shrink-0">
         Net:{" "}
-        <span className="font-mono font-semibold text-destructive">
+        <span className="font-semibold text-destructive">
           {fmt(result.net)} {baseCurrency}
         </span>
       </span>
 
       <span className="text-muted-foreground shrink-0">
         Gross:{" "}
-        <span className="font-mono font-bold text-primary">
+        <span className="font-bold text-primary">
           {fmt(result.gross)} {baseCurrency}
         </span>
       </span>
@@ -187,7 +187,7 @@ export function RatesTotalStrip({
       <span className="text-muted-foreground shrink-0">
         Profit:{" "}
         <span
-          className={`font-mono font-bold ${
+          className={`font-bold ${
             result.profit >= 0
               ? "text-emerald-700 dark:text-emerald-400"
               : "text-destructive"

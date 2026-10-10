@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
+import React, { useState, useTransition, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   Truck,
@@ -18,9 +18,20 @@ import {
   Package,
   Search,
   AlertTriangle,
+  Building2,
+  SlidersHorizontal,
+  X,
+  RotateCcw,
 } from "lucide-react";
 import { OverallAnalytics } from "./overall-analytics";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { AddRateDialog } from "./add-rate-dialog";
 import { ManageFreightItemsDialog } from "./manage-freight-items-dialog";
 import { deleteShipmentRateAction } from "@/lib/rate/actions";
@@ -50,6 +61,8 @@ interface RateComparisonViewProps {
   role: "ADMIN" | "SALES" | "SALES_MANAGER";
   organizationName: string;
   onManageFreightItems?: (rate: ShipmentRateItem) => void;
+  customers?: { id: string; companyName: string }[];
+  initialCustomerId?: string;
 }
 
 export function RateComparisonView({
@@ -59,6 +72,8 @@ export function RateComparisonView({
   overview,
   organizationName,
   onManageFreightItems,
+  customers,
+  initialCustomerId,
 }: RateComparisonViewProps) {
   const router = useRouter();
   const [expandedShipments, setExpandedShipments] = useState<
@@ -109,6 +124,24 @@ export function RateComparisonView({
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Advanced Filter state
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string>(
+    initialCustomerId || "ALL",
+  );
+  const [selectedDirection, setSelectedDirection] = useState<
+    "ALL" | "IMPORT" | "EXPORT"
+  >("ALL");
+  const [selectedRateStatus, setSelectedRateStatus] = useState<
+    "ALL" | "WITH_RATES" | "NO_RATES"
+  >("ALL");
+  const [selectedProfitability, setSelectedProfitability] = useState<
+    "ALL" | "PROFITABLE" | "UNPROFITABLE"
+  >("ALL");
+  const [sortBy, setSortBy] = useState<
+    "DEFAULT" | "MOST_RATES" | "HIGHEST_PROFIT" | "NAME"
+  >("DEFAULT");
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+
   // List of shipments to render
   const shipmentsToDisplay =
     overview?.shipments || (shipment ? [shipment] : []);
@@ -120,18 +153,152 @@ export function RateComparisonView({
   // pre-pagination) so that "Best choice" is globally correct.
   const rankings = rankShipments(shipmentsToDisplay);
 
-  // Filter shipments based on search query
-  const filteredShipments = shipmentsToDisplay.filter((s) => {
-    if (!searchTerm.trim()) return true;
-    const q = searchTerm.toLowerCase();
-    return (
-      s.name.toLowerCase().includes(q) ||
-      s.customer.companyName.toLowerCase().includes(q) ||
-      (s.commodity && s.commodity.toLowerCase().includes(q)) ||
-      (s.bestCustomerRateCarrier &&
-        s.bestCustomerRateCarrier.toLowerCase().includes(q))
+  // Unique list of customers with their shipment count
+  const customerOptions = useMemo(() => {
+    const map = new Map<string, { id: string; companyName: string; count: number }>();
+
+    // From shipments to display
+    shipmentsToDisplay.forEach((s) => {
+      const cId = s.customer?.id || (s as unknown as { customerId?: string }).customerId;
+      const cName = s.customer?.companyName || "Unknown Customer";
+      if (cId) {
+        const existing = map.get(cId);
+        if (existing) {
+          existing.count += 1;
+        } else {
+          map.set(cId, { id: cId, companyName: cName, count: 1 });
+        }
+      }
+    });
+
+    // Also include any organization customers with 0 shipments
+    (customers || []).forEach((c) => {
+      if (!map.has(c.id)) {
+        map.set(c.id, { id: c.id, companyName: c.companyName, count: 0 });
+      }
+    });
+
+    return Array.from(map.values()).sort((a, b) =>
+      a.companyName.localeCompare(b.companyName),
     );
-  });
+  }, [shipmentsToDisplay, customers]);
+
+  const selectedCustomerObj = customerOptions.find(
+    (c) => c.id === selectedCustomerId,
+  );
+
+  const handleCustomerChange = (customerId: string) => {
+    setSelectedCustomerId(customerId);
+    setCurrentPage(1);
+
+    if (customerId !== "ALL") {
+      // Auto-expand shipments belonging to this customer so user immediately sees their rates
+      const targetShipments = shipmentsToDisplay.filter(
+        (s) =>
+          s.customer?.id === customerId ||
+          (s as unknown as { customerId?: string }).customerId === customerId,
+      );
+      if (targetShipments.length > 0) {
+        const toExpand: Record<string, boolean> = {};
+        targetShipments.forEach((s) => {
+          toExpand[s.id] = true;
+        });
+        setExpandedShipments((prev) => ({ ...prev, ...toExpand }));
+      }
+    }
+  };
+
+  const handleResetFilters = () => {
+    setSelectedCustomerId("ALL");
+    setSelectedDirection("ALL");
+    setSelectedRateStatus("ALL");
+    setSelectedProfitability("ALL");
+    setSortBy("DEFAULT");
+    setSearchTerm("");
+    setCurrentPage(1);
+  };
+
+  const activeFilterCount =
+    (selectedCustomerId !== "ALL" ? 1 : 0) +
+    (selectedDirection !== "ALL" ? 1 : 0) +
+    (selectedRateStatus !== "ALL" ? 1 : 0) +
+    (selectedProfitability !== "ALL" ? 1 : 0) +
+    (sortBy !== "DEFAULT" ? 1 : 0) +
+    (searchTerm.trim() ? 1 : 0);
+
+  // Filter shipments based on search query, customer, direction, rate status, and profitability
+  const filteredShipments = useMemo(() => {
+    return shipmentsToDisplay
+      .filter((s) => {
+        // Customer filter
+        if (selectedCustomerId !== "ALL") {
+          const matchCustomer =
+            s.customer?.id === selectedCustomerId ||
+            (s as unknown as { customerId?: string }).customerId === selectedCustomerId;
+          if (!matchCustomer) return false;
+        }
+
+        // Direction filter
+        if (selectedDirection !== "ALL" && s.direction !== selectedDirection) {
+          return false;
+        }
+
+        const rateCount = s.rates?.length ?? 0;
+
+        // Rate status filter
+        if (selectedRateStatus === "WITH_RATES" && rateCount === 0) {
+          return false;
+        }
+        if (selectedRateStatus === "NO_RATES" && rateCount > 0) {
+          return false;
+        }
+
+        // Profitability filter
+        if (selectedProfitability !== "ALL") {
+          const profit = rankings.get(s.id)?.profit ?? 0;
+          if (selectedProfitability === "PROFITABLE" && profit <= 0) {
+            return false;
+          }
+          if (selectedProfitability === "UNPROFITABLE" && profit > 0) {
+            return false;
+          }
+        }
+
+        // Search term
+        if (!searchTerm.trim()) return true;
+        const q = searchTerm.toLowerCase();
+        return (
+          s.name.toLowerCase().includes(q) ||
+          s.customer.companyName.toLowerCase().includes(q) ||
+          (s.commodity && s.commodity.toLowerCase().includes(q)) ||
+          (s.bestCustomerRateCarrier &&
+            s.bestCustomerRateCarrier.toLowerCase().includes(q))
+        );
+      })
+      .sort((a, b) => {
+        if (sortBy === "MOST_RATES") {
+          return (b.rates?.length ?? 0) - (a.rates?.length ?? 0);
+        }
+        if (sortBy === "HIGHEST_PROFIT") {
+          const profitA = rankings.get(a.id)?.profit ?? 0;
+          const profitB = rankings.get(b.id)?.profit ?? 0;
+          return profitB - profitA;
+        }
+        if (sortBy === "NAME") {
+          return a.name.localeCompare(b.name);
+        }
+        return 0; // DEFAULT preserves original order
+      });
+  }, [
+    shipmentsToDisplay,
+    selectedCustomerId,
+    selectedDirection,
+    selectedRateStatus,
+    selectedProfitability,
+    searchTerm,
+    sortBy,
+    rankings,
+  ]);
 
   const totalItems = filteredShipments.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
@@ -174,19 +341,48 @@ export function RateComparisonView({
         {/* Directory Controls: Title, Search, Item Count */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h2 className="font-heading text-lg font-bold text-foreground flex items-center gap-2">
-              <Package className="size-5 text-primary" />
-              <span>Shipments Directory</span>
-            </h2>
+            <div className="flex items-center gap-2">
+              <h2 className="font-heading text-lg font-bold text-foreground flex items-center gap-2">
+                <Package className="size-5 text-primary" />
+                <span>Shipments Directory</span>
+              </h2>
+              <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
+                {totalItems} {totalItems === 1 ? "shipment" : "shipments"}
+              </span>
+            </div>
             <p className="text-xs text-muted-foreground">
               Click on any shipment to open its dropdown of carrier quotes,
               freight charges, and rate comparisons.
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Search className="size-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          {availableShipments.length > 0 && (
+            <Button
+              onClick={() => {
+                const target = shipment || shipmentsToDisplay[0];
+                if (target) {
+                  setTargetShipmentForAdd({
+                    id: target.id,
+                    name: target.name,
+                  });
+                  setAddRateOpen(true);
+                }
+              }}
+              size="sm"
+              className="gap-1.5 h-9 text-xs shrink-0 self-start sm:self-auto"
+            >
+              <Plus className="size-3.5" />
+              <span>Add Carrier Option</span>
+            </Button>
+          )}
+        </div>
+
+        {/* ADVANCED FILTER TOOLBAR */}
+        <div className="rounded-2xl border border-border bg-card p-3 sm:p-4 shadow-2xs space-y-3">
+          <div className="flex flex-wrap items-center gap-2.5">
+            {/* Search Input */}
+            <div className="relative flex-1 min-w-[200px] sm:min-w-[240px]">
+              <Search className="size-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
               <input
                 type="text"
                 value={searchTerm}
@@ -194,31 +390,363 @@ export function RateComparisonView({
                   setSearchTerm(e.target.value);
                   setCurrentPage(1);
                 }}
-                placeholder="Search shipments..."
-                className="h-8.5 w-56 sm:w-64 rounded-xl border border-border bg-background px-3 pl-8 text-xs placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-primary/20"
+                placeholder="Search shipments, commodity, carrier..."
+                className="h-9 w-full rounded-xl border border-border bg-background px-3 pl-8.5 pr-8 text-xs placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-primary/20"
               />
-            </div>
-            {availableShipments.length > 0 && (
-                <Button
+              {searchTerm && (
+                <button
+                  type="button"
                   onClick={() => {
-                    const target = shipment || shipmentsToDisplay[0];
-                    if (target) {
-                      setTargetShipmentForAdd({
-                        id: target.id,
-                        name: target.name,
-                      });
-                      setAddRateOpen(true);
-                    }
+                    setSearchTerm("");
+                    setCurrentPage(1);
                   }}
-                  size="sm"
-                  className="gap-1.5 h-9 text-xs shrink-0"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
-                  <Plus className="size-3.5" />
-                  <span>Add Carrier Option</span>
-                </Button>
+                  <X className="size-3.5" />
+                </button>
               )}
             </div>
+
+            {/* Customer Selection Filter (Advanced filter requirement) */}
+            <div className="min-w-[190px] sm:min-w-[220px]">
+              <Select
+                value={selectedCustomerId}
+                onValueChange={(val) => {
+                  if (val) handleCustomerChange(val);
+                }}
+              >
+                <SelectTrigger
+                  className={`h-9 w-full rounded-xl text-xs transition-colors ${
+                    selectedCustomerId !== "ALL"
+                      ? "border-primary bg-primary/5 text-primary font-semibold"
+                      : "border-border bg-background"
+                  }`}
+                >
+                  <div className="flex items-center gap-2 truncate">
+                    <Building2 className="size-3.5 text-muted-foreground shrink-0" />
+                    <SelectValue>
+                      {(val: string | null) => {
+                        if (!val || val === "ALL") {
+                          return `All Customers (${shipmentsToDisplay.length})`;
+                        }
+                        const found = customerOptions.find((c) => c.id === val);
+                        return found
+                          ? `${found.companyName} (${found.count})`
+                          : "Select Customer";
+                      }}
+                    </SelectValue>
+                  </div>
+                </SelectTrigger>
+                <SelectContent className="rounded-xl max-h-72">
+                  <SelectItem value="ALL">
+                    All Customers ({shipmentsToDisplay.length})
+                  </SelectItem>
+                  {customerOptions.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.companyName} ({c.count} {c.count === 1 ? "shipment" : "shipments"})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Direction Filter Pills */}
+            <div className="inline-flex items-center gap-1 p-0.5 rounded-xl border border-border bg-muted/40">
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedDirection("ALL");
+                  setCurrentPage(1);
+                }}
+                className={`rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
+                  selectedDirection === "ALL"
+                    ? "bg-background text-foreground shadow-2xs font-semibold"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                All
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedDirection("IMPORT");
+                  setCurrentPage(1);
+                }}
+                className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
+                  selectedDirection === "IMPORT"
+                    ? "bg-blue-600 text-white font-semibold shadow-2xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <ArrowDownLeft className="size-3" />
+                <span>Imports</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedDirection("EXPORT");
+                  setCurrentPage(1);
+                }}
+                className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
+                  selectedDirection === "EXPORT"
+                    ? "bg-emerald-600 text-white font-semibold shadow-2xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <ArrowUpRight className="size-3" />
+                <span>Exports</span>
+              </button>
+            </div>
+
+            {/* Advanced Filters Expand/Collapse Toggle */}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+              className={`h-9 gap-1.5 text-xs rounded-xl ${
+                showAdvancedFilters ||
+                selectedRateStatus !== "ALL" ||
+                selectedProfitability !== "ALL" ||
+                sortBy !== "DEFAULT"
+                  ? "border-primary text-primary bg-primary/5"
+                  : ""
+              }`}
+            >
+              <SlidersHorizontal className="size-3.5" />
+              <span>More Filters</span>
+              {(selectedRateStatus !== "ALL" ||
+                selectedProfitability !== "ALL" ||
+                sortBy !== "DEFAULT") && (
+                <span className="rounded-full bg-primary size-1.5" />
+              )}
+            </Button>
           </div>
+
+          {/* Collapsible Advanced Filters Drawer */}
+          {showAdvancedFilters && (
+            <div className="pt-3 border-t border-border/70 grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {/* Rate Quotes Status */}
+              <div className="space-y-1">
+                <label className="text-[11px] font-medium text-muted-foreground">
+                  Carrier Quotes Status
+                </label>
+                <Select
+                  value={selectedRateStatus}
+                  onValueChange={(val) => {
+                    if (val) {
+                      setSelectedRateStatus(val as "ALL" | "WITH_RATES" | "NO_RATES");
+                      setCurrentPage(1);
+                    }
+                  }}
+                >
+                  <SelectTrigger className="h-8.5 w-full rounded-lg border-border bg-background text-xs">
+                    <SelectValue>
+                      {(val: string | null) => {
+                        if (val === "WITH_RATES") return "Has Quotes (≥ 1 option)";
+                        if (val === "NO_RATES") return "Needs Quotes (0 options)";
+                        return "All Quotes Statuses";
+                      }}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    <SelectItem value="ALL">All Quotes Statuses</SelectItem>
+                    <SelectItem value="WITH_RATES">Has Quotes (≥ 1 option)</SelectItem>
+                    <SelectItem value="NO_RATES">Needs Quotes (0 options)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Profitability Status */}
+              <div className="space-y-1">
+                <label className="text-[11px] font-medium text-muted-foreground">
+                  Profitability
+                </label>
+                <Select
+                  value={selectedProfitability}
+                  onValueChange={(val) => {
+                    if (val) {
+                      setSelectedProfitability(val as "ALL" | "PROFITABLE" | "UNPROFITABLE");
+                      setCurrentPage(1);
+                    }
+                  }}
+                >
+                  <SelectTrigger className="h-8.5 w-full rounded-lg border-border bg-background text-xs">
+                    <SelectValue>
+                      {(val: string | null) => {
+                        if (val === "PROFITABLE") return "Profitable (> $0)";
+                        if (val === "UNPROFITABLE") return "Loss / Breakeven (≤ $0)";
+                        return "All Profit Margins";
+                      }}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    <SelectItem value="ALL">All Profit Margins</SelectItem>
+                    <SelectItem value="PROFITABLE">Profitable (&gt; $0)</SelectItem>
+                    <SelectItem value="UNPROFITABLE">Loss / Breakeven (≤ $0)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Sort By */}
+              <div className="space-y-1">
+                <label className="text-[11px] font-medium text-muted-foreground">
+                  Sort Shipments By
+                </label>
+                <Select
+                  value={sortBy}
+                  onValueChange={(val) => {
+                    if (val) {
+                      setSortBy(val as "DEFAULT" | "MOST_RATES" | "HIGHEST_PROFIT" | "NAME");
+                      setCurrentPage(1);
+                    }
+                  }}
+                >
+                  <SelectTrigger className="h-8.5 w-full rounded-lg border-border bg-background text-xs">
+                    <SelectValue>
+                      {(val: string | null) => {
+                        if (val === "MOST_RATES") return "Most Carrier Options";
+                        if (val === "HIGHEST_PROFIT") return "Highest Quoted Profit";
+                        if (val === "NAME") return "Shipment Name (A–Z)";
+                        return "Default (Creation Order)";
+                      }}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    <SelectItem value="DEFAULT">Default (Creation Order)</SelectItem>
+                    <SelectItem value="MOST_RATES">Most Carrier Options</SelectItem>
+                    <SelectItem value="HIGHEST_PROFIT">Highest Quoted Profit</SelectItem>
+                    <SelectItem value="NAME">Shipment Name (A–Z)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+
+          {/* Active Filter Chips & Feedback Bar */}
+          {activeFilterCount > 0 && (
+            <div className="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-border/50 text-xs">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="text-muted-foreground mr-1 text-[11px]">
+                  Active filters ({activeFilterCount}):
+                </span>
+
+                {selectedCustomerId !== "ALL" && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 border border-primary/20 px-2 py-0.5 text-[11px] font-semibold text-primary">
+                    <Building2 className="size-3" />
+                    <span>
+                      Customer: {selectedCustomerObj?.companyName || "Selected"}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleCustomerChange("ALL")}
+                      className="ml-0.5 hover:text-foreground"
+                    >
+                      <X className="size-3" />
+                    </button>
+                  </span>
+                )}
+
+                {selectedDirection !== "ALL" && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-muted border border-border px-2 py-0.5 text-[11px] font-medium text-foreground">
+                    <span>
+                      Direction: {selectedDirection === "IMPORT" ? "Imports" : "Exports"}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedDirection("ALL");
+                        setCurrentPage(1);
+                      }}
+                      className="ml-0.5 hover:text-destructive"
+                    >
+                      <X className="size-3" />
+                    </button>
+                  </span>
+                )}
+
+                {selectedRateStatus !== "ALL" && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-muted border border-border px-2 py-0.5 text-[11px] font-medium text-foreground">
+                    <span>
+                      Quotes: {selectedRateStatus === "WITH_RATES" ? "Has Quotes" : "Needs Quotes"}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedRateStatus("ALL");
+                        setCurrentPage(1);
+                      }}
+                      className="ml-0.5 hover:text-destructive"
+                    >
+                      <X className="size-3" />
+                    </button>
+                  </span>
+                )}
+
+                {selectedProfitability !== "ALL" && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-muted border border-border px-2 py-0.5 text-[11px] font-medium text-foreground">
+                    <span>
+                      Profit: {selectedProfitability === "PROFITABLE" ? "Profitable (> $0)" : "Loss / Breakeven"}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedProfitability("ALL");
+                        setCurrentPage(1);
+                      }}
+                      className="ml-0.5 hover:text-destructive"
+                    >
+                      <X className="size-3" />
+                    </button>
+                  </span>
+                )}
+
+                {sortBy !== "DEFAULT" && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-muted border border-border px-2 py-0.5 text-[11px] font-medium text-foreground">
+                    <span>
+                      Sorted: {sortBy === "MOST_RATES" ? "Most Options" : sortBy === "HIGHEST_PROFIT" ? "Highest Profit" : "Name"}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSortBy("DEFAULT");
+                        setCurrentPage(1);
+                      }}
+                      className="ml-0.5 hover:text-destructive"
+                    >
+                      <X className="size-3" />
+                    </button>
+                  </span>
+                )}
+
+                {searchTerm.trim() && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-muted border border-border px-2 py-0.5 text-[11px] font-medium text-foreground">
+                    <span>Search: &ldquo;{searchTerm}&rdquo;</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchTerm("");
+                        setCurrentPage(1);
+                      }}
+                      className="ml-0.5 hover:text-destructive"
+                    >
+                      <X className="size-3" />
+                    </button>
+                  </span>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={handleResetFilters}
+                className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-destructive transition-colors shrink-0"
+              >
+                <RotateCcw className="size-3" />
+                <span>Reset all</span>
+              </button>
+            </div>
+          )}
+        </div>
 
         {totalItems === 0 ? (
           <div className="rounded-2xl border border-border bg-card p-12 text-center">
@@ -229,10 +757,25 @@ export function RateComparisonView({
               No shipments found
             </h3>
             <p className="mt-1 text-xs text-muted-foreground max-w-sm mx-auto">
-              {searchTerm
+              {selectedCustomerId !== "ALL"
+                ? `No shipments found for customer "${selectedCustomerObj?.companyName || "selected"}". Try choosing another customer or clearing your filters.`
+                : searchTerm
                 ? "No shipments matched your search criteria. Try a different query."
-                : "Create your first shipment to begin comparing carrier rates and itemized freight charges."}
+                : "No shipments matched the current filter criteria."}
             </p>
+            {activeFilterCount > 0 && (
+              <div className="mt-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleResetFilters}
+                  className="gap-1.5 text-xs"
+                >
+                  <RotateCcw className="size-3.5" />
+                  <span>Reset All Filters</span>
+                </Button>
+              </div>
+            )}
           </div>
         ) : (
           <div className="rounded-2xl border border-border bg-card shadow-xs overflow-hidden">
@@ -292,9 +835,18 @@ export function RateComparisonView({
                             </span>
                           </td>
                           <td className="py-3.5 px-4">
-                            <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-semibold text-foreground">
-                              {s.customer.companyName}
-                            </span>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCustomerChange(s.customer.id);
+                              }}
+                              title={`Filter directory by ${s.customer.companyName}`}
+                              className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-xs font-semibold text-foreground hover:bg-primary/10 hover:text-primary transition-colors text-left cursor-pointer"
+                            >
+                              <Building2 className="size-3 text-muted-foreground" />
+                              <span>{s.customer.companyName}</span>
+                            </button>
                           </td>
                           <td className="py-3.5 px-4">
                             {s.direction === "IMPORT" ? (
@@ -516,7 +1068,7 @@ export function RateComparisonView({
                                                 )}
                                               </td>
 
-                                              <td className="px-4 py-3 text-[13px] font-mono font-semibold text-destructive">
+                                              <td className="px-4 py-3 text-[13px] font-semibold text-destructive">
                                                 {rate.consolidatedNet.toLocaleString(
                                                   undefined,
                                                   { maximumFractionDigits: 2 },
@@ -524,7 +1076,7 @@ export function RateComparisonView({
                                                 {baseCurrency}
                                               </td>
 
-                                              <td className="px-4 py-3 text-[13px] font-mono font-bold text-primary">
+                                              <td className="px-4 py-3 text-[13px] font-bold text-primary">
                                                 {rate.consolidatedGross.toLocaleString(
                                                   undefined,
                                                   { maximumFractionDigits: 2 },
@@ -533,7 +1085,7 @@ export function RateComparisonView({
                                               </td>
 
                                               <td
-                                                className={`px-4 py-3 text-[13px] font-mono font-bold ${
+                                                className={`px-4 py-3 text-[13px] font-bold ${
                                                   rate.consolidatedProfit >= 0
                                                     ? "text-emerald-600 dark:text-emerald-400"
                                                     : "text-destructive"

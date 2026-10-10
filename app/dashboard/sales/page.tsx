@@ -13,13 +13,14 @@ import {
   Layers,
 } from "lucide-react";
 import { RecentShipmentsRates } from "@/components/dashboard/overview/recent-shipments-rates";
-import { SalesAnalyticsCharts } from "@/components/dashboard/sales/charts/sales-analytics-charts";
+import { SalesAnalyticsCharts } from "@/components/dashboard/overview/charts/sales-analytics-charts";
 import { StatCard } from "@/components/dashboard/overview/stat-card";
 import { SectionCard } from "@/components/dashboard/overview/section-card";
 import { DashboardBanner } from "@/components/dashboard/overview/dashboard-banner";
 import { getCustomerStats, getCustomers } from "@/lib/customer/queries";
 import { getShipmentStats } from "@/lib/shipment/queries";
 import { getAllShipmentsRateOverview } from "@/lib/rate/queries";
+import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
 
@@ -66,13 +67,15 @@ export default async function SalesDashboardPage() {
         slogan="Compare Rates & Close Freight Deals Faster"
         description={`Welcome back, ${profile.name}. Benchmark ocean & air tariffs in real-time, generate client proposals, and track your active RFQs.`}
         actions={
-          <button
-            type="button"
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-4 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
-          >
-            <PlusCircle className="size-3.5" />
-            New Customer RFQ
-          </button>
+          <Link href="/dashboard/sales/customers">
+            <Button
+              type="button"
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-4 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
+            >
+              <PlusCircle className="size-3.5" />
+              New Customer
+            </Button>
+          </Link>
         }
       />
 
@@ -215,7 +218,7 @@ export default async function SalesDashboardPage() {
                         {carrier.shipmentCount === 1 ? "shipment" : "shipments"}
                       </td>
                       <td className="px-5 py-3.5">
-                        <span className="font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                        <span className=" text-xs font-bold text-emerald-600 dark:text-emerald-400">
                           +
                           {carrier.totalProfit.toLocaleString(undefined, {
                             maximumFractionDigits: 0,
@@ -223,7 +226,7 @@ export default async function SalesDashboardPage() {
                           {baseCurrency}
                         </span>
                       </td>
-                      <td className="px-5 py-3.5 text-right font-mono font-semibold text-foreground">
+                      <td className="px-5 py-3.5 text-right  font-semibold text-foreground">
                         {carrier.averageMarginPercent.toFixed(1)}%
                       </td>
                     </tr>

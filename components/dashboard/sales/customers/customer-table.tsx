@@ -251,7 +251,7 @@ export function CustomerTable({
                             </span>
                           )}
                           {customer.cellPhone && (
-                            <span className="font-mono">{customer.cellPhone}</span>
+                            <span>{customer.cellPhone}</span>
                           )}
                         </div>
                       </div>

@@ -132,7 +132,7 @@ export function CostVsProfitShipmentChart({
                   Best Choice: <strong>{bestShipment.fullName}</strong>
                 </span>
               </span>
-              <span className="font-mono font-bold">
+              <span className="font-bold">
                 {bestShipment.marginPercent.toFixed(1)}% margin
               </span>
             </div>
@@ -178,7 +178,7 @@ export function CostVsProfitShipmentChart({
                         ? "text-slate-500"
                         : "text-emerald-600 dark:text-emerald-400";
                       return (
-                        <div className="flex items-center justify-between gap-4 font-mono text-xs">
+                        <div className="flex items-center justify-between gap-4 text-xs">
                           <span className="text-muted-foreground">
                             {label}:
                           </span>
@@ -221,9 +221,7 @@ export function CostVsProfitShipmentChart({
                 <span>Profit (Keep)</span>
               </span>
             </div>
-            <span className="text-[10px] font-mono">
-              Total Bar = Selling Price
-            </span>
+            <span className="text-[10px]">Total Bar = Selling Price</span>
           </div>
         </div>
       )}

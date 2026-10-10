@@ -329,7 +329,7 @@ export function MemberManagementView({
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex-1 rounded-xl border border-border bg-background px-4 py-3 font-mono text-base font-bold tracking-wider text-foreground">
+            <div className="flex-1 rounded-xl border border-border bg-background px-4 py-3 text-base font-bold tracking-wider text-foreground">
               {generatedInvite.code}
             </div>
             <Button
@@ -418,7 +418,7 @@ export function MemberManagementView({
                     </span>
                   </td>
 
-                  <td className="py-4 px-5 text-muted-foreground font-mono">
+                  <td className="py-4 px-5 text-muted-foreground">
                     {new Date(member.createdAt).toLocaleDateString()}
                   </td>
 
@@ -506,7 +506,7 @@ export function MemberManagementView({
                       className="hover:bg-muted/30 transition-colors"
                     >
                       <td className="py-4 px-5">
-                        <span className="font-mono font-bold tracking-wider text-foreground">
+                        <span className="font-bold tracking-wider text-foreground">
                           {inv.code}
                         </span>
                       </td>
@@ -541,7 +541,7 @@ export function MemberManagementView({
                         )}
                       </td>
 
-                      <td className="py-4 px-5 text-muted-foreground font-mono">
+                      <td className="py-4 px-5 text-muted-foreground">
                         {new Date(inv.expiresAt).toLocaleDateString()}
                       </td>
 

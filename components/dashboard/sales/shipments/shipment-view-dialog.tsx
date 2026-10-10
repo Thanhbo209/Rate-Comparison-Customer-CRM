@@ -120,7 +120,7 @@ export function ShipmentViewDialog({
                 <Calendar className="size-3.5" />
                 Created At
               </span>
-              <span className="font-mono text-muted-foreground">
+              <span className="text-muted-foreground">
                 {new Date(shipment.createdAt).toLocaleDateString()}
               </span>
             </div>

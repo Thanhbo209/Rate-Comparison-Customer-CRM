@@ -210,7 +210,7 @@ export default async function AdminDashboardPage() {
               </div>
               <div className="flex items-center justify-between border-b border-border/60 pb-2">
                 <span className="text-muted-foreground">Organization ID</span>
-                <span className="font-mono text-[11px] text-muted-foreground">
+                <span className="text-[11px] text-muted-foreground">
                   {profile.organizationId ? `${profile.organizationId.slice(0, 10)}...` : "None"}
                 </span>
               </div>

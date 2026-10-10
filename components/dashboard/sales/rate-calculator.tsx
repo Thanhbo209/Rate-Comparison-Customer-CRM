@@ -257,7 +257,7 @@ export function RateCalculator() {
         <div className="text-xs text-muted-foreground">
           Selected:{" "}
           <strong className="text-foreground">{selectedCarrier}</strong> on lane{" "}
-          <span className="font-mono text-[11px]">
+          <span className="text-[11px]">
             {origin.split(" - ")[0]} &rarr; {destination.split(" - ")[0]}
           </span>
         </div>

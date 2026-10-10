@@ -159,7 +159,7 @@ export function OrganizationSettingsView({ initialData }: OrganizationSettingsVi
               The primary currency in which total buying costs, selling quotations, and profit margins are consolidated and compared.
             </p>
           </div>
-          <div className="flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-3 py-1 text-xs font-mono font-bold text-foreground">
+          <div className="flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-3 py-1 text-xs font-bold text-foreground">
             Current: {initialData.organization.baseCurrency}
           </div>
         </div>
@@ -236,18 +236,18 @@ export function OrganizationSettingsView({ initialData }: OrganizationSettingsVi
                 exchangeRates.map((r) => (
                   <tr key={r.id} className="hover:bg-muted/20 transition-colors">
                     <td className="px-4 py-3 font-semibold text-foreground flex items-center gap-2">
-                      <span className="rounded-md bg-muted px-2 py-0.5 font-mono">
+                      <span className="rounded-md bg-muted px-2 py-0.5">
                         {r.fromCurrency}
                       </span>
                       <ArrowRightLeft className="size-3 text-muted-foreground" />
-                      <span className="rounded-md bg-primary/10 text-primary px-2 py-0.5 font-mono">
+                      <span className="rounded-md bg-primary/10 text-primary px-2 py-0.5">
                         {r.toCurrency}
                       </span>
                     </td>
-                    <td className="px-4 py-3 font-mono font-medium text-foreground">
+                    <td className="px-4 py-3 font-medium text-foreground">
                       {r.rate.toLocaleString(undefined, { maximumFractionDigits: 6 })}
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground font-mono text-[11px]">
+                    <td className="px-4 py-3 text-muted-foreground text-[11px]">
                       1 {r.fromCurrency} = {r.rate.toLocaleString()} {r.toCurrency}
                     </td>
                     <td className="px-4 py-3 text-right">
@@ -325,7 +325,7 @@ export function OrganizationSettingsView({ initialData }: OrganizationSettingsVi
                   placeholder="e.g. 0.000039 or 25400"
                   value={rateValue}
                   onChange={(e) => setRateValue(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs font-mono text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-hidden"
+                  className="w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-hidden"
                 />
               </div>
 

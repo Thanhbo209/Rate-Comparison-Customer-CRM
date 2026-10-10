@@ -240,7 +240,7 @@ export function ShipmentTable({
                         <p className="font-semibold text-foreground truncate max-w-[220px]">
                           {shipment.name}
                         </p>
-                        <p className="font-mono text-[10px] text-muted-foreground">
+                        <p className="text-[10px] text-muted-foreground">
                           {shipment.id.slice(0, 12)}...
                         </p>
                       </div>
@@ -304,7 +304,7 @@ export function ShipmentTable({
                   </td>
 
                   {/* Date */}
-                  <td className="px-5 py-3.5 text-muted-foreground font-mono text-[11px]">
+                  <td className="px-5 py-3.5 text-muted-foreground text-[11px]">
                     {new Date(shipment.createdAt).toLocaleDateString()}
                   </td>
 

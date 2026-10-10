@@ -116,7 +116,7 @@ export function OnboardingWizard({
           To get started, create a new workspace for your company or join an
           existing team using an invitation code.
         </p>
-        <p className="text-xs text-muted-foreground/80 font-mono">
+        <p className="text-xs text-muted-foreground/80">
           Signed in as {userEmail}
         </p>
       </div>
@@ -258,7 +258,7 @@ export function OnboardingWizard({
                   if (joinError) setJoinError("");
                 }}
                 disabled={isPendingJoin}
-                className="h-11 font-mono uppercase tracking-wider"
+                className="h-11 uppercase tracking-wider"
                 autoFocus
               />
               <Button

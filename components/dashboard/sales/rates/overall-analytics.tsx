@@ -291,7 +291,7 @@ export function OverallAnalytics({
                     </div>
 
                     <div className="text-right shrink-0">
-                      <p className="font-mono font-bold text-xs text-emerald-600 dark:text-emerald-400">
+                      <p className="font-bold text-xs text-emerald-600 dark:text-emerald-400">
                         +
                         {item.profit.toLocaleString(undefined, {
                           maximumFractionDigits: 2,

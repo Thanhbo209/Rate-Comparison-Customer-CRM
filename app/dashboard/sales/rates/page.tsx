@@ -6,6 +6,7 @@ import {
   getProviders,
   getAllShipmentsRateOverview,
 } from "@/lib/rate/queries";
+import { getCustomers } from "@/lib/customer/queries";
 import { RateComparisonView } from "@/components/dashboard/sales/rates/rate-comparison-view";
 
 export const metadata: Metadata = {
@@ -18,15 +19,16 @@ export const dynamic = "force-dynamic";
 export default async function SalesRatesPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ shipmentId?: string }>;
+  searchParams?: Promise<{ shipmentId?: string; customerId?: string }>;
 }) {
   const profile = await requireRole(["SALES", "SALES_MANAGER"]);
   const params = searchParams ? await searchParams : undefined;
 
-  const [availableShipments, providers, overview] = await Promise.all([
+  const [availableShipments, providers, overview, customers] = await Promise.all([
     getAvailableShipmentsForRates(profile.organizationId),
     getProviders(profile.organizationId),
     getAllShipmentsRateOverview(profile.organizationId),
+    getCustomers(profile.organizationId),
   ]);
 
   const targetShipmentId =
@@ -42,6 +44,8 @@ export default async function SalesRatesPage({
       availableShipments={availableShipments}
       providers={providers}
       overview={overview}
+      customers={customers}
+      initialCustomerId={params?.customerId}
       role={profile.role}
       organizationName={profile.organization?.name ?? "My Organization"}
     />

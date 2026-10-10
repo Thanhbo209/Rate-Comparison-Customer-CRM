@@ -38,8 +38,12 @@ export function CustomerViewDialog({
   customer,
   onEdit,
 }: CustomerViewDialogProps) {
-  const [agentSummary, setAgentSummary] = useState<CustomerAgentSummaryItem[]>([]);
-  const [bestAgent, setBestAgent] = useState<CustomerAgentSummaryItem | null>(null);
+  const [agentSummary, setAgentSummary] = useState<CustomerAgentSummaryItem[]>(
+    [],
+  );
+  const [bestAgent, setBestAgent] = useState<CustomerAgentSummaryItem | null>(
+    null,
+  );
   const [agentBaseCurrency, setAgentBaseCurrency] = useState("USD");
   const [loadingAgentSummary, setLoadingAgentSummary] = useState(false);
 
@@ -165,7 +169,7 @@ export function CustomerViewDialog({
                   <Phone className="size-3.5 text-muted-foreground" />
                   <a
                     href={`tel:${customer.cellPhone}`}
-                    className="text-primary hover:underline font-mono"
+                    className="text-primary hover:underline "
                   >
                     {customer.cellPhone}
                   </a>
@@ -220,7 +224,8 @@ export function CustomerViewDialog({
               </div>
             ) : agentSummary.length === 0 ? (
               <div className="py-4 text-center text-xs text-muted-foreground italic">
-                No active carrier rates configured yet for this customer&apos;s shipments.
+                No active carrier rates configured yet for this customer&apos;s
+                shipments.
               </div>
             ) : (
               <div className="space-y-3">
@@ -236,21 +241,27 @@ export function CustomerViewDialog({
                       </h4>
                       <p className="text-[11px] text-muted-foreground">
                         {bestAgent.shipmentsWon}{" "}
-                        {bestAgent.shipmentsWon === 1 ? "shipment won" : "shipments won"}
+                        {bestAgent.shipmentsWon === 1
+                          ? "shipment won"
+                          : "shipments won"}
                       </p>
                     </div>
                     <div className="text-right">
-                      <span className="font-mono text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                        +{bestAgent.totalProfit.toLocaleString(undefined, {
+                      <span className=" text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                        +
+                        {bestAgent.totalProfit.toLocaleString(undefined, {
                           maximumFractionDigits: 2,
                         })}{" "}
                         {agentBaseCurrency}
                       </span>
                       <p className="text-[10px] text-muted-foreground">
                         avg. +
-                        {bestAgent.averageProfitPerShipment.toLocaleString(undefined, {
-                          maximumFractionDigits: 2,
-                        })}{" "}
+                        {bestAgent.averageProfitPerShipment.toLocaleString(
+                          undefined,
+                          {
+                            maximumFractionDigits: 2,
+                          },
+                        )}{" "}
                         / shipment
                       </p>
                     </div>
@@ -264,8 +275,10 @@ export function CustomerViewDialog({
                       <tr>
                         <th className="py-2 px-3">Agent / Provider</th>
                         <th className="py-2 px-3 text-center">Shipments Won</th>
-                        <th className="py-2 px-3 font-mono">Total Profit</th>
-                        <th className="py-2 px-3 font-mono text-right">Avg / Shipment</th>
+                        <th className="py-2 px-3 ">Total Profit</th>
+                        <th className="py-2 px-3  text-right">
+                          Avg / Shipment
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border/50">
@@ -280,19 +293,24 @@ export function CustomerViewDialog({
                             </span>
                             <span className="truncate">{ag.providerName}</span>
                           </td>
-                          <td className="py-2 px-3 text-center font-mono text-muted-foreground">
+                          <td className="py-2 px-3 text-center  text-muted-foreground">
                             {ag.shipmentsWon}
                           </td>
-                          <td className="py-2 px-3 font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                            +{ag.totalProfit.toLocaleString(undefined, {
+                          <td className="py-2 px-3  font-bold text-emerald-600 dark:text-emerald-400">
+                            +
+                            {ag.totalProfit.toLocaleString(undefined, {
                               maximumFractionDigits: 2,
                             })}{" "}
                             {agentBaseCurrency}
                           </td>
-                          <td className="py-2 px-3 font-mono text-right text-foreground">
-                            +{ag.averageProfitPerShipment.toLocaleString(undefined, {
-                              maximumFractionDigits: 2,
-                            })}{" "}
+                          <td className="py-2 px-3  text-right text-foreground">
+                            +
+                            {ag.averageProfitPerShipment.toLocaleString(
+                              undefined,
+                              {
+                                maximumFractionDigits: 2,
+                              },
+                            )}{" "}
                             {agentBaseCurrency}
                           </td>
                         </tr>

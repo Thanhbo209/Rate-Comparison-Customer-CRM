@@ -33,7 +33,12 @@ export function ProfitOverTimeChart({
     // Group shipments by Month Year
     const monthMap = new Map<
       string,
-      { timestamp: number; monthLabel: string; profit: number; shipmentsCount: number }
+      {
+        timestamp: number;
+        monthLabel: string;
+        profit: number;
+        shipmentsCount: number;
+      }
     >();
 
     for (const s of shipments) {
@@ -103,7 +108,11 @@ export function ProfitOverTimeChart({
                   <stop offset="95%" stopColor="#10b981" stopOpacity={0.0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.25} />
+              <CartesianGrid
+                strokeDasharray="3 3"
+                vertical={false}
+                opacity={0.25}
+              />
               <XAxis
                 dataKey="month"
                 tickLine={false}
@@ -118,11 +127,15 @@ export function ProfitOverTimeChart({
                 tick={{ fontSize: 11 }}
               />
               <ChartTooltip
-                cursor={{ stroke: "#10b981", strokeWidth: 1, strokeDasharray: "3 3" }}
+                cursor={{
+                  stroke: "#10b981",
+                  strokeWidth: 1,
+                  strokeDasharray: "3 3",
+                }}
                 content={
                   <ChartTooltipContent
                     formatter={(val) => (
-                      <div className="flex items-center justify-between gap-4 font-mono text-xs">
+                      <div className="flex items-center justify-between gap-4 text-xs">
                         <span className="text-muted-foreground">Profit:</span>
                         <span className="font-bold text-emerald-600 dark:text-emerald-400">
                           +{Number(val).toLocaleString()} {baseCurrency}

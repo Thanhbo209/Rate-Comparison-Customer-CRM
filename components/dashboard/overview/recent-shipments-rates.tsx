@@ -164,14 +164,14 @@ export function RecentShipmentsRates({
                     <td className="px-5 py-3.5">
                       {hasRates ? (
                         <div className="flex flex-col">
-                          <span className="font-mono text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                          <span className=" text-sm font-bold text-emerald-600 dark:text-emerald-400">
                             {totals.profit >= 0 ? "+" : ""}
                             {totals.profit.toLocaleString(undefined, {
                               maximumFractionDigits: 0,
                             })}{" "}
                             {baseCurrency}
                           </span>
-                          <span className="text-[11px] text-muted-foreground font-mono">
+                          <span className="text-[11px] text-muted-foreground ">
                             {totals.marginPercent.toFixed(1)}% margin
                           </span>
                         </div>

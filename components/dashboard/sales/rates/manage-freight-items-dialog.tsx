@@ -79,7 +79,7 @@ function SummaryTile({
       <p className="text-xs font-medium text-muted-foreground">{label}</p>
       <p
         className={cn(
-          "mt-1 font-mono text-xl font-bold",
+          "mt-1 text-xl font-bold",
           tone === "good" && "text-emerald-700 dark:text-emerald-400",
           tone === "bad" && "text-destructive",
         )}
@@ -532,7 +532,7 @@ export function ManageFreightItemsDialog({
                                         onChange={(e) =>
                                           setEditQuantity(e.target.value)
                                         }
-                                        className="h-10 font-mono"
+                                        className="h-10"
                                       />
                                     </Field>
                                     <Field
@@ -548,7 +548,7 @@ export function ManageFreightItemsDialog({
                                         onChange={(e) =>
                                           setEditNet(e.target.value)
                                         }
-                                        className="h-10 font-mono"
+                                        className="h-10"
                                       />
                                     </Field>
                                     <Field
@@ -564,7 +564,7 @@ export function ManageFreightItemsDialog({
                                         onChange={(e) =>
                                           setEditGross(e.target.value)
                                         }
-                                        className="h-10 font-mono"
+                                        className="h-10"
                                       />
                                     </Field>
                                   </div>
@@ -572,7 +572,7 @@ export function ManageFreightItemsDialog({
                                   <div className="flex flex-wrap items-center justify-between gap-3">
                                     <p
                                       className={cn(
-                                        "font-mono text-sm font-semibold",
+                                        "text-sm font-semibold",
                                         editMath.profit >= 0
                                           ? "text-emerald-600 dark:text-emerald-400"
                                           : "text-destructive",
@@ -618,7 +618,7 @@ export function ManageFreightItemsDialog({
                               <p className="font-semibold text-foreground">
                                 {item.freight}
                               </p>
-                              <p className="mt-0.5 font-mono text-xs text-muted-foreground">
+                              <p className="mt-0.5 text-xs text-muted-foreground">
                                 {fmt(item.quantity, 3)} &times;{" "}
                                 {item.unit || "UNIT"}
                               </p>
@@ -630,16 +630,16 @@ export function ManageFreightItemsDialog({
                                 </p>
                               )}
                             </td>
-                            <td className="px-3 py-3 text-right font-mono text-foreground">
+                            <td className="px-3 py-3 text-right text-foreground">
                               {fmt(item.net)}
                             </td>
-                            <td className="px-3 py-3 text-right font-mono font-semibold text-foreground">
+                            <td className="px-3 py-3 text-right font-semibold text-foreground">
                               {fmt(item.gross)}
                             </td>
                             <td className="px-3 py-3 text-right">
                               <p
                                 className={cn(
-                                  "font-mono font-bold",
+                                  "font-bold",
                                   profit >= 0
                                     ? "text-emerald-600 dark:text-emerald-400"
                                     : "text-destructive",
@@ -792,7 +792,7 @@ export function ManageFreightItemsDialog({
                     value={quantity}
                     onChange={(e) => setQuantity(e.target.value)}
                     required
-                    className="h-10 font-mono"
+                    className="h-10"
                   />
                 </Field>
                 <Field
@@ -808,7 +808,7 @@ export function ManageFreightItemsDialog({
                     value={net}
                     onChange={(e) => setNet(e.target.value)}
                     required
-                    className="h-10 font-mono"
+                    className="h-10"
                   />
                 </Field>
                 <Field
@@ -823,7 +823,7 @@ export function ManageFreightItemsDialog({
                     value={gross}
                     onChange={(e) => setGross(e.target.value)}
                     required
-                    className="h-10 font-mono"
+                    className="h-10"
                   />
                 </Field>
               </div>
@@ -832,17 +832,17 @@ export function ManageFreightItemsDialog({
               <div className="rounded-lg bg-muted/40 p-3 text-sm">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Total buy</span>
-                  <span className="font-mono">{fmt(previewBuy)}</span>
+                  <span>{fmt(previewBuy)}</span>
                 </div>
                 <div className="mt-1 flex items-center justify-between">
                   <span className="text-muted-foreground">Total sell</span>
-                  <span className="font-mono">{fmt(previewSell)}</span>
+                  <span>{fmt(previewSell)}</span>
                 </div>
                 <div className="mt-2 flex items-center justify-between border-t border-border pt-2">
                   <span className="font-medium text-foreground">Profit</span>
                   <span
                     className={cn(
-                      "font-mono font-bold",
+                      "font-bold",
                       preview.profit >= 0
                         ? "text-emerald-600 dark:text-emerald-400"
                         : "text-destructive",
