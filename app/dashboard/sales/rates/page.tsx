@@ -24,12 +24,13 @@ export default async function SalesRatesPage({
   const profile = await requireRole(["SALES", "SALES_MANAGER"]);
   const params = searchParams ? await searchParams : undefined;
 
-  const [availableShipments, providers, overview, customers] = await Promise.all([
-    getAvailableShipmentsForRates(profile.organizationId),
-    getProviders(profile.organizationId),
-    getAllShipmentsRateOverview(profile.organizationId),
-    getCustomers(profile.organizationId),
-  ]);
+  const [availableShipments, providers, overview, customers] =
+    await Promise.all([
+      getAvailableShipmentsForRates(profile.organizationId),
+      getProviders(profile.organizationId),
+      getAllShipmentsRateOverview(profile.organizationId),
+      getCustomers(profile.organizationId!),
+    ]);
 
   const targetShipmentId =
     params?.shipmentId || availableShipments[0]?.id || "";

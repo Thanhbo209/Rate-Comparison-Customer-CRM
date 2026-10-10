@@ -32,7 +32,7 @@ export default async function SalesDashboardPage() {
       getCustomerStats(profile.organizationId),
       getShipmentStats(profile.organizationId),
       getAllShipmentsRateOverview(profile.organizationId),
-      getCustomers(profile.organizationId),
+      getCustomers(profile.organizationId!),
     ]);
 
   const totalCustomers = customerStats.totalCustomers;
