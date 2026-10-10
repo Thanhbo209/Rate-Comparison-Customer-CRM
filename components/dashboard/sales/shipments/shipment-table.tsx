@@ -77,7 +77,9 @@ export function ShipmentTable({
       if (search.trim()) {
         const q = search.toLowerCase();
         const matchesName = s.name.toLowerCase().includes(q);
-        const matchesCustomer = s.customer?.companyName?.toLowerCase().includes(q);
+        const matchesCustomer = s.customer?.companyName
+          ?.toLowerCase()
+          .includes(q);
         const matchesCommodity = s.commodity?.toLowerCase().includes(q);
         if (!matchesName && !matchesCustomer && !matchesCommodity) return false;
       }
@@ -110,7 +112,7 @@ export function ShipmentTable({
                 setSearch(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full rounded-xl border border-border bg-background py-2 pl-9 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
+              className="w-full rounded-md border border-border bg-background py-2 pl-9 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
             />
           </div>
 
@@ -185,7 +187,7 @@ export function ShipmentTable({
                     }}
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="rounded-xl max-h-72">
+                <SelectContent className="rounded-md max-h-72">
                   <SelectItem value="ALL">All Shipper Accounts</SelectItem>
                   {customers.map((c) => (
                     <SelectItem key={c.id} value={c.id}>

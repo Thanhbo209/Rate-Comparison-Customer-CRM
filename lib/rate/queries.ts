@@ -299,7 +299,17 @@ export async function getShipmentRateComparison(
     commodity: shipment.commodity,
     selectedRateId: shipment.selectedRateId,
     customerId: shipment.customerId,
-    customer: shipment.customer,
+    customer: {
+      id: shipment.customer.id,
+      companyName: shipment.customer.companyName,
+      organization: shipment.customer.organization
+        ? {
+            id: shipment.customer.organization.id,
+            name: shipment.customer.organization.name,
+            baseCurrency: shipment.customer.organization.baseCurrency,
+          }
+        : undefined,
+    },
     baseCurrency: orgBaseCurrency,
     rates,
     bestCustomerRateId,

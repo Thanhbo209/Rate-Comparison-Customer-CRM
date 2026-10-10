@@ -155,11 +155,15 @@ export function RateComparisonView({
 
   // Unique list of customers with their shipment count
   const customerOptions = useMemo(() => {
-    const map = new Map<string, { id: string; companyName: string; count: number }>();
+    const map = new Map<
+      string,
+      { id: string; companyName: string; count: number }
+    >();
 
     // From shipments to display
     shipmentsToDisplay.forEach((s) => {
-      const cId = s.customer?.id || (s as unknown as { customerId?: string }).customerId;
+      const cId =
+        s.customer?.id || (s as unknown as { customerId?: string }).customerId;
       const cName = s.customer?.companyName || "Unknown Customer";
       if (cId) {
         const existing = map.get(cId);
@@ -234,7 +238,8 @@ export function RateComparisonView({
         if (selectedCustomerId !== "ALL") {
           const matchCustomer =
             s.customer?.id === selectedCustomerId ||
-            (s as unknown as { customerId?: string }).customerId === selectedCustomerId;
+            (s as unknown as { customerId?: string }).customerId ===
+              selectedCustomerId;
           if (!matchCustomer) return false;
         }
 
@@ -391,7 +396,7 @@ export function RateComparisonView({
                   setCurrentPage(1);
                 }}
                 placeholder="Search shipments, commodity, carrier..."
-                className="h-9 w-full rounded-xl border border-border bg-background px-3 pl-8.5 pr-8 text-xs placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-primary/20"
+                className="h-9 w-full rounded-md border border-border bg-background px-3 pl-8.5 pr-8 text-xs placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-primary/20"
               />
               {searchTerm && (
                 <button
@@ -416,7 +421,7 @@ export function RateComparisonView({
                 }}
               >
                 <SelectTrigger
-                  className={`h-9 w-full rounded-xl text-xs transition-colors ${
+                  className={`h-9 w-full rounded-md text-xs transition-colors ${
                     selectedCustomerId !== "ALL"
                       ? "border-primary bg-primary/5 text-primary font-semibold"
                       : "border-border bg-background"
@@ -437,13 +442,14 @@ export function RateComparisonView({
                     </SelectValue>
                   </div>
                 </SelectTrigger>
-                <SelectContent className="rounded-xl max-h-72">
+                <SelectContent className="rounded-md max-h-72">
                   <SelectItem value="ALL">
                     All Customers ({shipmentsToDisplay.length})
                   </SelectItem>
                   {customerOptions.map((c) => (
                     <SelectItem key={c.id} value={c.id}>
-                      {c.companyName} ({c.count} {c.count === 1 ? "shipment" : "shipments"})
+                      {c.companyName} ({c.count}{" "}
+                      {c.count === 1 ? "shipment" : "shipments"})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -451,7 +457,7 @@ export function RateComparisonView({
             </div>
 
             {/* Direction Filter Pills */}
-            <div className="inline-flex items-center gap-1 p-0.5 rounded-xl border border-border bg-muted/40">
+            <div className="inline-flex items-center gap-1 p-0.5 rounded-md border border-border bg-muted/40">
               <button
                 type="button"
                 onClick={() => {
@@ -504,7 +510,7 @@ export function RateComparisonView({
               variant="outline"
               size="sm"
               onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-              className={`h-9 gap-1.5 text-xs rounded-xl ${
+              className={`h-9 gap-1.5 text-xs rounded-md ${
                 showAdvancedFilters ||
                 selectedRateStatus !== "ALL" ||
                 selectedProfitability !== "ALL" ||
@@ -529,13 +535,15 @@ export function RateComparisonView({
               {/* Rate Quotes Status */}
               <div className="space-y-1">
                 <label className="text-[11px] font-medium text-muted-foreground">
-                  Carrier Quotes Status
+                  Freights Status
                 </label>
                 <Select
                   value={selectedRateStatus}
                   onValueChange={(val) => {
                     if (val) {
-                      setSelectedRateStatus(val as "ALL" | "WITH_RATES" | "NO_RATES");
+                      setSelectedRateStatus(
+                        val as "ALL" | "WITH_RATES" | "NO_RATES",
+                      );
                       setCurrentPage(1);
                     }
                   }}
@@ -543,16 +551,22 @@ export function RateComparisonView({
                   <SelectTrigger className="h-8.5 w-full rounded-lg border-border bg-background text-xs">
                     <SelectValue>
                       {(val: string | null) => {
-                        if (val === "WITH_RATES") return "Has Quotes (≥ 1 option)";
-                        if (val === "NO_RATES") return "Needs Quotes (0 options)";
-                        return "All Quotes Statuses";
+                        if (val === "WITH_RATES")
+                          return "Has Freight (≥ 1 option)";
+                        if (val === "NO_RATES")
+                          return "Needs Freight (0 options)";
+                        return "All Freight Statuses";
                       }}
                     </SelectValue>
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl">
-                    <SelectItem value="ALL">All Quotes Statuses</SelectItem>
-                    <SelectItem value="WITH_RATES">Has Quotes (≥ 1 option)</SelectItem>
-                    <SelectItem value="NO_RATES">Needs Quotes (0 options)</SelectItem>
+                  <SelectContent className="rounded-md">
+                    <SelectItem value="ALL">All Freight Statuses</SelectItem>
+                    <SelectItem value="WITH_RATES">
+                      Has Freight (≥ 1 rate)
+                    </SelectItem>
+                    <SelectItem value="NO_RATES">
+                      Empty Freight (0 rates)
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -566,7 +580,9 @@ export function RateComparisonView({
                   value={selectedProfitability}
                   onValueChange={(val) => {
                     if (val) {
-                      setSelectedProfitability(val as "ALL" | "PROFITABLE" | "UNPROFITABLE");
+                      setSelectedProfitability(
+                        val as "ALL" | "PROFITABLE" | "UNPROFITABLE",
+                      );
                       setCurrentPage(1);
                     }
                   }}
@@ -574,16 +590,16 @@ export function RateComparisonView({
                   <SelectTrigger className="h-8.5 w-full rounded-lg border-border bg-background text-xs">
                     <SelectValue>
                       {(val: string | null) => {
-                        if (val === "PROFITABLE") return "Profitable (> $0)";
-                        if (val === "UNPROFITABLE") return "Loss / Breakeven (≤ $0)";
+                        if (val === "PROFITABLE") return "Profitable";
+                        if (val === "UNPROFITABLE") return "Breakeven";
                         return "All Profit Margins";
                       }}
                     </SelectValue>
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl">
+                  <SelectContent className="rounded-md">
                     <SelectItem value="ALL">All Profit Margins</SelectItem>
-                    <SelectItem value="PROFITABLE">Profitable (&gt; $0)</SelectItem>
-                    <SelectItem value="UNPROFITABLE">Loss / Breakeven (≤ $0)</SelectItem>
+                    <SelectItem value="PROFITABLE">Profitable</SelectItem>
+                    <SelectItem value="UNPROFITABLE">Breakeven</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -597,7 +613,13 @@ export function RateComparisonView({
                   value={sortBy}
                   onValueChange={(val) => {
                     if (val) {
-                      setSortBy(val as "DEFAULT" | "MOST_RATES" | "HIGHEST_PROFIT" | "NAME");
+                      setSortBy(
+                        val as
+                          | "DEFAULT"
+                          | "MOST_RATES"
+                          | "HIGHEST_PROFIT"
+                          | "NAME",
+                      );
                       setCurrentPage(1);
                     }
                   }}
@@ -606,16 +628,23 @@ export function RateComparisonView({
                     <SelectValue>
                       {(val: string | null) => {
                         if (val === "MOST_RATES") return "Most Carrier Options";
-                        if (val === "HIGHEST_PROFIT") return "Highest Quoted Profit";
+                        if (val === "HIGHEST_PROFIT")
+                          return "Highest Quoted Profit";
                         if (val === "NAME") return "Shipment Name (A–Z)";
                         return "Default (Creation Order)";
                       }}
                     </SelectValue>
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl">
-                    <SelectItem value="DEFAULT">Default (Creation Order)</SelectItem>
-                    <SelectItem value="MOST_RATES">Most Carrier Options</SelectItem>
-                    <SelectItem value="HIGHEST_PROFIT">Highest Quoted Profit</SelectItem>
+                  <SelectContent className="rounded-md">
+                    <SelectItem value="DEFAULT">
+                      Default (Creation Order)
+                    </SelectItem>
+                    <SelectItem value="MOST_RATES">
+                      Most Carrier Options
+                    </SelectItem>
+                    <SelectItem value="HIGHEST_PROFIT">
+                      Highest Quoted Profit
+                    </SelectItem>
                     <SelectItem value="NAME">Shipment Name (A–Z)</SelectItem>
                   </SelectContent>
                 </Select>
@@ -650,7 +679,8 @@ export function RateComparisonView({
                 {selectedDirection !== "ALL" && (
                   <span className="inline-flex items-center gap-1 rounded-full bg-muted border border-border px-2 py-0.5 text-[11px] font-medium text-foreground">
                     <span>
-                      Direction: {selectedDirection === "IMPORT" ? "Imports" : "Exports"}
+                      Direction:{" "}
+                      {selectedDirection === "IMPORT" ? "Imports" : "Exports"}
                     </span>
                     <button
                       type="button"
@@ -668,7 +698,10 @@ export function RateComparisonView({
                 {selectedRateStatus !== "ALL" && (
                   <span className="inline-flex items-center gap-1 rounded-full bg-muted border border-border px-2 py-0.5 text-[11px] font-medium text-foreground">
                     <span>
-                      Quotes: {selectedRateStatus === "WITH_RATES" ? "Has Quotes" : "Needs Quotes"}
+                      Quotes:{" "}
+                      {selectedRateStatus === "WITH_RATES"
+                        ? "Has Quotes"
+                        : "Needs Quotes"}
                     </span>
                     <button
                       type="button"
@@ -686,7 +719,10 @@ export function RateComparisonView({
                 {selectedProfitability !== "ALL" && (
                   <span className="inline-flex items-center gap-1 rounded-full bg-muted border border-border px-2 py-0.5 text-[11px] font-medium text-foreground">
                     <span>
-                      Profit: {selectedProfitability === "PROFITABLE" ? "Profitable (> $0)" : "Loss / Breakeven"}
+                      Profit:{" "}
+                      {selectedProfitability === "PROFITABLE"
+                        ? "Profitable"
+                        : "Breakeven"}
                     </span>
                     <button
                       type="button"
@@ -704,7 +740,12 @@ export function RateComparisonView({
                 {sortBy !== "DEFAULT" && (
                   <span className="inline-flex items-center gap-1 rounded-full bg-muted border border-border px-2 py-0.5 text-[11px] font-medium text-foreground">
                     <span>
-                      Sorted: {sortBy === "MOST_RATES" ? "Most Options" : sortBy === "HIGHEST_PROFIT" ? "Highest Profit" : "Name"}
+                      Sorted:{" "}
+                      {sortBy === "MOST_RATES"
+                        ? "Most Options"
+                        : sortBy === "HIGHEST_PROFIT"
+                          ? "Highest Profit"
+                          : "Name"}
                     </span>
                     <button
                       type="button"
@@ -760,8 +801,8 @@ export function RateComparisonView({
               {selectedCustomerId !== "ALL"
                 ? `No shipments found for customer "${selectedCustomerObj?.companyName || "selected"}". Try choosing another customer or clearing your filters.`
                 : searchTerm
-                ? "No shipments matched your search criteria. Try a different query."
-                : "No shipments matched the current filter criteria."}
+                  ? "No shipments matched your search criteria. Try a different query."
+                  : "No shipments matched the current filter criteria."}
             </p>
             {activeFilterCount > 0 && (
               <div className="mt-4">
@@ -917,7 +958,7 @@ export function RateComparisonView({
                               {/* Unranked rates warning banner */}
                               {s.unrankedRateIds &&
                                 s.unrankedRateIds.length > 0 && (
-                                  <div className="mx-4 sm:mx-6 mt-4 p-3 rounded-xl border border-amber-500/30 bg-amber-500/10 text-xs text-amber-900 dark:text-amber-200 flex items-start gap-2.5">
+                                  <div className="mx-4 sm:mx-6 mt-4 p-3 rounded-md border border-amber-500/30 bg-amber-500/10 text-xs text-amber-900 dark:text-amber-200 flex items-start gap-2.5">
                                     <AlertTriangle className="size-4 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
                                     <div>
                                       <span className="font-semibold block">
@@ -1091,7 +1132,9 @@ export function RateComparisonView({
                                                     : "text-destructive"
                                                 }`}
                                               >
-                                                {rate.consolidatedProfit >= 0 ? "+" : ""}
+                                                {rate.consolidatedProfit >= 0
+                                                  ? "+"
+                                                  : ""}
                                                 {rate.consolidatedProfit.toLocaleString(
                                                   undefined,
                                                   { maximumFractionDigits: 2 },
