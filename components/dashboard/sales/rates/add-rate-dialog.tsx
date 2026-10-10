@@ -10,6 +10,13 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { addShipmentRateAction } from "@/lib/rate/actions";
 import type { ProviderItem } from "@/lib/rate/types";
 import { toast } from "react-toastify";
@@ -149,17 +156,29 @@ export function AddRateDialog({
                 <Truck className="size-3.5 text-muted-foreground" />
                 Select Freight / Provider
               </label>
-              <select
+              <Select
                 value={selectedProviderId}
-                onChange={(e) => setSelectedProviderId(e.target.value)}
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
+                onValueChange={(val) => {
+                  if (val) setSelectedProviderId(val);
+                }}
               >
-                {existingProviders.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger className="w-full h-10 rounded-lg border-border bg-background text-xs">
+                  <SelectValue placeholder="Select freight provider...">
+                    {(val: string | null) => {
+                      if (!val) return "Select freight provider...";
+                      const found = existingProviders.find((p) => p.id === val);
+                      return found ? found.name : "Select freight provider...";
+                    }}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="rounded-xl max-h-72">
+                  {existingProviders.map((p) => (
+                    <SelectItem key={p.id} value={p.id}>
+                      {p.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           ) : (
             <div className="space-y-1.5">

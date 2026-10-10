@@ -10,6 +10,13 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,8 +50,6 @@ const COMMON_PRESETS = [
 
 const COMMON_UNITS = ["CONTAINER", "CBM", "TON", "BL", "SHIPMENT", "TRUCK"];
 
-const selectClass =
-  "h-10 w-full rounded-lg border border-input bg-transparent px-3 text-sm text-foreground outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
 
 const fmt = (n: number, digits = 2) =>
   n.toLocaleString(undefined, { maximumFractionDigits: digits });
@@ -492,20 +497,30 @@ export function ManageFreightItemsDialog({
                                       htmlFor={`edit-unit-${item.id}`}
                                       className="sm:col-span-2"
                                     >
-                                      <select
-                                        id={`edit-unit-${item.id}`}
+                                      <Select
                                         value={editUnit}
-                                        onChange={(e) =>
-                                          setEditUnit(e.target.value)
-                                        }
-                                        className={selectClass}
+                                        onValueChange={(val) => {
+                                          if (val) setEditUnit(val);
+                                        }}
                                       >
-                                        {editUnitOptions.map((u) => (
-                                          <option key={u} value={u}>
-                                            {u}
-                                          </option>
-                                        ))}
-                                      </select>
+                                        <SelectTrigger
+                                          id={`edit-unit-${item.id}`}
+                                          className="h-10 w-full rounded-lg border-border bg-background text-sm"
+                                        >
+                                          <SelectValue placeholder="Select unit...">
+                                            {(val: string | null) =>
+                                              val || "Select unit..."
+                                            }
+                                          </SelectValue>
+                                        </SelectTrigger>
+                                        <SelectContent className="rounded-xl max-h-60">
+                                          {editUnitOptions.map((u) => (
+                                            <SelectItem key={u} value={u}>
+                                              {u}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectContent>
+                                      </Select>
                                     </Field>
                                     <Field
                                       label="Quantity"
@@ -729,18 +744,28 @@ export function ManageFreightItemsDialog({
 
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Unit" htmlFor="new-unit">
-                  <select
-                    id="new-unit"
+                  <Select
                     value={unit}
-                    onChange={(e) => setUnit(e.target.value)}
-                    className={selectClass}
+                    onValueChange={(val) => {
+                      if (val) setUnit(val);
+                    }}
                   >
-                    {COMMON_UNITS.map((u) => (
-                      <option key={u} value={u}>
-                        {u}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger
+                      id="new-unit"
+                      className="h-10 w-full rounded-lg border-border bg-background text-sm"
+                    >
+                      <SelectValue placeholder="Select unit...">
+                        {(val: string | null) => val || "Select unit..."}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl max-h-60">
+                      {COMMON_UNITS.map((u) => (
+                        <SelectItem key={u} value={u}>
+                          {u}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </Field>
                 <Field label="Quantity" htmlFor="new-qty">
                   <Input
