@@ -238,6 +238,11 @@ export function OverallAnalytics({
             })} ${baseCurrency}`}
             icon={TrendingUp}
             variant="emerald"
+            valueClassName={
+              overall.totalProfit >= 0
+                ? "text-emerald-600 dark:text-emerald-400"
+                : "text-destructive"
+            }
             description="Net profit spread across all carrier quote lines"
           />
           <StatCard

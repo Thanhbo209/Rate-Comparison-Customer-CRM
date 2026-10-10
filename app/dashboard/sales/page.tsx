@@ -121,7 +121,12 @@ export default async function SalesDashboardPage() {
           title="Total Profit"
           value={formattedProfit}
           icon={TrendingUp}
-          variant="primary"
+          variant="emerald"
+          valueClassName={
+            totalProfit >= 0
+              ? "text-emerald-600 dark:text-emerald-400"
+              : "text-destructive"
+          }
           description={
             totalRates > 0
               ? `${avgMargin.toFixed(1)}% avg profit margin`

@@ -103,7 +103,7 @@ export function CostVsProfitShipmentChart({
           <select
             value={selectedCustomerId}
             onChange={(e) => setSelectedCustomerId(e.target.value)}
-            className="h-8 max-w-[180px] rounded-lg border border-border bg-background px-2.5 py-1 text-xs text-foreground focus:outline-hidden focus:ring-2 focus:ring-primary/20"
+            className="h-8 max-w-40 rounded-lg border border-border bg-background px-2.5 py-1 text-sm text-foreground focus:outline-hidden focus:ring-2 focus:ring-primary/20"
           >
             {customers.map((c) => (
               <option key={c.id} value={c.id}>
@@ -175,8 +175,8 @@ export function CostVsProfitShipmentChart({
                         ? "Agent Cost (Pay)"
                         : "Your Profit (Keep)";
                       const color = isCost
-                        ? "text-slate-500"
-                        : "text-emerald-600 dark:text-emerald-400";
+                        ? "text-[#ff7d13]"
+                        : "text-[#10b981] dark:text-emerald-400";
                       return (
                         <div className="flex items-center justify-between gap-4 text-xs">
                           <span className="text-muted-foreground">
@@ -195,7 +195,7 @@ export function CostVsProfitShipmentChart({
               <Bar
                 dataKey="cost"
                 stackId="shipmentBar"
-                fill="#94a3b8"
+                fill="#ff7d13"
                 radius={[4, 0, 0, 4]}
                 name="cost"
               />
@@ -213,7 +213,7 @@ export function CostVsProfitShipmentChart({
           <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-1 border-t border-border/40">
             <div className="flex items-center gap-4">
               <span className="inline-flex items-center gap-1.5">
-                <span className="size-2 rounded-xs bg-slate-400" />
+                <span className="size-2 rounded-xs bg-[#ff7d13]" />
                 <span>Agent Cost (Pay)</span>
               </span>
               <span className="inline-flex items-center gap-1.5">

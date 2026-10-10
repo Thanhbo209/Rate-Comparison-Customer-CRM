@@ -15,6 +15,7 @@ export interface StatCardProps {
   };
   variant?: StatCardVariant;
   className?: string;
+  valueClassName?: string;
 }
 
 const VARIANT_ICON_STYLES: Record<StatCardVariant, string> = {
@@ -33,6 +34,7 @@ export function StatCard({
   trend,
   variant = "primary",
   className,
+  valueClassName,
 }: StatCardProps) {
   return (
     <div
@@ -54,7 +56,12 @@ export function StatCard({
       </div>
 
       <div className="mt-3">
-        <div className="text-2xl font-bold tracking-tight text-foreground">
+        <div
+          className={cn(
+            "text-2xl font-bold tracking-tight text-foreground",
+            valueClassName
+          )}
+        >
           {value}
         </div>
 
