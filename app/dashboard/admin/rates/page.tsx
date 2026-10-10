@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { requireRole } from "@/lib/auth/session";
 import {
@@ -7,6 +8,7 @@ import {
   getAllShipmentsRateOverview,
 } from "@/lib/rate/queries";
 import { RateComparisonView } from "@/components/dashboard/sales/rates/rate-comparison-view";
+import { RateComparisonSkeleton } from "@/components/dashboard/skeletons";
 
 export const metadata: Metadata = {
   title: "Rate Comparison Console | Dropwell Admin",
@@ -15,14 +17,16 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminRatesPage({
-  searchParams,
+type UserProfile = Awaited<ReturnType<typeof requireRole>>;
+
+async function AdminRatesContent({
+  profile,
+  params,
 }: {
-  searchParams?: Promise<{ shipmentId?: string }>;
+  profile: UserProfile;
+  params?: { shipmentId?: string };
 }) {
-  const profile = await requireRole(["ADMIN"]);
   const isPlatformAdmin = !profile.organizationId || profile.role === "ADMIN";
-  const params = searchParams ? await searchParams : undefined;
 
   const [availableShipments, providers, overview] = await Promise.all([
     getAvailableShipmentsForRates(profile.organizationId, isPlatformAdmin),
@@ -50,5 +54,20 @@ export default async function AdminRatesPage({
       role="ADMIN"
       organizationName={profile.organization?.name ?? "Platform Directory"}
     />
+  );
+}
+
+export default async function AdminRatesPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ shipmentId?: string }>;
+}) {
+  const profile = await requireRole(["ADMIN"]);
+  const params = searchParams ? await searchParams : undefined;
+
+  return (
+    <Suspense fallback={<RateComparisonSkeleton />}>
+      <AdminRatesContent profile={profile} params={params} />
+    </Suspense>
   );
 }
