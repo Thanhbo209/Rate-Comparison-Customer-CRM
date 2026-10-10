@@ -29,6 +29,13 @@ import type {
   ExchangeRateItem,
 } from "@/lib/organization/settings-queries";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "react-toastify";
 
 const COMMON_CURRENCIES = [
@@ -41,6 +48,17 @@ const COMMON_CURRENCIES = [
   "GBP",
   "THB",
 ];
+
+const CURRENCY_DETAILS: Record<string, { label: string; symbol: string }> = {
+  USD: { label: "US Dollar", symbol: "$" },
+  VND: { label: "Vietnamese Dong", symbol: "₫" },
+  EUR: { label: "Euro", symbol: "€" },
+  CNY: { label: "Chinese Yuan", symbol: "¥" },
+  JPY: { label: "Japanese Yen", symbol: "¥" },
+  SGD: { label: "Singapore Dollar", symbol: "S$" },
+  GBP: { label: "British Pound", symbol: "£" },
+  THB: { label: "Thai Baht", symbol: "฿" },
+};
 
 interface OrganizationSettingsViewProps {
   initialData: OrganizationSettingsData;
@@ -549,42 +567,41 @@ export function OrganizationSettingsView({
         <form onSubmit={handleSaveBaseCurrency} className="mt-6 space-y-4">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <label
-                htmlFor="base-currency-select"
-                className="text-xs font-medium text-foreground"
-              >
+              <label className="text-xs font-medium text-foreground">
                 Select Base Currency
               </label>
-              <select
-                id="base-currency-select"
+              <Select
                 value={baseCurrency}
-                onChange={(e) => setBaseCurrency(e.target.value)}
+                onValueChange={(val) => {
+                  if (val) setBaseCurrency(val);
+                }}
                 disabled={!initialData.canEdit || isPendingCurrency}
-                className="w-full rounded-xl border border-border bg-background px-3 py-2 text-xs font-medium text-foreground focus:border-primary focus:outline-hidden disabled:opacity-50"
               >
-                {COMMON_CURRENCIES.map((curr) => (
-                  <option key={curr} value={curr}>
-                    {curr} —{" "}
-                    {curr === "USD"
-                      ? "US Dollar"
-                      : curr === "VND"
-                        ? "Vietnamese Dong"
-                        : curr === "EUR"
-                          ? "Euro"
-                          : curr === "CNY"
-                            ? "Chinese Yuan"
-                            : curr === "JPY"
-                              ? "Japanese Yen"
-                              : curr === "SGD"
-                                ? "Singapore Dollar"
-                                : curr === "GBP"
-                                  ? "British Pound"
-                                  : curr === "THB"
-                                    ? "Thai Baht"
-                                    : curr}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger className="w-full h-10 rounded-xl border border-border bg-background text-xs font-medium">
+                  <SelectValue>
+                    {(val: string | null) => {
+                      const curr = val || baseCurrency;
+                      const detail = CURRENCY_DETAILS[curr];
+                      return detail
+                        ? `${curr} — ${detail.label} (${detail.symbol})`
+                        : curr;
+                    }}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="rounded-xl max-h-72">
+                  {COMMON_CURRENCIES.map((curr) => {
+                    const detail = CURRENCY_DETAILS[curr];
+                    return (
+                      <SelectItem key={curr} value={curr}>
+                        {curr} —{" "}
+                        {detail
+                          ? `${detail.label} (${detail.symbol})`
+                          : curr}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="flex items-end">
@@ -736,34 +753,50 @@ export function OrganizationSettingsView({
                 <label className="text-[11px] font-medium text-muted-foreground">
                   From Currency
                 </label>
-                <select
+                <Select
                   value={fromCurr}
-                  onChange={(e) => setFromCurr(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs font-medium text-foreground focus:border-primary focus:outline-hidden"
+                  onValueChange={(val) => {
+                    if (val) setFromCurr(val);
+                  }}
                 >
-                  {COMMON_CURRENCIES.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-full h-8.5 rounded-lg border border-border bg-background text-xs font-medium">
+                    <SelectValue>
+                      {(val: string | null) => val || fromCurr}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg max-h-60">
+                    {COMMON_CURRENCIES.map((c) => (
+                      <SelectItem key={c} value={c}>
+                        {c} — {CURRENCY_DETAILS[c]?.label || c}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-1">
                 <label className="text-[11px] font-medium text-muted-foreground">
                   To Currency
                 </label>
-                <select
+                <Select
                   value={toCurr}
-                  onChange={(e) => setToCurr(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs font-medium text-foreground focus:border-primary focus:outline-hidden"
+                  onValueChange={(val) => {
+                    if (val) setToCurr(val);
+                  }}
                 >
-                  {COMMON_CURRENCIES.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-full h-8.5 rounded-lg border border-border bg-background text-xs font-medium">
+                    <SelectValue>
+                      {(val: string | null) => val || toCurr}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg max-h-60">
+                    {COMMON_CURRENCIES.map((c) => (
+                      <SelectItem key={c} value={c}>
+                        {c} — {CURRENCY_DETAILS[c]?.label || c}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-1">
