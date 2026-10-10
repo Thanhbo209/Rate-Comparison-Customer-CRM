@@ -17,10 +17,10 @@ import { cn } from "@/lib/utils";
 import {
   createFreightItemAction,
   updateFreightItemAction,
-  deleteFreightItemAction,
 } from "@/lib/freight/actions";
 import type { ShipmentRateItem, FreightItemSummary } from "@/lib/rate/types";
 import { toast } from "react-toastify";
+import { FreightDeleteDialog } from "./freight-delete-dialog";
 
 interface ManageFreightItemsDialogProps {
   open: boolean;
@@ -141,8 +141,9 @@ export function ManageFreightItemsDialog({
   const [editGross, setEditGross] = useState("");
   const [editCurrency, setEditCurrency] = useState("USD");
 
-  // Delete confirmation + which row is saving
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  // Delete item dialog + which row is saving
+  const [deletingItem, setDeletingItem] =
+    useState<FreightItemSummary | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
 
   const [formError, setFormError] = useState<string | null>(null);
@@ -155,7 +156,7 @@ export function ManageFreightItemsDialog({
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (rate) setItems(rate.freightItems);
     setEditingId(null);
-    setConfirmDeleteId(null);
+    setDeletingItem(null);
     setFormError(null);
   }, [rate, open]);
 
@@ -237,24 +238,8 @@ export function ManageFreightItemsDialog({
     });
   };
 
-  const handleDeleteItem = (itemId: string) => {
-    setBusyId(itemId);
-    startTransition(async () => {
-      const res = await deleteFreightItemAction(itemId);
-      setBusyId(null);
-      setConfirmDeleteId(null);
-      if (!res.success) {
-        setFormError(res.error || "Failed to delete item.");
-        return;
-      }
-      setItems((prev) => prev.filter((i) => i.id !== itemId));
-      toast.success("Charge deleted");
-      onSuccess();
-    });
-  };
-
   const handleStartEdit = (item: FreightItemSummary) => {
-    setConfirmDeleteId(null);
+    setDeletingItem(null);
     setEditingId(item.id);
     setEditFreight(item.freight);
     setEditUnit(item.unit || "CONTAINER");
@@ -460,7 +445,6 @@ export function ManageFreightItemsDialog({
                           item.quantity,
                         );
                         const isEditing = editingId === item.id;
-                        const isConfirming = confirmDeleteId === item.id;
                         const isBusy = busyId === item.id;
                         const hasOriginal =
                           item.originalCurrency &&
@@ -670,53 +654,24 @@ export function ManageFreightItemsDialog({
                               </p>
                             </td>
                             <td className="px-3 py-3 text-right">
-                              {isConfirming ? (
-                                <div className="flex flex-col items-end gap-1.5">
-                                  <span className="text-xs font-medium text-foreground">
-                                    Delete this charge?
-                                  </span>
-                                  <div className="flex gap-1.5">
-                                    <Button
-                                      size="sm"
-                                      variant="destructive"
-                                      disabled={isBusy}
-                                      onClick={() => handleDeleteItem(item.id)}
-                                    >
-                                      {isBusy ? (
-                                        <Loader2 className="size-3.5 animate-spin" />
-                                      ) : (
-                                        "Delete"
-                                      )}
-                                    </Button>
-                                    <Button
-                                      size="sm"
-                                      variant="outline"
-                                      onClick={() => setConfirmDeleteId(null)}
-                                    >
-                                      Keep
-                                    </Button>
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="flex items-center justify-end gap-1">
-                                  <button
-                                    type="button"
-                                    onClick={() => handleStartEdit(item)}
-                                    aria-label={`Edit ${item.freight}`}
-                                    className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                                  >
-                                    <Pencil className="size-4" />
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => setConfirmDeleteId(item.id)}
-                                    aria-label={`Delete ${item.freight}`}
-                                    className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
-                                  >
-                                    <Trash2 className="size-4" />
-                                  </button>
-                                </div>
-                              )}
+                              <div className="flex items-center justify-end gap-1">
+                                <button
+                                  type="button"
+                                  onClick={() => handleStartEdit(item)}
+                                  aria-label={`Edit ${item.freight}`}
+                                  className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                                >
+                                  <Pencil className="size-4" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setDeletingItem(item)}
+                                  aria-label={`Delete ${item.freight}`}
+                                  className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                                >
+                                  <Trash2 className="size-4" />
+                                </button>
+                              </div>
                             </td>
                           </tr>
                         );
@@ -891,6 +846,18 @@ export function ManageFreightItemsDialog({
           </Button>
         </DialogFooter>
       </DialogContent>
+
+      <FreightDeleteDialog
+        open={!!deletingItem}
+        onOpenChange={(open) => {
+          if (!open) setDeletingItem(null);
+        }}
+        item={deletingItem}
+        onSuccess={(deletedId) => {
+          setItems((prev) => prev.filter((i) => i.id !== deletedId));
+          onSuccess();
+        }}
+      />
     </Dialog>
   );
 }

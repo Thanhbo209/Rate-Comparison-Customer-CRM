@@ -46,7 +46,9 @@ export function ShipmentDeleteDialog({
       onOpenChange(false);
       onSuccess();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete shipment");
+      setError(
+        err instanceof Error ? err.message : "Failed to delete shipment",
+      );
     } finally {
       setLoading(false);
     }
@@ -97,7 +99,7 @@ export function ShipmentDeleteDialog({
             type="button"
             disabled={loading}
             onClick={handleDelete}
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-destructive px-4 py-2 text-xs font-medium text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-destructive/10 px-4 py-2 text-xs font-medium text-destructive text-destructive-foreground hover:bg-destructive/90 hover:text-background disabled:opacity-50"
           >
             {loading && <Loader2 className="size-3.5 animate-spin" />}
             <span>Delete Shipment</span>

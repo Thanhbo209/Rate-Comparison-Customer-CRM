@@ -34,8 +34,7 @@ import {
 } from "@/components/ui/select";
 import { AddRateDialog } from "./add-rate-dialog";
 import { ManageFreightItemsDialog } from "./manage-freight-items-dialog";
-import { deleteShipmentRateAction } from "@/lib/rate/actions";
-import { toast } from "react-toastify";
+import { RateDeleteDialog } from "./rate-delete-dialog";
 import type {
   ShipmentComparisonDetail,
   ProviderItem,
@@ -104,22 +103,11 @@ export function RateComparisonView({
     }));
   };
 
-  const handleDeleteRate = (rateId: string, providerName: string) => {
-    if (
-      !confirm(
-        `Are you sure you want to remove the rate option for ${providerName}?`,
-      )
-    ) {
-      return;
-    }
-    startTransition(async () => {
-      const res = await deleteShipmentRateAction({ shipmentRateId: rateId });
-      if (res.success) {
-        toast.success("Rate deleted");
-        router.refresh();
-      }
-    });
-  };
+  const [deletingRate, setDeletingRate] = useState<{
+    id: string;
+    providerName: string;
+    optionName?: string | null;
+  } | null>(null);
 
   // Pagination & Search state (limited to 10 items per page)
   const PAGE_SIZE = 10;
@@ -1173,12 +1161,14 @@ export function RateComparisonView({
                                                   <button
                                                     type="button"
                                                     onClick={() =>
-                                                      handleDeleteRate(
-                                                        rate.id,
-                                                        rate.provider.name,
-                                                      )
+                                                      setDeletingRate({
+                                                        id: rate.id,
+                                                        providerName:
+                                                          rate.provider.name,
+                                                        optionName:
+                                                          rate.optionName,
+                                                      })
                                                     }
-                                                    disabled={isPending}
                                                     className="text-muted-foreground hover:text-destructive transition-colors p-1"
                                                     title="Delete Quote Option"
                                                   >
@@ -1294,6 +1284,18 @@ export function RateComparisonView({
           onOpenChange={(open) => !open && setActiveManageRate(null)}
           rate={activeManageRate}
           shipmentName={activeManageShipmentName || "Shipment"}
+          onSuccess={() => router.refresh()}
+        />
+      )}
+
+      {/* Delete Carrier Rate Modal */}
+      {deletingRate && (
+        <RateDeleteDialog
+          open={!!deletingRate}
+          onOpenChange={(open) => {
+            if (!open) setDeletingRate(null);
+          }}
+          rate={deletingRate}
           onSuccess={() => router.refresh()}
         />
       )}
