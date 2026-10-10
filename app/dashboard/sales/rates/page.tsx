@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { requireRole } from "@/lib/auth/session";
 import {
@@ -8,6 +9,7 @@ import {
 } from "@/lib/rate/queries";
 import { getCustomers } from "@/lib/customer/queries";
 import { RateComparisonView } from "@/components/dashboard/sales/rates/rate-comparison-view";
+import { RateComparisonSkeleton } from "@/components/dashboard/skeletons";
 
 export const metadata: Metadata = {
   title: "Rate Comparison | Dropwell",
@@ -16,14 +18,15 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function SalesRatesPage({
-  searchParams,
-}: {
-  searchParams?: Promise<{ shipmentId?: string; customerId?: string }>;
-}) {
-  const profile = await requireRole(["SALES", "SALES_MANAGER"]);
-  const params = searchParams ? await searchParams : undefined;
+type UserProfile = Awaited<ReturnType<typeof requireRole>>;
 
+async function SalesRatesContent({
+  profile,
+  params,
+}: {
+  profile: UserProfile;
+  params?: { shipmentId?: string; customerId?: string };
+}) {
   const [availableShipments, providers, overview, customers] =
     await Promise.all([
       getAvailableShipmentsForRates(profile.organizationId),
@@ -50,5 +53,20 @@ export default async function SalesRatesPage({
       role={profile.role}
       organizationName={profile.organization?.name ?? "My Organization"}
     />
+  );
+}
+
+export default async function SalesRatesPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ shipmentId?: string; customerId?: string }>;
+}) {
+  const profile = await requireRole(["SALES", "SALES_MANAGER"]);
+  const params = searchParams ? await searchParams : undefined;
+
+  return (
+    <Suspense fallback={<RateComparisonSkeleton />}>
+      <SalesRatesContent profile={profile} params={params} />
+    </Suspense>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import { useState } from "react";
+import Link, { useLinkStatus } from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -18,6 +19,7 @@ import {
   UserPlus,
   Package,
   Bot,
+  Loader2,
 } from "lucide-react";
 import { BRAND, Logo } from "@/components/shared/brand";
 import { SignOutButton } from "../shared/sign-out-button";
@@ -147,6 +149,28 @@ const SALES_NAV_ITEMS: NavConfigItem[] = [
   },
 ];
 
+function NavLinkStatus({ isHighlighted }: { isHighlighted: boolean }) {
+  const { pending } = useLinkStatus();
+
+  return (
+    <span
+      className="flex size-4 shrink-0 items-center justify-center"
+      aria-hidden="true"
+    >
+      {pending ? (
+        <Loader2
+          className={cn(
+            "size-3 animate-spin",
+            isHighlighted ? "text-primary-foreground" : "text-primary",
+          )}
+        />
+      ) : isHighlighted ? (
+        <span className="size-1.5 rounded-full bg-primary-foreground" />
+      ) : null}
+    </span>
+  );
+}
+
 interface DashboardSidebarProps {
   role: AppRole;
   userName: string;
@@ -165,6 +189,37 @@ export function DashboardSidebar({
   onClose,
 }: DashboardSidebarProps) {
   const pathname = usePathname();
+  const [clicked, setClicked] = useState<{
+    from: string;
+    href: string;
+  } | null>(null);
+
+  const activeHref =
+    clicked && clicked.from === pathname ? clicked.href : pathname;
+
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href?: string,
+  ) => {
+    onClose?.();
+
+    if (!href || pathname === href) {
+      return;
+    }
+
+    if (
+      e.metaKey ||
+      e.ctrlKey ||
+      e.shiftKey ||
+      e.altKey ||
+      e.button !== 0
+    ) {
+      return;
+    }
+
+    setClicked({ from: pathname, href });
+  };
+
   const isAdmin = role === "ADMIN";
   const navItems = isAdmin ? ADMIN_NAV_ITEMS : SALES_NAV_ITEMS;
   const bottomNavItems = isAdmin ? ADMIN_BOTTOM_ITEMS : SALES_BOTTOM_ITEMS;
@@ -254,7 +309,8 @@ export function DashboardSidebar({
             <nav className="space-y-1">
               {navItems.map((item) => {
                 const Icon = item.icon;
-                const isActive = item.href && pathname === item.href;
+                const isCurrent = !!item.href && pathname === item.href;
+                const isHighlighted = !!item.href && activeHref === item.href;
                 const isComingSoon = !!item.badge;
 
                 if (isComingSoon) {
@@ -278,10 +334,11 @@ export function DashboardSidebar({
                   <Link
                     key={item.label}
                     href={item.href || "#"}
-                    onClick={() => onClose?.()}
+                    onClick={(e) => handleNavClick(e, item.href)}
+                    aria-current={isCurrent ? "page" : undefined}
                     className={cn(
                       "flex items-center justify-between rounded-md px-3 py-2 text-xs font-medium transition-colors",
-                      isActive
+                      isHighlighted
                         ? "bg-primary text-primary-foreground shadow-xs font-semibold"
                         : "text-foreground/80 hover:bg-muted hover:text-foreground",
                     )}
@@ -290,16 +347,14 @@ export function DashboardSidebar({
                       <Icon
                         className={cn(
                           "size-4 shrink-0",
-                          isActive
+                          isHighlighted
                             ? "text-primary-foreground"
                             : "text-muted-foreground",
                         )}
                       />
                       <span>{item.label}</span>
                     </div>
-                    {isActive && (
-                      <span className="size-1.5 rounded-full bg-primary-foreground" />
-                    )}
+                    <NavLinkStatus isHighlighted={isHighlighted} />
                   </Link>
                 );
               })}
@@ -323,7 +378,8 @@ export function DashboardSidebar({
         <div className="shrink-0 border-t border-border px-3 py-2 space-y-1">
           {bottomNavItems.map((item) => {
             const Icon = item.icon;
-            const isActive = item.href && pathname === item.href;
+            const isCurrent = !!item.href && pathname === item.href;
+            const isHighlighted = !!item.href && activeHref === item.href;
             const isComingSoon = !!item.badge;
 
             if (isComingSoon) {
@@ -347,10 +403,11 @@ export function DashboardSidebar({
               <Link
                 key={item.label}
                 href={item.href || "#"}
-                onClick={() => onClose?.()}
+                onClick={(e) => handleNavClick(e, item.href)}
+                aria-current={isCurrent ? "page" : undefined}
                 className={cn(
                   "flex items-center justify-between rounded-md px-3 py-2 text-xs font-medium transition-colors",
-                  isActive
+                  isHighlighted
                     ? "bg-primary text-primary-foreground shadow-xs font-semibold"
                     : "text-foreground/80 hover:bg-muted hover:text-foreground",
                 )}
@@ -359,16 +416,14 @@ export function DashboardSidebar({
                   <Icon
                     className={cn(
                       "size-4 shrink-0",
-                      isActive
+                      isHighlighted
                         ? "text-primary-foreground"
                         : "text-muted-foreground",
                     )}
                   />
                   <span>{item.label}</span>
                 </div>
-                {isActive && (
-                  <span className="size-1.5 rounded-full bg-primary-foreground" />
-                )}
+                <NavLinkStatus isHighlighted={isHighlighted} />
               </Link>
             );
           })}
