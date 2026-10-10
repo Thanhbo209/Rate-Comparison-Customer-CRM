@@ -9,18 +9,28 @@ export interface ExchangeRateItem {
   updatedAt: Date;
 }
 
+export interface UserProfileData {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  createdAt: Date;
+}
+
 export interface OrganizationSettingsData {
+  user: UserProfileData;
   organization: {
     id: string;
     name: string;
     baseCurrency: string;
+    createdAt: Date;
   };
   exchangeRates: ExchangeRateItem[];
   canEdit: boolean;
 }
 
 /**
- * Fetch organization settings including base currency and exchange rates.
+ * Fetch organization settings including user profile, organization details, base currency, and exchange rates.
  */
 export async function getOrganizationSettingsData(): Promise<OrganizationSettingsData | null> {
   const profile = await getCurrentProfile();
@@ -43,10 +53,18 @@ export async function getOrganizationSettingsData(): Promise<OrganizationSetting
     profile.role === "SALES_MANAGER" || profile.role === "ADMIN";
 
   return {
+    user: {
+      id: profile.id,
+      name: profile.name,
+      email: profile.email,
+      role: profile.role,
+      createdAt: profile.createdAt,
+    },
     organization: {
       id: org.id,
       name: org.name,
       baseCurrency: org.baseCurrency || "USD",
+      createdAt: org.createdAt,
     },
     exchangeRates: org.exchangeRates.map((r) => ({
       id: r.id,
