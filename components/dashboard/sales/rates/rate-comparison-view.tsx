@@ -23,7 +23,6 @@ import {
   X,
   RotateCcw,
 } from "lucide-react";
-import { OverallAnalytics } from "./overall-analytics";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -137,7 +136,6 @@ export function RateComparisonView({
     overview?.shipments || (shipment ? [shipment] : []);
   const baseCurrency =
     overview?.baseCurrency || shipment?.baseCurrency || "USD";
-  const overall = overview?.overall;
 
   // Compute shipment-level profit rankings from the FULL list (pre-filter,
   // pre-pagination) so that "Best choice" is globally correct.
@@ -321,15 +319,6 @@ export function RateComparisonView({
           </p>
         </div>
       </div>
-
-      {/* OVERALL TOTALS & AGENT ANALYTICS BANNER */}
-      {overall && overall.totalRates > 0 && (
-        <OverallAnalytics
-          overall={overall}
-          baseCurrency={baseCurrency}
-          shipments={shipmentsToDisplay}
-        />
-      )}
 
       {/* SHIPMENTS DIRECTORY TABLE WITH DROPDOWN OF FREIGHTS */}
       <div className="space-y-4">
