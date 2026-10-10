@@ -66,6 +66,64 @@ export async function updateOrganizationCurrencyAction({
 }
 
 /**
+ * Update organization name.
+ */
+export async function updateOrganizationNameAction({
+  name,
+}: {
+  name: string;
+}): Promise<SettingsActionResponse<{ name: string }>> {
+  try {
+    const profile = await getCurrentProfile();
+    if (!profile) {
+      return { success: false, error: "Authentication required." };
+    }
+
+    if (!profile.organizationId) {
+      return { success: false, error: "Organization required." };
+    }
+
+    if (profile.role !== "SALES_MANAGER" && profile.role !== "ADMIN") {
+      return {
+        success: false,
+        error: "Only Sales Managers and Admins can update organization settings.",
+      };
+    }
+
+    const trimmed = name?.trim();
+    if (!trimmed || trimmed.length < 2) {
+      return {
+        success: false,
+        error: "Organization name must be at least 2 characters long.",
+      };
+    }
+
+    await prisma.organization.update({
+      where: { id: profile.organizationId },
+      data: { name: trimmed },
+    });
+
+    revalidatePath("/dashboard/sales/settings");
+    revalidatePath("/dashboard/admin/settings");
+    revalidatePath("/dashboard/sales/rates");
+    revalidatePath("/dashboard/admin/rates");
+    revalidatePath("/dashboard/sales/customers");
+    revalidatePath("/dashboard/admin/customers");
+    revalidatePath("/dashboard/sales/shipments");
+    revalidatePath("/dashboard/admin/shipments");
+
+    return { success: true, data: { name: trimmed } };
+  } catch (error) {
+    console.error("Failed to update organization name:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error ? error.message : "Failed to update organization name.",
+    };
+  }
+}
+
+/**
  * Upsert an exchange rate for the organization.
  * e.g., 1 USD = 25,400 VND or 1 EUR = 1.08 USD
  */
