@@ -1,17 +1,12 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import {
   Search,
-  Filter,
-  MoreVertical,
   Eye,
   Pencil,
   Trash2,
   Building2,
-  User,
-  Phone,
-  Mail,
   MapPin,
   Tag,
   Package,
@@ -19,6 +14,13 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { CustomerItem } from "@/lib/customer/types";
 
 interface CustomerTableProps {
@@ -127,34 +129,60 @@ export function CustomerTable({
         <div className="flex flex-wrap items-center gap-2">
           {/* Industrial Zone Filter */}
           {industrialZones.length > 0 && (
-            <select
-              value={selectedZone}
-              onChange={(e) => handleZoneChange(e.target.value)}
-              className="rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground outline-none focus:border-primary"
-            >
-              <option value="ALL">All Industrial Zones</option>
-              {industrialZones.map((z) => (
-                <option key={z} value={z}>
-                  {z}
-                </option>
-              ))}
-            </select>
+            <div className="min-w-42.5">
+              <Select
+                value={selectedZone}
+                onValueChange={(val) => {
+                  if (val) handleZoneChange(val);
+                }}
+              >
+                <SelectTrigger className="h-8.5 rounded-lg border-border bg-background text-xs">
+                  <SelectValue>
+                    {(val: string | null) => {
+                      if (!val || val === "ALL") return "All Industrial Zones";
+                      return val;
+                    }}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="rounded-xl max-h-72">
+                  <SelectItem value="ALL">All Industrial Zones</SelectItem>
+                  {industrialZones.map((z) => (
+                    <SelectItem key={z} value={z}>
+                      {z}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           )}
 
           {/* Commodity Filter */}
           {commodities.length > 0 && (
-            <select
-              value={selectedCommodity}
-              onChange={(e) => handleCommodityChange(e.target.value)}
-              className="rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground outline-none focus:border-primary"
-            >
-              <option value="ALL">All Commodities</option>
-              {commodities.map((comm) => (
-                <option key={comm} value={comm}>
-                  {comm}
-                </option>
-              ))}
-            </select>
+            <div className="min-w-[160px]">
+              <Select
+                value={selectedCommodity}
+                onValueChange={(val) => {
+                  if (val) handleCommodityChange(val);
+                }}
+              >
+                <SelectTrigger className="h-8.5 rounded-lg border-border bg-background text-xs">
+                  <SelectValue>
+                    {(val: string | null) => {
+                      if (!val || val === "ALL") return "All Commodities";
+                      return val;
+                    }}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="rounded-xl max-h-72">
+                  <SelectItem value="ALL">All Commodities</SelectItem>
+                  {commodities.map((comm) => (
+                    <SelectItem key={comm} value={comm}>
+                      {comm}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           )}
 
           <button
@@ -199,7 +227,9 @@ export function CustomerTable({
                 <th className="px-5 py-3 font-medium">Company</th>
                 <th className="px-5 py-3 font-medium">Contact Person</th>
                 <th className="px-5 py-3 font-medium">Commodity</th>
-                <th className="px-5 py-3 font-medium">Industrial Zone & City</th>
+                <th className="px-5 py-3 font-medium">
+                  Industrial Zone & City
+                </th>
                 <th className="px-5 py-3 font-medium">Shipments</th>
                 <th className="px-5 py-3 text-right font-medium">Actions</th>
               </tr>

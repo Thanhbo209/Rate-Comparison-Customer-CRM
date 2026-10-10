@@ -18,6 +18,13 @@ import {
   ChevronRight,
   Plus,
 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { ShipmentItem, ShipmentDirection } from "@/lib/shipment/types";
 
 interface CustomerOption {
@@ -159,21 +166,35 @@ export function ShipmentTable({
         {/* Customer Select Filter */}
         <div className="flex items-center gap-2">
           {customers.length > 0 && (
-            <select
-              value={selectedCustomer}
-              onChange={(e) => {
-                setSelectedCustomer(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
-            >
-              <option value="ALL">All Shipper Accounts</option>
-              {customers.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.companyName}
-                </option>
-              ))}
-            </select>
+            <div className="min-w-[180px]">
+              <Select
+                value={selectedCustomer}
+                onValueChange={(val) => {
+                  if (val) {
+                    setSelectedCustomer(val);
+                    setCurrentPage(1);
+                  }
+                }}
+              >
+                <SelectTrigger className="h-8.5 rounded-lg border-border bg-background text-xs">
+                  <SelectValue>
+                    {(val: string | null) => {
+                      if (!val || val === "ALL") return "All Shipper Accounts";
+                      const found = customers.find((c) => c.id === val);
+                      return found ? found.companyName : "All Shipper Accounts";
+                    }}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="rounded-xl max-h-72">
+                  <SelectItem value="ALL">All Shipper Accounts</SelectItem>
+                  {customers.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.companyName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           )}
 
           <button

@@ -18,6 +18,13 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   createShipmentAction,
   updateShipmentAction,
 } from "@/lib/shipment/actions";
@@ -153,26 +160,34 @@ export function ShipmentDialog({
                 No customer accounts found. Please create a customer first.
               </p>
             ) : (
-              <select
+              <Select
                 value={formData.customerId}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    customerId: e.target.value,
-                  }))
-                }
-                required
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
+                onValueChange={(val) => {
+                  if (val) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      customerId: val,
+                    }));
+                  }
+                }}
               >
-                <option value="" disabled>
-                  Select a customer account...
-                </option>
-                {customers.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.companyName}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger className="w-full h-10 rounded-lg border-border bg-background text-sm">
+                  <SelectValue placeholder="Select a customer account...">
+                    {(val: string | null) => {
+                      if (!val) return "Select a customer account...";
+                      const found = customers.find((c) => c.id === val);
+                      return found ? found.companyName : "Select a customer account...";
+                    }}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="rounded-xl max-h-72">
+                  {customers.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.companyName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
           </div>
 
