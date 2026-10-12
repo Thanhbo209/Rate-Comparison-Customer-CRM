@@ -42,7 +42,6 @@ import type {
 } from "@/lib/rate/types";
 import { rankShipments } from "@/lib/rate/shipment-ranking";
 import {
-  ShipmentProfitCell,
   RatesTotalRow,
 } from "@/components/rate/shipment-profit";
 
@@ -809,7 +808,6 @@ export function RateComparisonView({
                     <th className="py-3 px-4">Direction</th>
                     <th className="py-3 px-4">Commodity</th>
                     <th className="py-3 px-4">Total rates</th>
-                    <th className="py-3 px-4">Total Profit</th>
                     <th className="py-3 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -899,12 +897,6 @@ export function RateComparisonView({
                               {s.rates.length === 1 ? "rate" : "rates"}
                             </span>
                           </td>
-                          <td className="py-3.5 px-4">
-                            <ShipmentProfitCell
-                              result={rankings.get(s.id)}
-                              baseCurrency={baseCurrency}
-                            />
-                          </td>
 
                           <td
                             className="py-3.5 px-4 text-right"
@@ -933,7 +925,7 @@ export function RateComparisonView({
                         {/* DROPDOWN SUB-ROW INSIDE THE TABLE: FREIGHTS & RATES */}
                         {isExpanded && (
                           <tr className="bg-muted/15 border-b border-border/80">
-                            <td colSpan={8} className="space-y-4">
+                            <td colSpan={7} className="space-y-4">
                               {/* Unranked rates warning banner */}
                               {s.unrankedRateIds &&
                                 s.unrankedRateIds.length > 0 && (
