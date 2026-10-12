@@ -1,16 +1,36 @@
 import { PrismaClient } from "../generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 
-const connectionString = process.env.DIRECT_URL;
+const connectionString = process.env.DATABASE_URL || process.env.DIRECT_URL;
 
 if (!connectionString) {
-  throw new Error("DIRECT_URL is not defined");
+  throw new Error("Neither DATABASE_URL nor DIRECT_URL is defined");
 }
 
-const adapter = new PrismaPg({
-  connectionString,
-});
+const globalForPrisma = globalThis as unknown as {
+  prisma?: PrismaClient;
+  pgPool?: Pool;
+};
 
-export const prisma = new PrismaClient({
-  adapter,
-});
+const pool =
+  globalForPrisma.pgPool ??
+  new Pool({
+    connectionString,
+    max: 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000,
+  });
+
+const adapter = new PrismaPg(pool);
+
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    adapter,
+  });
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+  globalForPrisma.pgPool = pool;
+}
