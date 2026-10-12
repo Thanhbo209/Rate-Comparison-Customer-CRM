@@ -17,6 +17,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Plus,
+  MapPin,
 } from "lucide-react";
 import {
   Select,
@@ -81,7 +82,9 @@ export function ShipmentTable({
           ?.toLowerCase()
           .includes(q);
         const matchesCommodity = s.commodity?.toLowerCase().includes(q);
-        if (!matchesName && !matchesCustomer && !matchesCommodity) return false;
+        const matchesRoute = s.route?.toLowerCase().includes(q);
+        if (!matchesName && !matchesCustomer && !matchesCommodity && !matchesRoute)
+          return false;
       }
 
       return true;
@@ -241,6 +244,7 @@ export function ShipmentTable({
                 <th className="px-5 py-3 font-medium">Shipment & Ref</th>
                 <th className="px-5 py-3 font-medium">Shipper Account</th>
                 <th className="px-5 py-3 font-medium">Direction</th>
+                <th className="px-5 py-3 font-medium">Route</th>
                 <th className="px-5 py-3 font-medium">Commodity</th>
                 <th className="px-5 py-3 font-medium">Rates</th>
                 <th className="px-5 py-3 font-medium">Created</th>
@@ -297,6 +301,20 @@ export function ShipmentTable({
                         <ArrowUpRight className="size-3" />
                         <span>Export</span>
                       </span>
+                    )}
+                  </td>
+
+                  {/* Route */}
+                  <td className="px-5 py-3.5">
+                    {shipment.route ? (
+                      <span className="inline-flex items-center gap-1 rounded-md bg-muted/60 px-2 py-0.5 text-[11px] font-medium text-foreground">
+                        <MapPin className="size-3 shrink-0 text-muted-foreground" />
+                        <span className="truncate max-w-[160px]" title={shipment.route}>
+                          {shipment.route}
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
                     )}
                   </td>
 

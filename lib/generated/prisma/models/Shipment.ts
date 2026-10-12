@@ -30,6 +30,7 @@ export type ShipmentMinAggregateOutputType = {
   name: string | null
   direction: $Enums.ShipmentDirection | null
   commodity: string | null
+  route: string | null
   selectedRateId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -41,6 +42,7 @@ export type ShipmentMaxAggregateOutputType = {
   name: string | null
   direction: $Enums.ShipmentDirection | null
   commodity: string | null
+  route: string | null
   selectedRateId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -52,6 +54,7 @@ export type ShipmentCountAggregateOutputType = {
   name: number
   direction: number
   commodity: number
+  route: number
   selectedRateId: number
   createdAt: number
   updatedAt: number
@@ -65,6 +68,7 @@ export type ShipmentMinAggregateInputType = {
   name?: true
   direction?: true
   commodity?: true
+  route?: true
   selectedRateId?: true
   createdAt?: true
   updatedAt?: true
@@ -76,6 +80,7 @@ export type ShipmentMaxAggregateInputType = {
   name?: true
   direction?: true
   commodity?: true
+  route?: true
   selectedRateId?: true
   createdAt?: true
   updatedAt?: true
@@ -87,6 +92,7 @@ export type ShipmentCountAggregateInputType = {
   name?: true
   direction?: true
   commodity?: true
+  route?: true
   selectedRateId?: true
   createdAt?: true
   updatedAt?: true
@@ -171,6 +177,7 @@ export type ShipmentGroupByOutputType = {
   name: string
   direction: $Enums.ShipmentDirection
   commodity: string | null
+  route: string | null
   selectedRateId: string | null
   createdAt: Date
   updatedAt: Date
@@ -203,6 +210,7 @@ export type ShipmentWhereInput = {
   name?: Prisma.StringFilter<"Shipment"> | string
   direction?: Prisma.EnumShipmentDirectionFilter<"Shipment"> | $Enums.ShipmentDirection
   commodity?: Prisma.StringNullableFilter<"Shipment"> | string | null
+  route?: Prisma.StringNullableFilter<"Shipment"> | string | null
   selectedRateId?: Prisma.StringNullableFilter<"Shipment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Shipment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Shipment"> | Date | string
@@ -217,6 +225,7 @@ export type ShipmentOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   direction?: Prisma.SortOrder
   commodity?: Prisma.SortOrderInput | Prisma.SortOrder
+  route?: Prisma.SortOrderInput | Prisma.SortOrder
   selectedRateId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -235,6 +244,7 @@ export type ShipmentWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Shipment"> | string
   direction?: Prisma.EnumShipmentDirectionFilter<"Shipment"> | $Enums.ShipmentDirection
   commodity?: Prisma.StringNullableFilter<"Shipment"> | string | null
+  route?: Prisma.StringNullableFilter<"Shipment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Shipment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Shipment"> | Date | string
   customer?: Prisma.XOR<Prisma.CustomerScalarRelationFilter, Prisma.CustomerWhereInput>
@@ -248,6 +258,7 @@ export type ShipmentOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   direction?: Prisma.SortOrder
   commodity?: Prisma.SortOrderInput | Prisma.SortOrder
+  route?: Prisma.SortOrderInput | Prisma.SortOrder
   selectedRateId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -265,6 +276,7 @@ export type ShipmentScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Shipment"> | string
   direction?: Prisma.EnumShipmentDirectionWithAggregatesFilter<"Shipment"> | $Enums.ShipmentDirection
   commodity?: Prisma.StringNullableWithAggregatesFilter<"Shipment"> | string | null
+  route?: Prisma.StringNullableWithAggregatesFilter<"Shipment"> | string | null
   selectedRateId?: Prisma.StringNullableWithAggregatesFilter<"Shipment"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Shipment"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Shipment"> | Date | string
@@ -275,6 +287,7 @@ export type ShipmentCreateInput = {
   name: string
   direction: $Enums.ShipmentDirection
   commodity?: string | null
+  route?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   customer: Prisma.CustomerCreateNestedOneWithoutShipmentsInput
@@ -288,6 +301,7 @@ export type ShipmentUncheckedCreateInput = {
   name: string
   direction: $Enums.ShipmentDirection
   commodity?: string | null
+  route?: string | null
   selectedRateId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -299,6 +313,7 @@ export type ShipmentUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumShipmentDirectionFieldUpdateOperationsInput | $Enums.ShipmentDirection
   commodity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  route?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneRequiredWithoutShipmentsNestedInput
@@ -312,6 +327,7 @@ export type ShipmentUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumShipmentDirectionFieldUpdateOperationsInput | $Enums.ShipmentDirection
   commodity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  route?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -324,6 +340,7 @@ export type ShipmentCreateManyInput = {
   name: string
   direction: $Enums.ShipmentDirection
   commodity?: string | null
+  route?: string | null
   selectedRateId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -334,6 +351,7 @@ export type ShipmentUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumShipmentDirectionFieldUpdateOperationsInput | $Enums.ShipmentDirection
   commodity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  route?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -344,6 +362,7 @@ export type ShipmentUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumShipmentDirectionFieldUpdateOperationsInput | $Enums.ShipmentDirection
   commodity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  route?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -365,6 +384,7 @@ export type ShipmentCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   direction?: Prisma.SortOrder
   commodity?: Prisma.SortOrder
+  route?: Prisma.SortOrder
   selectedRateId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -376,6 +396,7 @@ export type ShipmentMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   direction?: Prisma.SortOrder
   commodity?: Prisma.SortOrder
+  route?: Prisma.SortOrder
   selectedRateId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -387,6 +408,7 @@ export type ShipmentMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   direction?: Prisma.SortOrder
   commodity?: Prisma.SortOrder
+  route?: Prisma.SortOrder
   selectedRateId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -499,6 +521,7 @@ export type ShipmentCreateWithoutCustomerInput = {
   name: string
   direction: $Enums.ShipmentDirection
   commodity?: string | null
+  route?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   rates?: Prisma.ShipmentRateCreateNestedManyWithoutShipmentInput
@@ -510,6 +533,7 @@ export type ShipmentUncheckedCreateWithoutCustomerInput = {
   name: string
   direction: $Enums.ShipmentDirection
   commodity?: string | null
+  route?: string | null
   selectedRateId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -551,6 +575,7 @@ export type ShipmentScalarWhereInput = {
   name?: Prisma.StringFilter<"Shipment"> | string
   direction?: Prisma.EnumShipmentDirectionFilter<"Shipment"> | $Enums.ShipmentDirection
   commodity?: Prisma.StringNullableFilter<"Shipment"> | string | null
+  route?: Prisma.StringNullableFilter<"Shipment"> | string | null
   selectedRateId?: Prisma.StringNullableFilter<"Shipment"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Shipment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Shipment"> | Date | string
@@ -561,6 +586,7 @@ export type ShipmentCreateWithoutRatesInput = {
   name: string
   direction: $Enums.ShipmentDirection
   commodity?: string | null
+  route?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   customer: Prisma.CustomerCreateNestedOneWithoutShipmentsInput
@@ -573,6 +599,7 @@ export type ShipmentUncheckedCreateWithoutRatesInput = {
   name: string
   direction: $Enums.ShipmentDirection
   commodity?: string | null
+  route?: string | null
   selectedRateId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -588,6 +615,7 @@ export type ShipmentCreateWithoutSelectedRateInput = {
   name: string
   direction: $Enums.ShipmentDirection
   commodity?: string | null
+  route?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   customer: Prisma.CustomerCreateNestedOneWithoutShipmentsInput
@@ -600,6 +628,7 @@ export type ShipmentUncheckedCreateWithoutSelectedRateInput = {
   name: string
   direction: $Enums.ShipmentDirection
   commodity?: string | null
+  route?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   rates?: Prisma.ShipmentRateUncheckedCreateNestedManyWithoutShipmentInput
@@ -626,6 +655,7 @@ export type ShipmentUpdateWithoutRatesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumShipmentDirectionFieldUpdateOperationsInput | $Enums.ShipmentDirection
   commodity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  route?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneRequiredWithoutShipmentsNestedInput
@@ -638,6 +668,7 @@ export type ShipmentUncheckedUpdateWithoutRatesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumShipmentDirectionFieldUpdateOperationsInput | $Enums.ShipmentDirection
   commodity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  route?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -659,6 +690,7 @@ export type ShipmentUpdateWithoutSelectedRateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumShipmentDirectionFieldUpdateOperationsInput | $Enums.ShipmentDirection
   commodity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  route?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneRequiredWithoutShipmentsNestedInput
@@ -671,6 +703,7 @@ export type ShipmentUncheckedUpdateWithoutSelectedRateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumShipmentDirectionFieldUpdateOperationsInput | $Enums.ShipmentDirection
   commodity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  route?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   rates?: Prisma.ShipmentRateUncheckedUpdateManyWithoutShipmentNestedInput
@@ -681,6 +714,7 @@ export type ShipmentCreateManyCustomerInput = {
   name: string
   direction: $Enums.ShipmentDirection
   commodity?: string | null
+  route?: string | null
   selectedRateId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -691,6 +725,7 @@ export type ShipmentUpdateWithoutCustomerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumShipmentDirectionFieldUpdateOperationsInput | $Enums.ShipmentDirection
   commodity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  route?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   rates?: Prisma.ShipmentRateUpdateManyWithoutShipmentNestedInput
@@ -702,6 +737,7 @@ export type ShipmentUncheckedUpdateWithoutCustomerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumShipmentDirectionFieldUpdateOperationsInput | $Enums.ShipmentDirection
   commodity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  route?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -713,6 +749,7 @@ export type ShipmentUncheckedUpdateManyWithoutCustomerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumShipmentDirectionFieldUpdateOperationsInput | $Enums.ShipmentDirection
   commodity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  route?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedRateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -755,6 +792,7 @@ export type ShipmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name?: boolean
   direction?: boolean
   commodity?: boolean
+  route?: boolean
   selectedRateId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -770,6 +808,7 @@ export type ShipmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   name?: boolean
   direction?: boolean
   commodity?: boolean
+  route?: boolean
   selectedRateId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -783,6 +822,7 @@ export type ShipmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   name?: boolean
   direction?: boolean
   commodity?: boolean
+  route?: boolean
   selectedRateId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -796,12 +836,13 @@ export type ShipmentSelectScalar = {
   name?: boolean
   direction?: boolean
   commodity?: boolean
+  route?: boolean
   selectedRateId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ShipmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "customerId" | "name" | "direction" | "commodity" | "selectedRateId" | "createdAt" | "updatedAt", ExtArgs["result"]["shipment"]>
+export type ShipmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "customerId" | "name" | "direction" | "commodity" | "route" | "selectedRateId" | "createdAt" | "updatedAt", ExtArgs["result"]["shipment"]>
 export type ShipmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
   rates?: boolean | Prisma.Shipment$ratesArgs<ExtArgs>
@@ -830,6 +871,7 @@ export type $ShipmentPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     name: string
     direction: $Enums.ShipmentDirection
     commodity: string | null
+    route: string | null
     selectedRateId: string | null
     createdAt: Date
     updatedAt: Date
@@ -1264,6 +1306,7 @@ export interface ShipmentFieldRefs {
   readonly name: Prisma.FieldRef<"Shipment", 'String'>
   readonly direction: Prisma.FieldRef<"Shipment", 'ShipmentDirection'>
   readonly commodity: Prisma.FieldRef<"Shipment", 'String'>
+  readonly route: Prisma.FieldRef<"Shipment", 'String'>
   readonly selectedRateId: Prisma.FieldRef<"Shipment", 'String'>
   readonly createdAt: Prisma.FieldRef<"Shipment", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Shipment", 'DateTime'>

@@ -111,6 +111,7 @@ model Shipment {
   name           String
   direction      ShipmentDirection
   commodity      String?
+  route          String?
   selectedRateId String?           @unique
 
   customer     Customer       @relation(fields: [customerId], references: [id], onDelete: Cascade)

@@ -31,6 +31,7 @@ export async function getShipments(
             OR: [
               { name: { contains: search, mode: "insensitive" } },
               { commodity: { contains: search, mode: "insensitive" } },
+              { route: { contains: search, mode: "insensitive" } },
               {
                 customer: {
                   companyName: { contains: search, mode: "insensitive" },
