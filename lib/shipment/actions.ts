@@ -58,6 +58,7 @@ export async function createShipmentAction(
         customerId: customer.id,
         direction: data.direction,
         commodity: data.commodity?.trim() || null,
+        route: data.route?.trim() || null,
       },
       include: {
         customer: {
@@ -156,6 +157,7 @@ export async function updateShipmentAction(
         customerId: data.customerId,
         direction: data.direction,
         commodity: data.commodity?.trim() || null,
+        route: data.route !== undefined ? (data.route?.trim() || null) : undefined,
       },
       include: {
         customer: {

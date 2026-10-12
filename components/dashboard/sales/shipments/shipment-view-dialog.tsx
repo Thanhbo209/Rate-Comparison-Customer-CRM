@@ -9,6 +9,7 @@ import {
   ArrowUpRight,
   Calculator,
   Calendar,
+  MapPin,
 } from "lucide-react";
 import {
   Dialog,
@@ -104,6 +105,18 @@ export function ShipmentViewDialog({
                 {shipment.customer.companyName}
               </span>
             </div>
+
+            {shipment.route && (
+              <div className="flex items-center justify-between border-b border-border/50 pb-2.5">
+                <span className="text-muted-foreground flex items-center gap-1.5">
+                  <MapPin className="size-3.5" />
+                  Route (Loading → Destination)
+                </span>
+                <span className="font-semibold text-foreground">
+                  {shipment.route}
+                </span>
+              </div>
+            )}
 
             <div className="flex items-center justify-between border-b border-border/50 pb-2.5">
               <span className="text-muted-foreground flex items-center gap-1.5">

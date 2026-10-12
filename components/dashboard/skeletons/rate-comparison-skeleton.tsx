@@ -33,7 +33,6 @@ export function RateComparisonSkeleton() {
                 <th className="py-3 px-4"><Skeleton className="h-3.5 w-16" /></th>
                 <th className="py-3 px-4"><Skeleton className="h-3.5 w-20" /></th>
                 <th className="py-3 px-4"><Skeleton className="h-3.5 w-20" /></th>
-                <th className="py-3 px-4"><Skeleton className="h-3.5 w-20" /></th>
                 <th className="py-3 px-4 text-right"><Skeleton className="ml-auto h-3.5 w-14" /></th>
               </tr>
             </thead>
@@ -51,7 +50,6 @@ export function RateComparisonSkeleton() {
                   <td className="py-3.5 px-4"><Skeleton className="h-5 w-16 rounded-full" /></td>
                   <td className="py-3.5 px-4"><Skeleton className="h-4 w-24" /></td>
                   <td className="py-3.5 px-4"><Skeleton className="h-5 w-14 rounded-full" /></td>
-                  <td className="py-3.5 px-4"><Skeleton className="h-4 w-24" /></td>
                   <td className="py-3.5 px-4 text-right">
                     <Skeleton className="ml-auto h-8 w-24 rounded-lg" />
                   </td>

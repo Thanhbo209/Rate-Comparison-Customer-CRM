@@ -22,6 +22,7 @@ import {
   SlidersHorizontal,
   X,
   RotateCcw,
+  Pencil,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AddRateDialog } from "./add-rate-dialog";
+import { EditRateDialog } from "./edit-rate-dialog";
 import { ManageFreightItemsDialog } from "./manage-freight-items-dialog";
 import { RateDeleteDialog } from "./rate-delete-dialog";
 import type {
@@ -42,7 +44,6 @@ import type {
 } from "@/lib/rate/types";
 import { rankShipments } from "@/lib/rate/shipment-ranking";
 import {
-  ShipmentProfitCell,
   RatesTotalRow,
 } from "@/components/rate/shipment-profit";
 
@@ -106,6 +107,10 @@ export function RateComparisonView({
     id: string;
     providerName: string;
     optionName?: string | null;
+  } | null>(null);
+  const [editingRate, setEditingRate] = useState<{
+    rate: ShipmentRateItem;
+    shipmentName: string;
   } | null>(null);
 
   // Pagination & Search state (limited to 10 items per page)
@@ -809,7 +814,6 @@ export function RateComparisonView({
                     <th className="py-3 px-4">Direction</th>
                     <th className="py-3 px-4">Commodity</th>
                     <th className="py-3 px-4">Total rates</th>
-                    <th className="py-3 px-4">Total Profit</th>
                     <th className="py-3 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -899,12 +903,6 @@ export function RateComparisonView({
                               {s.rates.length === 1 ? "rate" : "rates"}
                             </span>
                           </td>
-                          <td className="py-3.5 px-4">
-                            <ShipmentProfitCell
-                              result={rankings.get(s.id)}
-                              baseCurrency={baseCurrency}
-                            />
-                          </td>
 
                           <td
                             className="py-3.5 px-4 text-right"
@@ -933,7 +931,7 @@ export function RateComparisonView({
                         {/* DROPDOWN SUB-ROW INSIDE THE TABLE: FREIGHTS & RATES */}
                         {isExpanded && (
                           <tr className="bg-muted/15 border-b border-border/80">
-                            <td colSpan={8} className="space-y-4">
+                            <td colSpan={7} className="space-y-4">
                               {/* Unranked rates warning banner */}
                               {s.unrankedRateIds &&
                                 s.unrankedRateIds.length > 0 && (
@@ -1027,6 +1025,20 @@ export function RateComparisonView({
                                                   <span className="font-bold text-[17px] text-foreground font-heading">
                                                     {rate.provider.name}
                                                   </span>
+                                                  <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                      e.stopPropagation();
+                                                      setEditingRate({
+                                                        rate,
+                                                        shipmentName: s.name,
+                                                      });
+                                                    }}
+                                                    className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors inline-flex items-center"
+                                                    title="Change Provider / Freight"
+                                                  >
+                                                    <Pencil className="size-3.5" />
+                                                  </button>
                                                   {isWinner && (
                                                     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-2xs">
                                                       <Award className="size-2.5" />
@@ -1285,6 +1297,21 @@ export function RateComparisonView({
             if (!open) setDeletingRate(null);
           }}
           rate={deletingRate}
+          onSuccess={() => router.refresh()}
+        />
+      )}
+
+      {/* Edit Carrier Rate / Freight Modal */}
+      {editingRate && (
+        <EditRateDialog
+          key={editingRate.rate.id}
+          open={!!editingRate}
+          onOpenChange={(open) => {
+            if (!open) setEditingRate(null);
+          }}
+          rate={editingRate.rate}
+          shipmentName={editingRate.shipmentName}
+          existingProviders={providers}
           onSuccess={() => router.refresh()}
         />
       )}

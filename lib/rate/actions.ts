@@ -186,6 +186,153 @@ export async function addShipmentRateAction({
 }
 
 /**
+ * Update the provider or option name for a carrier rate.
+ */
+export async function updateShipmentRateProviderAction({
+  shipmentRateId,
+  providerId,
+  providerName,
+  optionName,
+  renameExistingProvider,
+}: {
+  shipmentRateId: string;
+  providerId?: string;
+  providerName?: string;
+  optionName?: string;
+  renameExistingProvider?: boolean;
+}): Promise<RateActionResponse<{ id: string; providerName: string }>> {
+  try {
+    const profile = await getCurrentProfile();
+    if (!profile) {
+      return { success: false, error: "Authentication required." };
+    }
+
+    if (!profile.organizationId && profile.role !== "ADMIN") {
+      return { success: false, error: "Organization required." };
+    }
+
+    // Tenant check
+    const rate = await prisma.shipmentRate.findUnique({
+      where: { id: shipmentRateId },
+      include: {
+        provider: true,
+        shipment: {
+          include: { customer: true },
+        },
+      },
+    });
+
+    if (!rate) {
+      return { success: false, error: "Rate not found." };
+    }
+
+    if (
+      profile.role !== "ADMIN" &&
+      rate.shipment.customer.organizationId !== profile.organizationId
+    ) {
+      return { success: false, error: "Permission denied." };
+    }
+
+    const orgId = rate.shipment.customer.organizationId;
+    let targetProviderId = providerId;
+
+    if (renameExistingProvider && providerName?.trim()) {
+      const trimmed = providerName.trim();
+      const conflict = await prisma.provider.findFirst({
+        where: {
+          organizationId: orgId,
+          name: { equals: trimmed, mode: "insensitive" },
+          id: { not: rate.providerId },
+        },
+      });
+
+      if (conflict) {
+        targetProviderId = conflict.id;
+      } else {
+        const updatedProvider = await prisma.provider.update({
+          where: { id: rate.providerId },
+          data: { name: trimmed },
+        });
+        targetProviderId = updatedProvider.id;
+      }
+    } else if (!targetProviderId && providerName?.trim()) {
+      const trimmed = providerName.trim();
+      const existingProvider = await prisma.provider.findFirst({
+        where: {
+          organizationId: orgId,
+          name: { equals: trimmed, mode: "insensitive" },
+        },
+      });
+
+      if (existingProvider) {
+        targetProviderId = existingProvider.id;
+      } else {
+        const createdProvider = await prisma.provider.create({
+          data: {
+            organizationId: orgId,
+            name: trimmed,
+          },
+        });
+        targetProviderId = createdProvider.id;
+      }
+    }
+
+    if (!targetProviderId) {
+      return {
+        success: false,
+        error: "Please select or enter a carrier/provider name.",
+      };
+    }
+
+    const providerCheck = await prisma.provider.findFirst({
+      where: {
+        id: targetProviderId,
+        organizationId: orgId,
+      },
+    });
+
+    if (!providerCheck) {
+      return {
+        success: false,
+        error: "Selected provider not found or belongs to another organization.",
+      };
+    }
+
+    const trimmedOptionName =
+      optionName !== undefined ? (optionName.trim() || null) : rate.optionName;
+
+    const updated = await prisma.shipmentRate.update({
+      where: { id: shipmentRateId },
+      data: {
+        providerId: targetProviderId,
+        optionName: trimmedOptionName,
+      },
+      include: {
+        provider: true,
+      },
+    });
+
+    revalidatePath("/dashboard/sales/rates");
+    revalidatePath("/dashboard/admin/rates");
+    revalidatePath("/dashboard/sales/shipments");
+
+    return {
+      success: true,
+      data: { id: updated.id, providerName: updated.provider.name },
+    };
+  } catch (error) {
+    console.error("Failed to update shipment rate provider:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to update shipment rate provider.",
+    };
+  }
+}
+
+/**
  * Delete a carrier rate from a shipment.
  */
 export async function deleteShipmentRateAction({

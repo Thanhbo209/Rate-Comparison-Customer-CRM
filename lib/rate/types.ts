@@ -60,6 +60,7 @@ export interface ShipmentComparisonDetail {
   name: string;
   direction: "IMPORT" | "EXPORT";
   commodity: string | null;
+  route?: string | null;
   selectedRateId?: string | null;
   customerId: string;
   customer: {

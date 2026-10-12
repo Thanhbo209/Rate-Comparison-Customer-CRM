@@ -8,6 +8,7 @@ import {
   Tag,
   ArrowDownLeft,
   ArrowUpRight,
+  MapPin,
 } from "lucide-react";
 import {
   Dialog,
@@ -58,7 +59,10 @@ export function ShipmentDialog({
     customerId: "",
     direction: "IMPORT",
     commodity: "",
+    route: "",
   });
+  const [loadingPort, setLoadingPort] = useState("");
+  const [destinationPort, setDestinationPort] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -71,14 +75,26 @@ export function ShipmentDialog({
         customerId: shipment.customerId,
         direction: shipment.direction,
         commodity: shipment.commodity || "",
+        route: shipment.route || "",
       });
+      if (shipment.route && shipment.route.includes(" -> ")) {
+        const [pol, ...rest] = shipment.route.split(" -> ");
+        setLoadingPort(pol || "");
+        setDestinationPort(rest.join(" -> ") || "");
+      } else {
+        setLoadingPort(shipment.route || "");
+        setDestinationPort("");
+      }
     } else {
       setFormData({
         name: "",
         customerId: customers[0]?.id || "",
         direction: "IMPORT",
         commodity: "",
+        route: "",
       });
+      setLoadingPort("");
+      setDestinationPort("");
     }
     setError(null);
   }, [shipment, customers, open]);
@@ -96,13 +112,23 @@ export function ShipmentDialog({
       return;
     }
 
+    const computedRoute =
+      loadingPort.trim() && destinationPort.trim()
+        ? `${loadingPort.trim()} -> ${destinationPort.trim()}`
+        : loadingPort.trim() || destinationPort.trim() || undefined;
+
+    const payload: ShipmentFormData = {
+      ...formData,
+      route: computedRoute,
+    };
+
     try {
       setLoading(true);
       setError(null);
 
       const res = isEdit
-        ? await updateShipmentAction(shipment!.id, formData)
-        : await createShipmentAction(formData);
+        ? await updateShipmentAction(shipment!.id, payload)
+        : await createShipmentAction(payload);
 
       if (!res.success) {
         setError(res.error || "Failed to save shipment.");
@@ -178,7 +204,9 @@ export function ShipmentDialog({
                     {(val: string | null) => {
                       if (!val) return "Select a customer account...";
                       const found = customers.find((c) => c.id === val);
-                      return found ? found.companyName : "Select a customer account...";
+                      return found
+                        ? found.companyName
+                        : "Select a customer account...";
                     }}
                   </SelectValue>
                 </SelectTrigger>
@@ -217,7 +245,7 @@ export function ShipmentDialog({
             <label className="font-medium text-foreground">
               Freight Direction <span className="text-destructive">*</span>
             </label>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 mt-2">
               <button
                 type="button"
                 onClick={() =>
@@ -248,6 +276,48 @@ export function ShipmentDialog({
                 <span>Export (Outbound)</span>
               </button>
             </div>
+          </div>
+
+          {/* Route: Loading -> Destination */}
+          <div className="space-y-1.5">
+            <label className="font-medium text-foreground flex items-center justify-between">
+              <span className="flex items-center gap-1.5">
+                <MapPin className="size-3.5 text-muted-foreground" />
+                Shipment Route
+              </span>
+              <span className="text-[11px] text-muted-foreground font-normal">
+                Loading → Destination
+              </span>
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div>
+                <input
+                  type="text"
+                  placeholder="Loading Port / Origin (e.g. Cat Lai)"
+                  value={loadingPort}
+                  onChange={(e) => setLoadingPort(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
+                />
+              </div>
+              <div>
+                <input
+                  type="text"
+                  placeholder="Destination Port (e.g. Los Angeles)"
+                  value={destinationPort}
+                  onChange={(e) => setDestinationPort(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
+                />
+              </div>
+            </div>
+            {(loadingPort.trim() || destinationPort.trim()) && (
+              <p className="text-[11px] text-primary bg-primary/5 border border-primary/10 rounded-md px-2.5 py-1 flex items-center gap-1">
+                <span className="font-semibold">Route:</span>
+                <span>
+                  {loadingPort.trim() || "..."} →{" "}
+                  {destinationPort.trim() || "..."}
+                </span>
+              </p>
+            )}
           </div>
 
           {/* Commodity */}

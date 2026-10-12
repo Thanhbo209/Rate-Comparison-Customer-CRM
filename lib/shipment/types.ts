@@ -5,6 +5,7 @@ export interface ShipmentItem {
   name: string;
   direction: ShipmentDirection;
   commodity: string | null;
+  route: string | null;
   customerId: string;
   customer: {
     id: string;
@@ -27,6 +28,7 @@ export interface ShipmentFormData {
   customerId: string;
   direction: ShipmentDirection;
   commodity?: string;
+  route?: string | null;
 }
 
 export interface ShipmentStats {

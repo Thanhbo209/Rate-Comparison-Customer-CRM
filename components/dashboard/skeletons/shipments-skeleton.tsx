@@ -8,7 +8,7 @@ export function ShipmentsSkeleton() {
       <span className="sr-only">Loading shipments directory...</span>
       <PageHeaderSkeleton hasAction={true} />
       <StatCardsSkeleton count={4} />
-      <DataTableSkeleton columns={7} rows={8} hasFilters={true} hasPagination={true} />
+      <DataTableSkeleton columns={8} rows={8} hasFilters={true} hasPagination={true} />
     </div>
   );
 }
