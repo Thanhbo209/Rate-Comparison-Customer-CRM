@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import type { ShipmentComparisonDetail } from "@/lib/rate/types";
 import { CostVsProfitShipmentChart } from "./cost-vs-profit-shipment-chart";
 import { ProfitOverTimeChart } from "./profit-over-time-chart";

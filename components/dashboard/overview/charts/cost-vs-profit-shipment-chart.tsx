@@ -9,6 +9,13 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { SectionCard } from "@/components/dashboard/overview/section-card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Building2 } from "lucide-react";
 import type { ShipmentComparisonDetail } from "@/lib/rate/types";
 import { rankShipments } from "@/lib/rate/shipment-ranking";
@@ -99,18 +106,31 @@ export function CostVsProfitShipmentChart({
       subtitle="Selling price split into agent cost (grey) and kept profit (green)"
       action={
         <div className="flex items-center gap-2">
-          <Building2 className="size-3.5 text-muted-foreground hidden sm:inline-block" />
-          <select
+          <Select
             value={selectedCustomerId}
-            onChange={(e) => setSelectedCustomerId(e.target.value)}
-            className="h-8 max-w-40 rounded-lg border border-border bg-background px-2.5 py-1 text-sm text-foreground focus:outline-hidden focus:ring-2 focus:ring-primary/20"
+            onValueChange={(val) => {
+              if (val) setSelectedCustomerId(val);
+            }}
           >
-            {customers.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.companyName}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="h-8 min-w-36 max-w-52 border-border bg-background px-2.5 py-1 text-xs text-foreground">
+              <div className="flex items-center gap-1.5 truncate">
+                <Building2 className="size-3.5 text-muted-foreground shrink-0 hidden sm:inline-block" />
+                <SelectValue>
+                  {(val: string | null) => {
+                    const found = customers.find((c) => c.id === val);
+                    return found?.companyName || "Select Customer";
+                  }}
+                </SelectValue>
+              </div>
+            </SelectTrigger>
+            <SelectContent className="max-h-72">
+              {customers.map((c) => (
+                <SelectItem key={c.id} value={c.id}>
+                  {c.companyName}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       }
       className="h-full flex flex-col justify-between"
@@ -123,10 +143,10 @@ export function CostVsProfitShipmentChart({
           </p>
         </div>
       ) : (
-        <div className="space-y-3 pt-1">
+        <div className="space-y-10">
           {/* Highlight Banner if there is a Best Choice */}
           {bestShipment && chartData.length > 1 && (
-            <div className="flex items-center justify-between rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-800 dark:text-emerald-300">
+            <div className="flex items-center justify-between border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-800 dark:text-emerald-300">
               <span className="flex items-center gap-1.5 font-medium">
                 <span>
                   Best Choice: <strong>{bestShipment.fullName}</strong>
@@ -175,7 +195,7 @@ export function CostVsProfitShipmentChart({
                         ? "Agent Cost (Pay)"
                         : "Your Profit (Keep)";
                       const color = isCost
-                        ? "text-[#ff7d13]"
+                        ? "text-[#ff1313]"
                         : "text-[#10b981] dark:text-emerald-400";
                       return (
                         <div className="flex items-center justify-between gap-4 text-xs">
@@ -195,15 +215,13 @@ export function CostVsProfitShipmentChart({
               <Bar
                 dataKey="cost"
                 stackId="shipmentBar"
-                fill="#ff7d13"
-                radius={[4, 0, 0, 4]}
+                fill="#ff1313"
                 name="cost"
               />
               <Bar
                 dataKey="profit"
                 stackId="shipmentBar"
                 fill="#10b981"
-                radius={[0, 4, 4, 0]}
                 name="profit"
               />
             </BarChart>
@@ -213,11 +231,11 @@ export function CostVsProfitShipmentChart({
           <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-1 border-t border-border/40">
             <div className="flex items-center gap-4">
               <span className="inline-flex items-center gap-1.5">
-                <span className="size-2 rounded-xs bg-[#ff7d13]" />
+                <span className="size-2 bg-[#ff7d13]" />
                 <span>Agent Cost (Pay)</span>
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <span className="size-2 rounded-xs bg-emerald-500" />
+                <span className="size-2 bg-emerald-500" />
                 <span>Profit (Keep)</span>
               </span>
             </div>

@@ -82,7 +82,7 @@ export function ProfitOverTimeChart({
       subtitle="Quoted freight profit aggregated by month"
       action={
         <span
-          className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground"
+          className="inline-flex items-center gap-1 bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground"
           title="Past months calculated using today's exchange rates"
         >
           <Clock className="size-3 text-muted-foreground" />

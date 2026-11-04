@@ -79,6 +79,9 @@ export async function createFreightItemAction(
         net,
         gross,
         currency,
+        exportCharge: data.exportCharge?.trim() || null,
+        importCharge: data.importCharge?.trim() || null,
+        fare: data.fare != null ? data.fare : null,
       },
     });
 
@@ -98,6 +101,9 @@ export async function createFreightItemAction(
         gross: Number(item.gross),
         profit: Number(item.gross) - Number(item.net),
         currency: item.currency,
+        exportCharge: item.exportCharge ?? null,
+        importCharge: item.importCharge ?? null,
+        fare: item.fare != null ? Number(item.fare) : null,
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,
       },
@@ -169,6 +175,9 @@ export async function updateFreightItemAction(
         net,
         gross,
         currency: data.currency?.trim() || existing.currency,
+        exportCharge: data.exportCharge !== undefined ? (data.exportCharge?.trim() || null) : existing.exportCharge,
+        importCharge: data.importCharge !== undefined ? (data.importCharge?.trim() || null) : existing.importCharge,
+        fare: data.fare !== undefined ? (data.fare ?? null) : existing.fare,
       },
     });
 
@@ -188,6 +197,9 @@ export async function updateFreightItemAction(
         gross: Number(updated.gross),
         profit: Number(updated.gross) - Number(updated.net),
         currency: updated.currency,
+        exportCharge: updated.exportCharge ?? null,
+        importCharge: updated.importCharge ?? null,
+        fare: updated.fare != null ? Number(updated.fare) : null,
         createdAt: updated.createdAt,
         updatedAt: updated.updatedAt,
       },

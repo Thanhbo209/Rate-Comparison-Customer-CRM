@@ -153,7 +153,7 @@ export function ShipmentDialog({
       <DialogContent onClose={() => onOpenChange(false)} className="max-w-lg">
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <div className="flex size-10 shrink-0 items-center justify-center bg-primary/10 text-primary">
               <Package className="size-5" />
             </div>
             <div>
@@ -171,7 +171,7 @@ export function ShipmentDialog({
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-4 text-xs">
           {error && (
-            <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-destructive">
+            <div className="border border-destructive/20 bg-destructive/10 p-3 text-destructive">
               {error}
             </div>
           )}
@@ -199,7 +199,7 @@ export function ShipmentDialog({
                   }
                 }}
               >
-                <SelectTrigger className="w-full h-10 rounded-lg border-border bg-background text-sm">
+                <SelectTrigger className="w-full h-10 border-border bg-background text-sm">
                   <SelectValue placeholder="Select a customer account...">
                     {(val: string | null) => {
                       if (!val) return "Select a customer account...";
@@ -210,7 +210,7 @@ export function ShipmentDialog({
                     }}
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="rounded-xl max-h-72">
+                <SelectContent className="max-h-72">
                   {customers.map((c) => (
                     <SelectItem key={c.id} value={c.id}>
                       {c.companyName}
@@ -236,7 +236,7 @@ export function ShipmentDialog({
                 setFormData((prev) => ({ ...prev, name: e.target.value }))
               }
               required
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
+              className="w-full border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
             />
           </div>
 
@@ -251,11 +251,11 @@ export function ShipmentDialog({
                 onClick={() =>
                   setFormData((prev) => ({ ...prev, direction: "IMPORT" }))
                 }
-                className={`flex items-center justify-center gap-2 rounded-xl border p-3 font-medium transition-all ${
-                  formData.direction === "IMPORT"
-                    ? "border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold"
-                    : "border-border bg-card text-muted-foreground hover:bg-muted"
-                }`}
+                className={`flex items-center justify-center gap-2 border p-3 font-medium transition-all ${
+ formData.direction === "IMPORT"
+ ? "border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold"
+ : "border-border bg-card text-muted-foreground hover:bg-muted"
+ }`}
               >
                 <ArrowDownLeft className="size-4" />
                 <span>Import (Inbound)</span>
@@ -266,11 +266,11 @@ export function ShipmentDialog({
                 onClick={() =>
                   setFormData((prev) => ({ ...prev, direction: "EXPORT" }))
                 }
-                className={`flex items-center justify-center gap-2 rounded-xl border p-3 font-medium transition-all ${
-                  formData.direction === "EXPORT"
-                    ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold"
-                    : "border-border bg-card text-muted-foreground hover:bg-muted"
-                }`}
+                className={`flex items-center justify-center gap-2 border p-3 font-medium transition-all ${
+ formData.direction === "EXPORT"
+ ? "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold"
+ : "border-border bg-card text-muted-foreground hover:bg-muted"
+ }`}
               >
                 <ArrowUpRight className="size-4" />
                 <span>Export (Outbound)</span>
@@ -296,7 +296,7 @@ export function ShipmentDialog({
                   placeholder="Loading Port / Origin (e.g. Cat Lai)"
                   value={loadingPort}
                   onChange={(e) => setLoadingPort(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
+                  className="w-full border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
                 />
               </div>
               <div>
@@ -305,12 +305,12 @@ export function ShipmentDialog({
                   placeholder="Destination Port (e.g. Los Angeles)"
                   value={destinationPort}
                   onChange={(e) => setDestinationPort(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
+                  className="w-full border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
                 />
               </div>
             </div>
             {(loadingPort.trim() || destinationPort.trim()) && (
-              <p className="text-[11px] text-primary bg-primary/5 border border-primary/10 rounded-md px-2.5 py-1 flex items-center gap-1">
+              <p className="text-[11px] text-primary bg-primary/5 border border-primary/10 px-2.5 py-1 flex items-center gap-1">
                 <span className="font-semibold">Route:</span>
                 <span>
                   {loadingPort.trim() || "..."} →{" "}
@@ -333,7 +333,7 @@ export function ShipmentDialog({
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, commodity: e.target.value }))
               }
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
+              className="w-full border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
             />
           </div>
 
@@ -341,14 +341,14 @@ export function ShipmentDialog({
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="rounded-lg border border-border bg-background px-4 py-2 font-medium text-foreground hover:bg-muted"
+              className="border border-border bg-background px-4 py-2 font-medium text-foreground hover:bg-muted"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading || customers.length === 0}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 bg-primary px-4 py-2 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
             >
               {loading && <Loader2 className="size-3.5 animate-spin" />}
               <span>{isEdit ? "Save Changes" : "Create Shipment"}</span>

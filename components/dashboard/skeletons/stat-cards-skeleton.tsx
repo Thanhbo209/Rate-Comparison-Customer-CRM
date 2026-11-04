@@ -21,11 +21,11 @@ export function StatCardsSkeleton({
       {Array.from({ length: count }).map((_, index) => (
         <div
           key={index}
-          className="rounded-xl border border-border bg-card p-5 shadow-xs"
+          className="border border-border bg-card p-5 shadow-xs"
         >
           <div className="flex items-center justify-between">
             <Skeleton className="h-4 w-28" />
-            <Skeleton className="size-9 rounded-lg shrink-0" />
+            <Skeleton className="size-9 shrink-0" />
           </div>
 
           <div className="mt-3 space-y-2">

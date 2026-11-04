@@ -127,7 +127,7 @@ export function LoginForm({ initialError }: { initialError?: string } = {}) {
               type="button"
               onClick={() => setShowPassword((v) => !v)}
               aria-label={showPassword ? "Hide password" : "Show password"}
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded px-2 py-1 text-sm text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+              className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-1 text-sm text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
             >
               {showPassword ? "Hide" : "Show"}
             </button>
@@ -146,7 +146,7 @@ export function LoginForm({ initialError }: { initialError?: string } = {}) {
         {formError && (
           <p
             role="alert"
-            className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+            className="border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
           >
             {formError}
           </p>

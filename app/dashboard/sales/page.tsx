@@ -59,7 +59,7 @@ export default async function SalesDashboardPage() {
       <DashboardBanner
         organizationName={profile.organization?.name}
         tag={
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-500/10 px-3 py-1 text-xs font-semibold text-sky-600 dark:text-sky-400">
+          <span className="inline-flex items-center gap-1.5 bg-sky-500/10 px-3 py-1 text-xs font-semibold text-sky-600 dark:text-sky-400">
             <Truck className="size-3.5" />
             Sales Workspace
           </span>
@@ -70,10 +70,10 @@ export default async function SalesDashboardPage() {
           <Link href="/dashboard/sales/customers">
             <Button
               type="button"
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-4 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
+              className="inline-flex h-9 items-center gap-1.5 bg-primary px-4 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
             >
               <PlusCircle className="size-3.5" />
-              New Customer
+              Add New Customer
             </Button>
           </Link>
         }
@@ -196,7 +196,7 @@ export default async function SalesDashboardPage() {
                     >
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-2">
-                          <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">
+                          <span className="flex size-5 shrink-0 items-center justify-center bg-primary/10 text-[10px] font-bold text-primary">
                             {idx + 1}
                           </span>
                           <div>
@@ -267,7 +267,7 @@ export default async function SalesDashboardPage() {
                 {topCustomers.map((cust) => (
                   <div
                     key={cust.id}
-                    className="flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-muted/20 p-2.5 transition-colors hover:bg-muted/40"
+                    className="flex items-center justify-between gap-3 border border-border/60 bg-muted/20 p-2.5 transition-colors hover:bg-muted/40"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="font-semibold text-foreground text-xs truncate">
@@ -282,7 +282,7 @@ export default async function SalesDashboardPage() {
                         </span>
                       </div>
                     </div>
-                    <span className="shrink-0 rounded-md bg-muted px-2 py-0.5 text-[11px] font-medium text-foreground">
+                    <span className="shrink-0 bg-muted px-2 py-0.5 text-[11px] font-medium text-foreground">
                       {cust._count?.shipments ?? 0}{" "}
                       {(cust._count?.shipments ?? 0) === 1
                         ? "shipment"
@@ -302,10 +302,10 @@ export default async function SalesDashboardPage() {
             <div className="grid grid-cols-1 gap-2">
               <Link
                 href="/dashboard/sales/shipments"
-                className="flex items-center justify-between rounded-lg border border-border/80 bg-background p-2.5 text-xs font-medium text-foreground shadow-2xs transition-all hover:bg-muted/50 hover:border-primary/40"
+                className="flex items-center justify-between border border-border/80 bg-background p-2.5 text-xs font-medium text-foreground shadow-2xs transition-all hover:bg-muted/50 hover:border-primary/40"
               >
                 <div className="flex items-center gap-2.5">
-                  <div className="flex size-7 items-center justify-center rounded-md bg-sky-500/10 text-sky-600 dark:text-sky-400">
+                  <div className="flex size-7 items-center justify-center bg-sky-500/10 text-sky-600 dark:text-sky-400">
                     <Package className="size-3.5" />
                   </div>
                   <div>
@@ -320,10 +320,10 @@ export default async function SalesDashboardPage() {
 
               <Link
                 href="/dashboard/sales/customers"
-                className="flex items-center justify-between rounded-lg border border-border/80 bg-background p-2.5 text-xs font-medium text-foreground shadow-2xs transition-all hover:bg-muted/50 hover:border-primary/40"
+                className="flex items-center justify-between border border-border/80 bg-background p-2.5 text-xs font-medium text-foreground shadow-2xs transition-all hover:bg-muted/50 hover:border-primary/40"
               >
                 <div className="flex items-center gap-2.5">
-                  <div className="flex size-7 items-center justify-center rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                  <div className="flex size-7 items-center justify-center bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                     <Users className="size-3.5" />
                   </div>
                   <div>
@@ -338,10 +338,10 @@ export default async function SalesDashboardPage() {
 
               <Link
                 href="/dashboard/sales/rates"
-                className="flex items-center justify-between rounded-lg border border-border/80 bg-background p-2.5 text-xs font-medium text-foreground shadow-2xs transition-all hover:bg-muted/50 hover:border-primary/40"
+                className="flex items-center justify-between border border-border/80 bg-background p-2.5 text-xs font-medium text-foreground shadow-2xs transition-all hover:bg-muted/50 hover:border-primary/40"
               >
                 <div className="flex items-center gap-2.5">
-                  <div className="flex size-7 items-center justify-center rounded-md bg-primary/10 text-primary">
+                  <div className="flex size-7 items-center justify-center bg-primary/10 text-primary">
                     <ArrowLeftRight className="size-3.5" />
                   </div>
                   <div>

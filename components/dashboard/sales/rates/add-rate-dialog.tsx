@@ -97,7 +97,7 @@ export function AddRateDialog({
       <DialogContent onClose={() => onOpenChange(false)} className="max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <div className="flex size-10 shrink-0 items-center justify-center bg-primary/10 text-primary">
               <Truck className="size-5" />
             </div>
             <div>
@@ -112,24 +112,24 @@ export function AddRateDialog({
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-4 text-xs">
           {error && (
-            <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-destructive">
+            <div className="border border-destructive/20 bg-destructive/10 p-3 text-destructive">
               {error}
             </div>
           )}
 
           {existingProviders.length > 0 && (
-            <div className="grid grid-cols-2 p-1 rounded-xl bg-muted/60 border border-border">
+            <div className="grid grid-cols-2 p-1 bg-muted/60 border border-border">
               <button
                 type="button"
                 onClick={() => {
                   setMode("select");
                   setError(null);
                 }}
-                className={`py-2 px-3 rounded-lg font-medium transition-all text-xs ${
-                  mode === "select"
-                    ? "bg-background text-foreground shadow-xs font-semibold"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                className={`py-2 px-3 font-medium transition-all text-xs ${
+ mode === "select"
+ ? "bg-background text-foreground shadow-xs font-semibold"
+ : "text-muted-foreground hover:text-foreground"
+ }`}
               >
                 Existing Freight
               </button>
@@ -139,11 +139,11 @@ export function AddRateDialog({
                   setMode("new");
                   setError(null);
                 }}
-                className={`py-2 px-3 rounded-lg font-medium transition-all text-xs ${
-                  mode === "new"
-                    ? "bg-background text-foreground shadow-xs font-semibold"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                className={`py-2 px-3 font-medium transition-all text-xs ${
+ mode === "new"
+ ? "bg-background text-foreground shadow-xs font-semibold"
+ : "text-muted-foreground hover:text-foreground"
+ }`}
               >
                 New Freight
               </button>
@@ -162,7 +162,7 @@ export function AddRateDialog({
                   if (val) setSelectedProviderId(val);
                 }}
               >
-                <SelectTrigger className="w-full h-10 rounded-lg border-border bg-background text-xs">
+                <SelectTrigger className="w-full h-10 border-border bg-background text-xs">
                   <SelectValue placeholder="Select freight provider...">
                     {(val: string | null) => {
                       if (!val) return "Select freight provider...";
@@ -171,7 +171,7 @@ export function AddRateDialog({
                     }}
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="rounded-xl max-h-72">
+                <SelectContent className="max-h-72">
                   {existingProviders.map((p) => (
                     <SelectItem key={p.id} value={p.id}>
                       {p.name}
@@ -192,7 +192,7 @@ export function AddRateDialog({
                 value={newProviderName}
                 onChange={(e) => setNewProviderName(e.target.value)}
                 autoFocus
-                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
+                className="w-full border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
               />
             </div>
           )}
@@ -211,7 +211,7 @@ export function AddRateDialog({
               placeholder="e.g. Direct - 18 days, Via Singapore, Spot Rate"
               value={optionName}
               onChange={(e) => setOptionName(e.target.value)}
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
+              className="w-full border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
             />
           </div>
 
@@ -219,14 +219,14 @@ export function AddRateDialog({
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="rounded-lg border border-border bg-background px-4 py-2 font-medium text-foreground hover:bg-muted"
+              className="border border-border bg-background px-4 py-2 font-medium text-foreground hover:bg-muted"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-1.5 bg-primary px-4 py-2 font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
             >
               {loading && <Loader2 className="size-3.5 animate-spin" />}
               <span>Add Freight Option</span>

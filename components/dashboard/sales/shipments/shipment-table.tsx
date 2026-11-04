@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import Link from "next/link";
+
 import {
   Search,
-  Filter,
   Eye,
   Pencil,
   Trash2,
@@ -26,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { ShipmentItem, ShipmentDirection } from "@/lib/shipment/types";
+import type { ShipmentItem } from "@/lib/shipment/types";
 
 interface CustomerOption {
   id: string;
@@ -83,7 +82,12 @@ export function ShipmentTable({
           .includes(q);
         const matchesCommodity = s.commodity?.toLowerCase().includes(q);
         const matchesRoute = s.route?.toLowerCase().includes(q);
-        if (!matchesName && !matchesCustomer && !matchesCommodity && !matchesRoute)
+        if (
+          !matchesName &&
+          !matchesCustomer &&
+          !matchesCommodity &&
+          !matchesRoute
+        )
           return false;
       }
 
@@ -100,7 +104,7 @@ export function ShipmentTable({
   const canDelete = role !== "SALES";
 
   return (
-    <div className="rounded-2xl border border-border bg-card shadow-xs">
+    <div className="border border-border bg-card shadow-xs">
       {/* Search & Filter Bar */}
       <div className="flex flex-col gap-3 border-b border-border p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center">
@@ -115,7 +119,7 @@ export function ShipmentTable({
                 setSearch(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full rounded-md border border-border bg-background py-2 pl-9 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
+              className="w-full border border-border bg-background py-2 pl-9 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary focus:outline-hidden"
             />
           </div>
 
@@ -127,7 +131,7 @@ export function ShipmentTable({
                 setSelectedDirection("ALL");
                 setCurrentPage(1);
               }}
-              className={`rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
+              className={`px-2.5 py-1.5 text-xs font-medium transition-colors ${
                 selectedDirection === "ALL"
                   ? "bg-primary text-primary-foreground font-semibold"
                   : "bg-muted text-muted-foreground hover:text-foreground"
@@ -141,7 +145,7 @@ export function ShipmentTable({
                 setSelectedDirection("IMPORT");
                 setCurrentPage(1);
               }}
-              className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
+              className={`inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium transition-colors ${
                 selectedDirection === "IMPORT"
                   ? "bg-blue-600 text-white font-semibold"
                   : "bg-muted text-muted-foreground hover:text-foreground"
@@ -156,7 +160,7 @@ export function ShipmentTable({
                 setSelectedDirection("EXPORT");
                 setCurrentPage(1);
               }}
-              className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
+              className={`inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium transition-colors ${
                 selectedDirection === "EXPORT"
                   ? "bg-emerald-600 text-white font-semibold"
                   : "bg-muted text-muted-foreground hover:text-foreground"
@@ -171,7 +175,7 @@ export function ShipmentTable({
         {/* Customer Select Filter */}
         <div className="flex items-center gap-2">
           {customers.length > 0 && (
-            <div className="min-w-[180px]">
+            <div className="min-w-45">
               <Select
                 value={selectedCustomer}
                 onValueChange={(val) => {
@@ -181,7 +185,7 @@ export function ShipmentTable({
                   }
                 }}
               >
-                <SelectTrigger className="h-8.5 rounded-lg border-border bg-background text-xs">
+                <SelectTrigger className="h-8.5 border-border bg-background text-xs">
                   <SelectValue>
                     {(val: string | null) => {
                       if (!val || val === "ALL") return "All Shipper Accounts";
@@ -190,7 +194,7 @@ export function ShipmentTable({
                     }}
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="rounded-md max-h-72">
+                <SelectContent className="max-h-72">
                   <SelectItem value="ALL">All Shipper Accounts</SelectItem>
                   {customers.map((c) => (
                     <SelectItem key={c.id} value={c.id}>
@@ -205,7 +209,7 @@ export function ShipmentTable({
           <button
             type="button"
             onClick={onAddNew}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground shadow-xs hover:bg-primary/90"
+            className="inline-flex items-center gap-1.5 bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground shadow-xs hover:bg-primary/90"
           >
             <Plus className="size-3.5" />
             <span>New Shipment</span>
@@ -216,7 +220,7 @@ export function ShipmentTable({
       {/* Shipments Table Body */}
       {paginated.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-12 text-center">
-          <div className="flex size-12 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
+          <div className="flex size-12 items-center justify-center bg-muted text-muted-foreground">
             <Package className="size-6" />
           </div>
           <h3 className="mt-4 font-heading text-sm font-semibold text-foreground">
@@ -230,7 +234,7 @@ export function ShipmentTable({
           <button
             type="button"
             onClick={onAddNew}
-            className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground"
+            className="mt-4 inline-flex items-center gap-1.5 bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground"
           >
             <Plus className="size-3.5" />
             <span>Add First Shipment</span>
@@ -260,11 +264,11 @@ export function ShipmentTable({
                   {/* Shipment Name */}
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-3">
-                      <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary">
+                      <div className="flex size-8 shrink-0 items-center justify-center bg-primary/10 text-xs font-bold text-primary">
                         <Package className="size-4" />
                       </div>
                       <div className="min-w-0">
-                        <p className="font-semibold text-foreground truncate max-w-[220px]">
+                        <p className="font-semibold text-foreground truncate max-w-55">
                           {shipment.name}
                         </p>
                         <p className="text-[10px] text-muted-foreground">
@@ -277,11 +281,11 @@ export function ShipmentTable({
                   {/* Customer Account */}
                   <td className="px-5 py-3.5">
                     <div className="min-w-0">
-                      <p className="font-medium text-foreground truncate max-w-[180px]">
+                      <p className="font-medium text-foreground truncate max-w-45">
                         {shipment.customer.companyName}
                       </p>
                       {role === "ADMIN" && shipment.customer.organization && (
-                        <span className="inline-flex items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground font-medium mt-0.5">
+                        <span className="inline-flex items-center gap-1 bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground font-medium mt-0.5">
                           <Building2 className="size-2.5" />
                           {shipment.customer.organization.name}
                         </span>
@@ -292,12 +296,12 @@ export function ShipmentTable({
                   {/* Direction */}
                   <td className="px-5 py-3.5">
                     {shipment.direction === "IMPORT" ? (
-                      <span className="inline-flex items-center gap-1 rounded-md bg-blue-500/10 px-2 py-0.5 text-[11px] font-medium text-blue-600 dark:text-blue-400">
+                      <span className="inline-flex items-center gap-1 bg-blue-500/10 px-2 py-0.5 text-[11px] font-medium text-blue-600 dark:text-blue-400">
                         <ArrowDownLeft className="size-3" />
                         <span>Import</span>
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+                      <span className="inline-flex items-center gap-1 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
                         <ArrowUpRight className="size-3" />
                         <span>Export</span>
                       </span>
@@ -307,9 +311,12 @@ export function ShipmentTable({
                   {/* Route */}
                   <td className="px-5 py-3.5">
                     {shipment.route ? (
-                      <span className="inline-flex items-center gap-1 rounded-md bg-muted/60 px-2 py-0.5 text-[11px] font-medium text-foreground">
+                      <span className="inline-flex items-center gap-1 bg-muted/60 px-2 py-0.5 text-[11px] font-medium text-foreground">
                         <MapPin className="size-3 shrink-0 text-muted-foreground" />
-                        <span className="truncate max-w-[160px]" title={shipment.route}>
+                        <span
+                          className="truncate max-w-40"
+                          title={shipment.route}
+                        >
                           {shipment.route}
                         </span>
                       </span>
@@ -321,9 +328,9 @@ export function ShipmentTable({
                   {/* Commodity */}
                   <td className="px-5 py-3.5">
                     {shipment.commodity ? (
-                      <span className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+                      <span className="inline-flex items-center gap-1 bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
                         <Tag className="size-3 shrink-0" />
-                        <span className="truncate max-w-[120px]">
+                        <span className="truncate max-w-30">
                           {shipment.commodity}
                         </span>
                       </span>
@@ -337,9 +344,8 @@ export function ShipmentTable({
                     <button
                       type="button"
                       onClick={() => onViewRates?.(shipment)}
-                      className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-medium text-primary hover:bg-primary/20 transition-colors"
+                      className="inline-flex items-center gap-1 bg-primary/10 px-2.5 py-0.5 text-[11px] font-medium text-primary hover:bg-primary/20 transition-colors"
                     >
-                      <Calculator className="size-3" />
                       <span>{shipment._count?.rates ?? 0} rates</span>
                     </button>
                   </td>
@@ -356,7 +362,7 @@ export function ShipmentTable({
                         type="button"
                         onClick={() => onView(shipment)}
                         title="View Details"
-                        className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+                        className="flex size-7 items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground"
                       >
                         <Eye className="size-3.5" />
                       </button>
@@ -365,7 +371,7 @@ export function ShipmentTable({
                         type="button"
                         onClick={() => onEdit(shipment)}
                         title="Edit Shipment"
-                        className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+                        className="flex size-7 items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground"
                       >
                         <Pencil className="size-3.5" />
                       </button>
@@ -375,7 +381,7 @@ export function ShipmentTable({
                           type="button"
                           onClick={() => onViewRates(shipment)}
                           title="Rate Comparison"
-                          className="flex size-7 items-center justify-center rounded-md text-primary hover:bg-primary/10"
+                          className="flex size-7 items-center justify-center text-primary hover:bg-primary/10"
                         >
                           <Calculator className="size-3.5" />
                         </button>
@@ -386,7 +392,7 @@ export function ShipmentTable({
                           type="button"
                           onClick={() => onDelete(shipment)}
                           title="Delete Shipment"
-                          className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                          className="flex size-7 items-center justify-center text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                         >
                           <Trash2 className="size-3.5" />
                         </button>
@@ -424,7 +430,7 @@ export function ShipmentTable({
               type="button"
               disabled={currentPage <= 1}
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              className="flex size-7 items-center justify-center rounded-md border border-border text-foreground hover:bg-muted disabled:opacity-40"
+              className="flex size-7 items-center justify-center border border-border text-foreground hover:bg-muted disabled:opacity-40"
             >
               <ChevronLeft className="size-3.5" />
             </button>
@@ -435,7 +441,7 @@ export function ShipmentTable({
               type="button"
               disabled={currentPage >= totalPages}
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              className="flex size-7 items-center justify-center rounded-md border border-border text-foreground hover:bg-muted disabled:opacity-40"
+              className="flex size-7 items-center justify-center border border-border text-foreground hover:bg-muted disabled:opacity-40"
             >
               <ChevronRight className="size-3.5" />
             </button>

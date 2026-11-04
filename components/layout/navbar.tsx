@@ -82,7 +82,7 @@ export function Navbar() {
         <nav
           aria-label="Main"
           className={cn(
-            "flex items-center justify-between gap-2 py-3 rounded-md border border-border bg-sidebar pl-4 pr-2 transition-shadow duration-300",
+            "flex items-center justify-between gap-2 py-3 border border-border bg-sidebar pl-4 pr-2 transition-shadow duration-300",
             scrolled && "shadow-lg shadow-black/5",
           )}
         >
@@ -105,7 +105,7 @@ export function Navbar() {
                   href={`#${item.id}`}
                   aria-current={active === item.id ? "true" : undefined}
                   className={cn(
-                    "rounded-full px-3.5 py-1.5 text-sm transition-colors",
+                    "px-3.5 py-1.5 text-sm transition-colors",
                     active === item.id
                       ? "bg-primary/10 font-medium text-primary"
                       : "text-muted-foreground hover:text-foreground",
@@ -124,7 +124,7 @@ export function Navbar() {
                   href="/dashboard"
                   className={cn(
                     buttonVariants({ size: "sm" }),
-                    "rounded-md px-4",
+                    "px-4",
                   )}
                 >
                   Continue to dashboard
@@ -133,7 +133,7 @@ export function Navbar() {
                   variant="outline"
                   size="sm"
                   onClick={handleSignOut}
-                  className="rounded-md"
+                  className=""
                 >
                   Log out
                 </Button>
@@ -143,7 +143,7 @@ export function Navbar() {
                 href="/login"
                 className={cn(
                   buttonVariants({ size: "sm" }),
-                  "rounded-md px-6 p-4 mr-5",
+                  "px-6 p-4 mr-5",
                 )}
               >
                 Log in
@@ -157,7 +157,7 @@ export function Navbar() {
               aria-expanded={open}
               aria-controls="mobile-menu"
               aria-label={open ? "Close menu" : "Open menu"}
-              className="flex size-9 items-center justify-center rounded-full text-foreground hover:bg-muted md:hidden"
+              className="flex size-9 items-center justify-center text-foreground hover:bg-muted md:hidden"
             >
               <svg
                 width="18"
@@ -190,7 +190,7 @@ export function Navbar() {
         {open && (
           <div
             id="mobile-menu"
-            className="absolute inset-x-0 top-full mt-2 rounded-2xl border border-border bg-background p-2 shadow-lg md:hidden"
+            className="absolute inset-x-0 top-full mt-2 border border-border bg-background p-2 shadow-lg md:hidden"
           >
             <ul>
               {NAV.map((item) => (
@@ -200,7 +200,7 @@ export function Navbar() {
                     onClick={() => setOpen(false)}
                     aria-current={active === item.id ? "true" : undefined}
                     className={cn(
-                      "block rounded-xl px-4 py-3 text-sm",
+                      "block px-4 py-3 text-sm",
                       active === item.id
                         ? "bg-primary/10 font-medium text-primary"
                         : "text-foreground hover:bg-muted",
@@ -216,7 +216,7 @@ export function Navbar() {
                     <Link
                       href="/dashboard"
                       onClick={() => setOpen(false)}
-                      className="block rounded-xl px-4 py-3 text-sm font-medium text-primary hover:bg-muted"
+                      className="block px-4 py-3 text-sm font-medium text-primary hover:bg-muted"
                     >
                       Continue to dashboard
                     </Link>
@@ -226,7 +226,7 @@ export function Navbar() {
                         setOpen(false);
                         handleSignOut();
                       }}
-                      className="block w-full text-left rounded-xl px-4 py-3 text-sm text-foreground hover:bg-muted"
+                      className="block w-full text-left px-4 py-3 text-sm text-foreground hover:bg-muted"
                     >
                       Log out
                     </button>
@@ -235,7 +235,7 @@ export function Navbar() {
                   <Link
                     href="/login"
                     onClick={() => setOpen(false)}
-                    className="block rounded-xl px-4 py-3 text-sm font-medium text-primary hover:bg-muted"
+                    className="block px-4 py-3 text-sm font-medium text-primary hover:bg-muted"
                   >
                     Log in
                   </Link>

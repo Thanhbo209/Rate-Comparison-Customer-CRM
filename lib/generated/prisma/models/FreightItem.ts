@@ -30,12 +30,14 @@ export type FreightItemAvgAggregateOutputType = {
   net: runtime.Decimal | null
   quantity: runtime.Decimal | null
   gross: runtime.Decimal | null
+  fare: runtime.Decimal | null
 }
 
 export type FreightItemSumAggregateOutputType = {
   net: runtime.Decimal | null
   quantity: runtime.Decimal | null
   gross: runtime.Decimal | null
+  fare: runtime.Decimal | null
 }
 
 export type FreightItemMinAggregateOutputType = {
@@ -47,6 +49,9 @@ export type FreightItemMinAggregateOutputType = {
   quantity: runtime.Decimal | null
   gross: runtime.Decimal | null
   currency: string | null
+  exportCharge: string | null
+  importCharge: string | null
+  fare: runtime.Decimal | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +65,9 @@ export type FreightItemMaxAggregateOutputType = {
   quantity: runtime.Decimal | null
   gross: runtime.Decimal | null
   currency: string | null
+  exportCharge: string | null
+  importCharge: string | null
+  fare: runtime.Decimal | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -73,6 +81,9 @@ export type FreightItemCountAggregateOutputType = {
   quantity: number
   gross: number
   currency: number
+  exportCharge: number
+  importCharge: number
+  fare: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -83,12 +94,14 @@ export type FreightItemAvgAggregateInputType = {
   net?: true
   quantity?: true
   gross?: true
+  fare?: true
 }
 
 export type FreightItemSumAggregateInputType = {
   net?: true
   quantity?: true
   gross?: true
+  fare?: true
 }
 
 export type FreightItemMinAggregateInputType = {
@@ -100,6 +113,9 @@ export type FreightItemMinAggregateInputType = {
   quantity?: true
   gross?: true
   currency?: true
+  exportCharge?: true
+  importCharge?: true
+  fare?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -113,6 +129,9 @@ export type FreightItemMaxAggregateInputType = {
   quantity?: true
   gross?: true
   currency?: true
+  exportCharge?: true
+  importCharge?: true
+  fare?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -126,6 +145,9 @@ export type FreightItemCountAggregateInputType = {
   quantity?: true
   gross?: true
   currency?: true
+  exportCharge?: true
+  importCharge?: true
+  fare?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -226,6 +248,9 @@ export type FreightItemGroupByOutputType = {
   quantity: runtime.Decimal
   gross: runtime.Decimal
   currency: string
+  exportCharge: string | null
+  importCharge: string | null
+  fare: runtime.Decimal | null
   createdAt: Date
   updatedAt: Date
   _count: FreightItemCountAggregateOutputType | null
@@ -262,6 +287,9 @@ export type FreightItemWhereInput = {
   quantity?: Prisma.DecimalFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFilter<"FreightItem"> | string
+  exportCharge?: Prisma.StringNullableFilter<"FreightItem"> | string | null
+  importCharge?: Prisma.StringNullableFilter<"FreightItem"> | string | null
+  fare?: Prisma.DecimalNullableFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFilter<"FreightItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FreightItem"> | Date | string
   shipmentRate?: Prisma.XOR<Prisma.ShipmentRateScalarRelationFilter, Prisma.ShipmentRateWhereInput>
@@ -276,6 +304,9 @@ export type FreightItemOrderByWithRelationInput = {
   quantity?: Prisma.SortOrder
   gross?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  exportCharge?: Prisma.SortOrderInput | Prisma.SortOrder
+  importCharge?: Prisma.SortOrderInput | Prisma.SortOrder
+  fare?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   shipmentRate?: Prisma.ShipmentRateOrderByWithRelationInput
@@ -293,6 +324,9 @@ export type FreightItemWhereUniqueInput = Prisma.AtLeast<{
   quantity?: Prisma.DecimalFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFilter<"FreightItem"> | string
+  exportCharge?: Prisma.StringNullableFilter<"FreightItem"> | string | null
+  importCharge?: Prisma.StringNullableFilter<"FreightItem"> | string | null
+  fare?: Prisma.DecimalNullableFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFilter<"FreightItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FreightItem"> | Date | string
   shipmentRate?: Prisma.XOR<Prisma.ShipmentRateScalarRelationFilter, Prisma.ShipmentRateWhereInput>
@@ -307,6 +341,9 @@ export type FreightItemOrderByWithAggregationInput = {
   quantity?: Prisma.SortOrder
   gross?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  exportCharge?: Prisma.SortOrderInput | Prisma.SortOrder
+  importCharge?: Prisma.SortOrderInput | Prisma.SortOrder
+  fare?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.FreightItemCountOrderByAggregateInput
@@ -328,6 +365,9 @@ export type FreightItemScalarWhereWithAggregatesInput = {
   quantity?: Prisma.DecimalWithAggregatesFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalWithAggregatesFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringWithAggregatesFilter<"FreightItem"> | string
+  exportCharge?: Prisma.StringNullableWithAggregatesFilter<"FreightItem"> | string | null
+  importCharge?: Prisma.StringNullableWithAggregatesFilter<"FreightItem"> | string | null
+  fare?: Prisma.DecimalNullableWithAggregatesFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"FreightItem"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"FreightItem"> | Date | string
 }
@@ -340,6 +380,9 @@ export type FreightItemCreateInput = {
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   gross: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  exportCharge?: string | null
+  importCharge?: string | null
+  fare?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   shipmentRate: Prisma.ShipmentRateCreateNestedOneWithoutFreightItemsInput
@@ -354,6 +397,9 @@ export type FreightItemUncheckedCreateInput = {
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   gross: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  exportCharge?: string | null
+  importCharge?: string | null
+  fare?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -366,6 +412,9 @@ export type FreightItemUpdateInput = {
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  exportCharge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  importCharge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fare?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   shipmentRate?: Prisma.ShipmentRateUpdateOneRequiredWithoutFreightItemsNestedInput
@@ -380,6 +429,9 @@ export type FreightItemUncheckedUpdateInput = {
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  exportCharge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  importCharge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fare?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -393,6 +445,9 @@ export type FreightItemCreateManyInput = {
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   gross: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  exportCharge?: string | null
+  importCharge?: string | null
+  fare?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -405,6 +460,9 @@ export type FreightItemUpdateManyMutationInput = {
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  exportCharge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  importCharge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fare?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -418,6 +476,9 @@ export type FreightItemUncheckedUpdateManyInput = {
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  exportCharge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  importCharge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fare?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -441,6 +502,9 @@ export type FreightItemCountOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
   gross?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  exportCharge?: Prisma.SortOrder
+  importCharge?: Prisma.SortOrder
+  fare?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -449,6 +513,7 @@ export type FreightItemAvgOrderByAggregateInput = {
   net?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   gross?: Prisma.SortOrder
+  fare?: Prisma.SortOrder
 }
 
 export type FreightItemMaxOrderByAggregateInput = {
@@ -460,6 +525,9 @@ export type FreightItemMaxOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
   gross?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  exportCharge?: Prisma.SortOrder
+  importCharge?: Prisma.SortOrder
+  fare?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -473,6 +541,9 @@ export type FreightItemMinOrderByAggregateInput = {
   quantity?: Prisma.SortOrder
   gross?: Prisma.SortOrder
   currency?: Prisma.SortOrder
+  exportCharge?: Prisma.SortOrder
+  importCharge?: Prisma.SortOrder
+  fare?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -481,6 +552,7 @@ export type FreightItemSumOrderByAggregateInput = {
   net?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   gross?: Prisma.SortOrder
+  fare?: Prisma.SortOrder
 }
 
 export type FreightItemCreateNestedManyWithoutShipmentRateInput = {
@@ -525,6 +597,14 @@ export type FreightItemUncheckedUpdateManyWithoutShipmentRateNestedInput = {
   deleteMany?: Prisma.FreightItemScalarWhereInput | Prisma.FreightItemScalarWhereInput[]
 }
 
+export type NullableDecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
 export type FreightItemCreateWithoutShipmentRateInput = {
   id?: string
   freight: string
@@ -533,6 +613,9 @@ export type FreightItemCreateWithoutShipmentRateInput = {
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   gross: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  exportCharge?: string | null
+  importCharge?: string | null
+  fare?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -545,6 +628,9 @@ export type FreightItemUncheckedCreateWithoutShipmentRateInput = {
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   gross: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  exportCharge?: string | null
+  importCharge?: string | null
+  fare?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -587,6 +673,9 @@ export type FreightItemScalarWhereInput = {
   quantity?: Prisma.DecimalFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFilter<"FreightItem"> | string
+  exportCharge?: Prisma.StringNullableFilter<"FreightItem"> | string | null
+  importCharge?: Prisma.StringNullableFilter<"FreightItem"> | string | null
+  fare?: Prisma.DecimalNullableFilter<"FreightItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFilter<"FreightItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FreightItem"> | Date | string
 }
@@ -599,6 +688,9 @@ export type FreightItemCreateManyShipmentRateInput = {
   quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
   gross: runtime.Decimal | runtime.DecimalJsLike | number | string
   currency: string
+  exportCharge?: string | null
+  importCharge?: string | null
+  fare?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -611,6 +703,9 @@ export type FreightItemUpdateWithoutShipmentRateInput = {
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  exportCharge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  importCharge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fare?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -623,6 +718,9 @@ export type FreightItemUncheckedUpdateWithoutShipmentRateInput = {
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  exportCharge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  importCharge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fare?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -635,6 +733,9 @@ export type FreightItemUncheckedUpdateManyWithoutShipmentRateInput = {
   quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   gross?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
+  exportCharge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  importCharge?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fare?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -650,6 +751,9 @@ export type FreightItemSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   quantity?: boolean
   gross?: boolean
   currency?: boolean
+  exportCharge?: boolean
+  importCharge?: boolean
+  fare?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   shipmentRate?: boolean | Prisma.ShipmentRateDefaultArgs<ExtArgs>
@@ -664,6 +768,9 @@ export type FreightItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   quantity?: boolean
   gross?: boolean
   currency?: boolean
+  exportCharge?: boolean
+  importCharge?: boolean
+  fare?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   shipmentRate?: boolean | Prisma.ShipmentRateDefaultArgs<ExtArgs>
@@ -678,6 +785,9 @@ export type FreightItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   quantity?: boolean
   gross?: boolean
   currency?: boolean
+  exportCharge?: boolean
+  importCharge?: boolean
+  fare?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   shipmentRate?: boolean | Prisma.ShipmentRateDefaultArgs<ExtArgs>
@@ -692,11 +802,14 @@ export type FreightItemSelectScalar = {
   quantity?: boolean
   gross?: boolean
   currency?: boolean
+  exportCharge?: boolean
+  importCharge?: boolean
+  fare?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type FreightItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "shipmentRateId" | "freight" | "unit" | "net" | "quantity" | "gross" | "currency" | "createdAt" | "updatedAt", ExtArgs["result"]["freightItem"]>
+export type FreightItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "shipmentRateId" | "freight" | "unit" | "net" | "quantity" | "gross" | "currency" | "exportCharge" | "importCharge" | "fare" | "createdAt" | "updatedAt", ExtArgs["result"]["freightItem"]>
 export type FreightItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   shipmentRate?: boolean | Prisma.ShipmentRateDefaultArgs<ExtArgs>
 }
@@ -721,6 +834,9 @@ export type $FreightItemPayload<ExtArgs extends runtime.Types.Extensions.Interna
     quantity: runtime.Decimal
     gross: runtime.Decimal
     currency: string
+    exportCharge: string | null
+    importCharge: string | null
+    fare: runtime.Decimal | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["freightItem"]>
@@ -1155,6 +1271,9 @@ export interface FreightItemFieldRefs {
   readonly quantity: Prisma.FieldRef<"FreightItem", 'Decimal'>
   readonly gross: Prisma.FieldRef<"FreightItem", 'Decimal'>
   readonly currency: Prisma.FieldRef<"FreightItem", 'String'>
+  readonly exportCharge: Prisma.FieldRef<"FreightItem", 'String'>
+  readonly importCharge: Prisma.FieldRef<"FreightItem", 'String'>
+  readonly fare: Prisma.FieldRef<"FreightItem", 'Decimal'>
   readonly createdAt: Prisma.FieldRef<"FreightItem", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"FreightItem", 'DateTime'>
 }

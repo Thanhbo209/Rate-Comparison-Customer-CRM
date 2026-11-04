@@ -122,18 +122,18 @@ export function OnboardingWizard({
       </div>
 
       {/* Mode Switch Tabs */}
-      <div className="grid grid-cols-2 p-1 rounded-xl bg-muted/60 border border-border">
+      <div className="grid grid-cols-2 p-1 bg-muted/60 border border-border">
         <button
           type="button"
           onClick={() => {
             setMode("create");
             setCreateError("");
           }}
-          className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium transition-all ${
-            mode === "create"
-              ? "bg-background text-foreground shadow-xs font-semibold"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
+          className={`flex items-center justify-center gap-2 py-2.5 px-3 text-sm font-medium transition-all ${
+ mode === "create"
+ ? "bg-background text-foreground shadow-xs font-semibold"
+ : "text-muted-foreground hover:text-foreground"
+ }`}
         >
           <Building2 className="size-4" />
           <span>Create Organization</span>
@@ -145,11 +145,11 @@ export function OnboardingWizard({
             setMode("join");
             setJoinError("");
           }}
-          className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium transition-all ${
-            mode === "join"
-              ? "bg-background text-foreground shadow-xs font-semibold"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
+          className={`flex items-center justify-center gap-2 py-2.5 px-3 text-sm font-medium transition-all ${
+ mode === "join"
+ ? "bg-background text-foreground shadow-xs font-semibold"
+ : "text-muted-foreground hover:text-foreground"
+ }`}
         >
           <Ticket className="size-4" />
           <span>Join with Code</span>
@@ -160,7 +160,7 @@ export function OnboardingWizard({
       {mode === "create" && (
         <form
           onSubmit={handleCreateOrg}
-          className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-5"
+          className="border border-border bg-card p-6 shadow-xs space-y-5"
         >
           <div className="space-y-1">
             <h2 className="text-lg font-heading font-semibold text-foreground flex items-center gap-2">
@@ -195,7 +195,7 @@ export function OnboardingWizard({
             )}
           </div>
 
-          <div className="rounded-xl border border-border/70 bg-muted/30 p-3.5 text-xs text-muted-foreground space-y-1.5">
+          <div className="border border-border/70 bg-muted/30 p-3.5 text-xs text-muted-foreground space-y-1.5">
             <div className="font-semibold text-foreground flex items-center gap-1.5">
               <CheckCircle2 className="size-3.5 text-primary" />
               Sales Manager Role Assigned
@@ -232,7 +232,7 @@ export function OnboardingWizard({
       {mode === "join" && (
         <form
           onSubmit={handleJoinOrg}
-          className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-5"
+          className="border border-border bg-card p-6 shadow-xs space-y-5"
         >
           <div className="space-y-1">
             <h2 className="text-lg font-heading font-semibold text-foreground flex items-center gap-2">
@@ -285,7 +285,7 @@ export function OnboardingWizard({
           </div>
 
           {verifiedOrg && (
-            <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3.5 text-xs text-emerald-800 dark:text-emerald-300 space-y-1">
+            <div className="border border-emerald-500/20 bg-emerald-500/5 p-3.5 text-xs text-emerald-800 dark:text-emerald-300 space-y-1">
               <div className="font-semibold flex items-center gap-1.5">
                 <CheckCircle2 className="size-3.5 text-emerald-600 dark:text-emerald-400" />
                 Valid Invitation
@@ -300,7 +300,7 @@ export function OnboardingWizard({
             </div>
           )}
 
-          <div className="rounded-xl border border-border/70 bg-muted/30 p-3.5 text-xs text-muted-foreground space-y-1.5">
+          <div className="border border-border/70 bg-muted/30 p-3.5 text-xs text-muted-foreground space-y-1.5">
             <div className="font-semibold text-foreground flex items-center gap-1.5">
               <CheckCircle2 className="size-3.5 text-primary" />
               Single-use & Expiring Codes

@@ -112,7 +112,7 @@ export function CustomerTable({
   };
 
   return (
-    <div className="rounded-md border border-border bg-card shadow-xs">
+    <div className="border border-border bg-card shadow-xs">
       {/* Search and Filters Bar */}
       <div className="flex flex-col gap-3 border-b border-border p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative flex-1 max-w-sm">
@@ -122,7 +122,7 @@ export function CustomerTable({
             placeholder="Search company, contact, cargo, email..."
             value={search}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-xs text-foreground placeholder:text-muted-foreground/60 outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+            className="w-full border border-border bg-background py-2 pl-9 pr-3 text-xs text-foreground placeholder:text-muted-foreground/60 outline-none focus:border-primary focus:ring-1 focus:ring-primary"
           />
         </div>
 
@@ -136,7 +136,7 @@ export function CustomerTable({
                   if (val) handleZoneChange(val);
                 }}
               >
-                <SelectTrigger className="h-8.5 rounded-lg border-border bg-background text-xs">
+                <SelectTrigger className="h-8.5 border-border bg-background text-xs">
                   <SelectValue>
                     {(val: string | null) => {
                       if (!val || val === "ALL") return "All Industrial Zones";
@@ -144,7 +144,7 @@ export function CustomerTable({
                     }}
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="rounded-md max-h-72">
+                <SelectContent className="max-h-72">
                   <SelectItem value="ALL">All Industrial Zones</SelectItem>
                   {industrialZones.map((z) => (
                     <SelectItem key={z} value={z}>
@@ -165,7 +165,7 @@ export function CustomerTable({
                   if (val) handleCommodityChange(val);
                 }}
               >
-                <SelectTrigger className="h-8.5 rounded-lg border-border bg-background text-xs">
+                <SelectTrigger className="h-8.5 border-border bg-background text-xs">
                   <SelectValue>
                     {(val: string | null) => {
                       if (!val || val === "ALL") return "All Commodities";
@@ -173,7 +173,7 @@ export function CustomerTable({
                     }}
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="rounded-md max-h-72">
+                <SelectContent className="max-h-72">
                   <SelectItem value="ALL">All Commodities</SelectItem>
                   {commodities.map((comm) => (
                     <SelectItem key={comm} value={comm}>
@@ -188,7 +188,7 @@ export function CustomerTable({
           <button
             type="button"
             onClick={onAddNew}
-            className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
+            className="inline-flex h-8 items-center gap-1.5 bg-primary px-3 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
           >
             <Plus className="size-3.5" />
             <span>Add Customer</span>
@@ -199,7 +199,7 @@ export function CustomerTable({
       {/* Table Content */}
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-12 text-center">
-          <div className="flex size-12 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
+          <div className="flex size-12 items-center justify-center bg-muted text-muted-foreground">
             <Building2 className="size-6" />
           </div>
           <h3 className="mt-4 font-heading text-sm font-semibold text-foreground">
@@ -213,7 +213,7 @@ export function CustomerTable({
           <button
             type="button"
             onClick={onAddNew}
-            className="mt-5 inline-flex h-8 items-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
+            className="mt-5 inline-flex h-8 items-center gap-1.5 bg-primary px-3 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
           >
             <Plus className="size-3.5" />
             <span>Create New Customer</span>
@@ -246,7 +246,7 @@ export function CustomerTable({
                     {/* Company Name & Address */}
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
-                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary">
+                        <div className="flex size-8 shrink-0 items-center justify-center bg-primary/10 text-xs font-bold text-primary">
                           {customer.companyName.charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0">
@@ -254,7 +254,7 @@ export function CustomerTable({
                             {customer.companyName}
                           </p>
                           {role === "ADMIN" && customer.organization && (
-                            <span className="inline-flex items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground font-medium mt-0.5">
+                            <span className="inline-flex items-center gap-1 bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground font-medium mt-0.5">
                               <Building2 className="size-2.5" />
                               {customer.organization.name}
                             </span>
@@ -290,7 +290,7 @@ export function CustomerTable({
                     {/* Commodity */}
                     <td className="px-5 py-3.5">
                       {customer.commodity ? (
-                        <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+                        <span className="inline-flex items-center gap-1 bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
                           <Tag className="size-3 shrink-0" />
                           <span className="truncate max-w-[120px]">
                             {customer.commodity}
@@ -320,7 +320,7 @@ export function CustomerTable({
 
                     {/* Shipments count */}
                     <td className="px-5 py-3.5">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-sky-500/10 px-2.5 py-0.5 text-[11px] font-medium text-sky-600 dark:text-sky-400">
+                      <span className="inline-flex items-center gap-1 bg-sky-500/10 px-2.5 py-0.5 text-[11px] font-medium text-sky-600 dark:text-sky-400">
                         <Package className="size-3" />
                         <span>{customer._count?.shipments ?? 0}</span>
                       </span>
@@ -333,7 +333,7 @@ export function CustomerTable({
                           type="button"
                           onClick={() => onView(customer)}
                           title="View Details"
-                          className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+                          className="flex size-7 items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground"
                         >
                           <Eye className="size-3.5" />
                         </button>
@@ -341,7 +341,7 @@ export function CustomerTable({
                           type="button"
                           onClick={() => onEdit(customer)}
                           title="Edit Customer"
-                          className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+                          className="flex size-7 items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground"
                         >
                           <Pencil className="size-3.5" />
                         </button>
@@ -350,7 +350,7 @@ export function CustomerTable({
                             type="button"
                             onClick={() => onDelete(customer)}
                             title="Delete Customer"
-                            className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                            className="flex size-7 items-center justify-center text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                           >
                             <Trash2 className="size-3.5" />
                           </button>
@@ -389,7 +389,7 @@ export function CustomerTable({
               type="button"
               disabled={currentPage <= 1}
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              className="flex size-7 items-center justify-center rounded-md border border-border text-foreground hover:bg-muted disabled:opacity-40"
+              className="flex size-7 items-center justify-center border border-border text-foreground hover:bg-muted disabled:opacity-40"
             >
               <ChevronLeft className="size-3.5" />
             </button>
@@ -400,7 +400,7 @@ export function CustomerTable({
               type="button"
               disabled={currentPage >= totalPages}
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              className="flex size-7 items-center justify-center rounded-md border border-border text-foreground hover:bg-muted disabled:opacity-40"
+              className="flex size-7 items-center justify-center border border-border text-foreground hover:bg-muted disabled:opacity-40"
             >
               <ChevronRight className="size-3.5" />
             </button>

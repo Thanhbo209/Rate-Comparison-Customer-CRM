@@ -17,7 +17,7 @@ export function DataTableSkeleton({
 }: DataTableSkeletonProps) {
   return (
     <div
-      className="rounded-md border border-border bg-card shadow-xs"
+      className="border border-border bg-card shadow-xs"
       role={asStatus ? "status" : undefined}
       aria-busy={asStatus ? "true" : undefined}
     >
@@ -27,13 +27,13 @@ export function DataTableSkeleton({
       {hasFilters && (
         <div className="flex flex-col gap-3 border-b border-border p-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative flex-1 max-w-sm">
-            <Skeleton className="h-9 w-full rounded-lg" />
+            <Skeleton className="h-9 w-full" />
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <Skeleton className="h-8.5 w-36 rounded-lg" />
-            <Skeleton className="h-8.5 w-36 rounded-lg" />
-            <Skeleton className="h-8.5 w-28 rounded-lg" />
+            <Skeleton className="h-8.5 w-36" />
+            <Skeleton className="h-8.5 w-36" />
+            <Skeleton className="h-8.5 w-28" />
           </div>
         </div>
       )}
@@ -75,7 +75,7 @@ export function DataTableSkeleton({
                   >
                     {cIdx === 0 ? (
                       <div className="flex items-center gap-3">
-                        <Skeleton className="size-8 shrink-0 rounded-lg" />
+                        <Skeleton className="size-8 shrink-0" />
                         <div className="space-y-1.5">
                           <Skeleton className="h-3.5 w-28 sm:w-36" />
                           <Skeleton className="h-3 w-20 sm:w-24" />
@@ -83,9 +83,9 @@ export function DataTableSkeleton({
                       </div>
                     ) : cIdx === columns - 1 ? (
                       <div className="inline-flex items-center justify-end gap-1">
-                        <Skeleton className="size-7 rounded-md" />
-                        <Skeleton className="size-7 rounded-md" />
-                        <Skeleton className="size-7 rounded-md" />
+                        <Skeleton className="size-7" />
+                        <Skeleton className="size-7" />
+                        <Skeleton className="size-7" />
                       </div>
                     ) : (
                       <Skeleton
@@ -107,10 +107,10 @@ export function DataTableSkeleton({
         <div className="flex flex-col gap-3 border-t border-border p-4 sm:flex-row sm:items-center sm:justify-between">
           <Skeleton className="h-4 w-36" />
           <div className="flex items-center gap-1.5">
-            <Skeleton className="h-8 w-16 rounded-lg" />
-            <Skeleton className="h-8 w-8 rounded-lg" />
-            <Skeleton className="h-8 w-8 rounded-lg" />
-            <Skeleton className="h-8 w-16 rounded-lg" />
+            <Skeleton className="h-8 w-16" />
+            <Skeleton className="h-8 w-8" />
+            <Skeleton className="h-8 w-8" />
+            <Skeleton className="h-8 w-16" />
           </div>
         </div>
       )}

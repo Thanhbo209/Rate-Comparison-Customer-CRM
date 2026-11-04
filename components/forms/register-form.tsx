@@ -159,7 +159,7 @@ export function RegisterForm({ initialError }: { initialError?: string } = {}) {
   if (success) {
     return (
       <div aria-live="polite">
-        <span className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+        <span className="flex size-14 items-center justify-center bg-primary/10 text-primary">
           <svg
             width="26"
             height="26"
@@ -312,7 +312,7 @@ export function RegisterForm({ initialError }: { initialError?: string } = {}) {
               type="button"
               onClick={() => setShowPassword((v) => !v)}
               aria-label={showPassword ? "Hide passwords" : "Show passwords"}
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded px-2 py-1 text-sm text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+              className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-1 text-sm text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
             >
               {showPassword ? "Hide" : "Show"}
             </button>
@@ -345,7 +345,7 @@ export function RegisterForm({ initialError }: { initialError?: string } = {}) {
               onChange={(e) => setTerms(e.target.checked)}
               aria-invalid={!!errors.terms}
               aria-describedby={errors.terms ? "terms-error" : undefined}
-              className="mt-0.5 size-4 shrink-0 cursor-pointer rounded border-input accent-primary"
+              className="mt-0.5 size-4 shrink-0 cursor-pointer border-input accent-primary"
             />
             <Label
               htmlFor="terms"
@@ -374,7 +374,7 @@ export function RegisterForm({ initialError }: { initialError?: string } = {}) {
         {formError && (
           <p
             role="alert"
-            className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+            className="border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive"
           >
             {formError}
           </p>

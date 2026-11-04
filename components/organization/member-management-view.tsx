@@ -230,11 +230,11 @@ export function MemberManagementView({
       {/* Global feedback banner */}
       {feedback && (
         <div
-          className={`flex items-center justify-between rounded-xl p-4 text-xs font-medium ${
-            feedback.type === "success"
-              ? "border border-emerald-500/20 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300"
-              : "border border-destructive/20 bg-destructive/10 text-destructive"
-          }`}
+          className={`flex items-center justify-between p-4 text-xs font-medium ${
+ feedback.type === "success"
+ ? "border border-emerald-500/20 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300"
+ : "border border-destructive/20 bg-destructive/10 text-destructive"
+ }`}
         >
           <div className="flex items-center gap-2">
             {feedback.type === "success" ? (
@@ -256,7 +256,7 @@ export function MemberManagementView({
 
       {/* Stats Summary Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
+        <div className="border border-border bg-card p-5 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground">
               Total Members
@@ -271,7 +271,7 @@ export function MemberManagementView({
           </div>
         </div>
 
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
+        <div className="border border-border bg-card p-5 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground">
               Active Invitations
@@ -286,7 +286,7 @@ export function MemberManagementView({
           </div>
         </div>
 
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
+        <div className="border border-border bg-card p-5 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground">
               Your Permission
@@ -303,10 +303,10 @@ export function MemberManagementView({
 
       {/* Active Newly Generated Invitation Alert */}
       {generatedInvite && (
-        <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 space-y-4">
+        <div className="border border-primary/30 bg-primary/5 p-6 space-y-4">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+              <span className="inline-flex items-center gap-1.5 bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
                 Invitation Code Ready
               </span>
               <h3 className="text-base font-semibold text-foreground">
@@ -329,7 +329,7 @@ export function MemberManagementView({
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex-1 rounded-xl border border-border bg-background px-4 py-3 text-base font-bold tracking-wider text-foreground">
+            <div className="flex-1 border border-border bg-background px-4 py-3 text-base font-bold tracking-wider text-foreground">
               {generatedInvite.code}
             </div>
             <Button
@@ -353,7 +353,7 @@ export function MemberManagementView({
       )}
 
       {/* Team Members List */}
-      <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-xs">
+      <div className="border border-border bg-card overflow-hidden shadow-xs">
         <div className="border-b border-border/80 p-5 flex items-center justify-between">
           <div>
             <h2 className="font-heading text-lg font-semibold text-foreground">
@@ -385,14 +385,14 @@ export function MemberManagementView({
                 >
                   <td className="py-4 px-5">
                     <div className="flex items-center gap-3">
-                      <div className="flex size-8 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                      <div className="flex size-8 items-center justify-center bg-primary/10 text-xs font-bold text-primary">
                         {member.name.charAt(0).toUpperCase()}
                       </div>
                       <div>
                         <div className="font-semibold text-foreground flex items-center gap-2">
                           <span>{member.name}</span>
                           {member.isCurrentUser && (
-                            <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                            <span className="bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
                               You
                             </span>
                           )}
@@ -403,11 +403,11 @@ export function MemberManagementView({
 
                   <td className="py-4 px-5">
                     <span
-                      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium ${
-                        member.role === "SALES_MANAGER"
-                          ? "bg-primary/15 text-primary font-semibold"
-                          : "bg-muted text-muted-foreground"
-                      }`}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[11px] font-medium ${
+ member.role === "SALES_MANAGER"
+ ? "bg-primary/15 text-primary font-semibold"
+ : "bg-muted text-muted-foreground"
+ }`}
                     >
                       {member.role === "SALES_MANAGER" && (
                         <Shield className="size-3" />
@@ -467,7 +467,7 @@ export function MemberManagementView({
 
       {/* Invitations Section (Manager only) */}
       {isManager && (
-        <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-xs">
+        <div className="border border-border bg-card overflow-hidden shadow-xs">
           <div className="border-b border-border/80 p-5 flex items-center justify-between">
             <div>
               <h2 className="font-heading text-lg font-semibold text-foreground">
@@ -512,7 +512,7 @@ export function MemberManagementView({
                       </td>
 
                       <td className="py-4 px-5">
-                        <span className="rounded bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+                        <span className="bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
                           {inv.role === "SALES_MANAGER"
                             ? "Sales Manager"
                             : "Sales"}
@@ -525,16 +525,16 @@ export function MemberManagementView({
 
                       <td className="py-4 px-5">
                         {inv.isUsed ? (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-700 dark:text-emerald-400">
+                          <span className="inline-flex items-center gap-1 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-700 dark:text-emerald-400">
                             <Check className="size-3" />
                             Redeemed {inv.usedBy ? `(${inv.usedBy.name})` : ""}
                           </span>
                         ) : inv.isExpired ? (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-medium text-destructive">
+                          <span className="inline-flex items-center gap-1 bg-destructive/10 px-2 py-0.5 text-[10px] font-medium text-destructive">
                             Expired
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+                          <span className="inline-flex items-center gap-1 bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
                             <Clock className="size-3" />
                             Active (Unused)
                           </span>

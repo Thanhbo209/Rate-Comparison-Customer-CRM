@@ -87,15 +87,15 @@ export function ConfirmDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         onClose={() => handleOpenChange(false)}
-        className="max-w-md rounded-2xl border-border bg-card p-6 shadow-2xl"
+        className="max-w-md border-border bg-card p-6 shadow-2xl"
       >
         <DialogHeader>
           <div className="flex items-center gap-3">
             <div
               className={
                 variant === "destructive"
-                  ? "flex size-10 shrink-0 items-center justify-center rounded-xl bg-destructive/10 text-destructive"
-                  : "flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"
+                  ? "flex size-10 shrink-0 items-center justify-center bg-destructive/10 text-destructive"
+                  : "flex size-10 shrink-0 items-center justify-center bg-primary/10 text-primary"
               }
             >
               <AlertTriangle className="size-5" />
@@ -117,7 +117,7 @@ export function ConfirmDialog({
           {warningContent}
 
           {error && (
-            <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive">
+            <div className="border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive">
               {error}
             </div>
           )}

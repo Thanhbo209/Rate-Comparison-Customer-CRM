@@ -24,7 +24,7 @@ export function DashboardBanner({
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-xs sm:p-7",
+        "relative overflow-hidden border border-border bg-card p-6 shadow-xs sm:p-7",
         className,
       )}
     >

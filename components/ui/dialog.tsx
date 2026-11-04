@@ -61,7 +61,7 @@ export function DialogContent({
       role="dialog"
       aria-modal="true"
       className={cn(
-        "relative mx-auto w-full max-w-lg rounded-2xl border border-border bg-card p-6 shadow-2xl transition-all duration-200",
+        "relative mx-auto w-full max-w-lg border border-border bg-card p-6 shadow-2xl transition-all duration-200",
         className
       )}
       onClick={(e) => e.stopPropagation()}
@@ -71,7 +71,7 @@ export function DialogContent({
           type="button"
           onClick={onClose}
           aria-label="Close dialog"
-          className="absolute right-4 top-4 rounded-lg p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="absolute right-4 top-4 p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           <X className="size-4" />
         </button>

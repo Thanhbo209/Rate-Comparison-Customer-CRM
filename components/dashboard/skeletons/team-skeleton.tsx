@@ -17,13 +17,13 @@ export function TeamSkeleton() {
       />
 
       {/* Table 1: Active Members */}
-      <div className="rounded-2xl border border-border bg-card shadow-xs overflow-hidden">
+      <div className="border border-border bg-card shadow-xs overflow-hidden">
         <div className="flex items-center justify-between border-b border-border/60 p-5">
           <div className="space-y-1">
             <Skeleton className="h-5 w-36" />
             <Skeleton className="h-3.5 w-60" />
           </div>
-          <Skeleton className="h-6 w-20 rounded-full" />
+          <Skeleton className="h-6 w-20" />
         </div>
 
         <div className="overflow-x-auto">
@@ -41,7 +41,7 @@ export function TeamSkeleton() {
                 <tr key={idx}>
                   <td className="py-4 px-5">
                     <div className="flex items-center gap-3">
-                      <Skeleton className="size-8 rounded-full shrink-0" />
+                      <Skeleton className="size-8 shrink-0" />
                       <div className="space-y-1">
                         <Skeleton className="h-4 w-28" />
                         <Skeleton className="h-3 w-36" />
@@ -49,15 +49,15 @@ export function TeamSkeleton() {
                     </div>
                   </td>
                   <td className="py-4 px-5">
-                    <Skeleton className="h-5 w-24 rounded-full" />
+                    <Skeleton className="h-5 w-24" />
                   </td>
                   <td className="py-4 px-5">
                     <Skeleton className="h-4 w-24" />
                   </td>
                   <td className="py-4 px-5 text-right">
                     <div className="inline-flex items-center justify-end gap-2">
-                      <Skeleton className="h-8 w-28 rounded-lg" />
-                      <Skeleton className="size-8 rounded-lg" />
+                      <Skeleton className="h-8 w-28" />
+                      <Skeleton className="size-8" />
                     </div>
                   </td>
                 </tr>

@@ -25,7 +25,7 @@ export function SectionCard({
   return (
     <div
       className={cn(
-        "rounded-xl border border-border bg-card shadow-xs",
+        "border border-border bg-card shadow-xs",
         className
       )}
     >

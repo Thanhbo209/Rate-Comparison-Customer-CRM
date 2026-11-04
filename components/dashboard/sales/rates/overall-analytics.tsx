@@ -178,11 +178,11 @@ export function OverallAnalytics({
   const topProviders = getTopProviders(shipments, overall.agentRankings, 5);
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-5 shadow-xs space-y-5">
+    <div className="border border-border bg-card p-5 shadow-xs space-y-5">
       {/* Header with Title, Description, and Summary Chips */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-border/60 pb-4">
         <div className="flex items-center gap-2">
-          <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <div className="flex size-9 items-center justify-center bg-primary/10 text-primary">
             <BarChart3 className="size-4.5" />
           </div>
           <div>
@@ -197,13 +197,13 @@ export function OverallAnalytics({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <span className="rounded-lg bg-muted px-2.5 py-1 text-xs font-medium text-foreground">
+          <span className="bg-muted px-2.5 py-1 text-xs font-medium text-foreground">
             {overall.totalShipments} Shipments
           </span>
-          <span className="rounded-lg bg-muted px-2.5 py-1 text-xs font-medium text-foreground">
+          <span className="bg-muted px-2.5 py-1 text-xs font-medium text-foreground">
             {overall.totalRates} Rate Quotes
           </span>
-          <span className="rounded-lg bg-muted px-2.5 py-1 text-xs font-medium text-foreground">
+          <span className="bg-muted px-2.5 py-1 text-xs font-medium text-foreground">
             {overall.totalFreightItems} Freight Items
           </span>
         </div>
@@ -255,7 +255,7 @@ export function OverallAnalytics({
         </div>
 
         {/* Top 5 Providers by Profit List */}
-        <div className="lg:col-span-6 rounded-xl border border-border/80 bg-muted/20 p-4 flex flex-col justify-between">
+        <div className="lg:col-span-6 border border-border/80 bg-muted/20 p-4 flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center justify-between border-b border-border/50 pb-2.5">
               <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
@@ -279,7 +279,7 @@ export function OverallAnalytics({
                     className="flex items-center justify-between py-2.5 first:pt-1 last:pb-1"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-[11px] font-bold text-muted-foreground">
+                      <span className="flex size-6 shrink-0 items-center justify-center bg-muted text-[11px] font-bold text-muted-foreground">
                         {item.rank}
                       </span>
                       <div className="min-w-0">

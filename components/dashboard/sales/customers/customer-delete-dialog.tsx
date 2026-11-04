@@ -59,7 +59,7 @@ export function CustomerDeleteDialog({
       <DialogContent onClose={() => onOpenChange(false)} className="max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
+            <div className="flex size-10 shrink-0 items-center justify-center bg-destructive/10 text-destructive">
               <AlertTriangle className="size-5" />
             </div>
             <div>
@@ -76,12 +76,12 @@ export function CustomerDeleteDialog({
             Are you sure you want to permanently delete{" "}
             <strong className="text-foreground">{customer.companyName}</strong>?
           </p>
-          <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-3 text-[11px] text-destructive">
+          <div className="border border-destructive/20 bg-destructive/5 p-3 text-[11px] text-destructive">
             Warning: All associated shipment records, carrier rate comparisons,
             and freight items for this customer will also be deleted.
           </div>
           {error && (
-            <div className="rounded-xl border border-destructive/20 bg-destructive/10 p-3 text-destructive">
+            <div className="border border-destructive/20 bg-destructive/10 p-3 text-destructive">
               {error}
             </div>
           )}
@@ -92,7 +92,7 @@ export function CustomerDeleteDialog({
             type="button"
             onClick={() => onOpenChange(false)}
             disabled={loading}
-            className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-background px-4 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
+            className="inline-flex h-9 items-center justify-center border border-border bg-background px-4 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
           >
             Cancel
           </button>
@@ -100,7 +100,7 @@ export function CustomerDeleteDialog({
             type="button"
             onClick={handleDelete}
             disabled={loading}
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-destructive/10 px-4 py-2 text-xs font-medium text-destructive text-destructive-foreground hover:bg-destructive/90 hover:text-background disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-1.5 bg-destructive/10 px-4 py-2 text-xs font-medium text-destructive text-destructive-foreground hover:bg-destructive/90 hover:text-background disabled:opacity-50"
           >
             {loading && <Loader2 className="size-3.5 animate-spin" />}
             <span>Delete Customer</span>

@@ -75,7 +75,7 @@ export function ConfirmEmail({
           <span
             role="status"
             aria-label="Loading"
-            className="block size-14 animate-spin rounded-full border-4 border-primary/20 border-t-primary motion-reduce:animate-none"
+            className="block size-14 animate-spin border-4 border-primary/20 border-t-primary motion-reduce:animate-none"
           />
           <h1 className="mt-6 font-heading text-4xl font-bold tracking-tight">
             Confirming your email…
@@ -88,7 +88,7 @@ export function ConfirmEmail({
 
       {status === "success" && (
         <>
-          <span className="flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <span className="flex size-14 items-center justify-center bg-primary/10 text-primary">
             <svg
               width="26"
               height="26"
@@ -122,7 +122,7 @@ export function ConfirmEmail({
 
       {status === "error" && (
         <>
-          <span className="flex size-14 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+          <span className="flex size-14 items-center justify-center bg-destructive/10 text-destructive">
             <svg
               width="26"
               height="26"

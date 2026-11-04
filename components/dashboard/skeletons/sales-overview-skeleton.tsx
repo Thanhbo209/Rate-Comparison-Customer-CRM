@@ -7,20 +7,20 @@ export function SalesOverviewSkeleton() {
       <span className="sr-only">Loading sales overview...</span>
 
       {/* Hero Slogan Banner */}
-      <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-xs sm:p-7">
+      <div className="relative overflow-hidden border border-border bg-card p-6 shadow-xs sm:p-7">
         <div className="flex flex-col-reverse gap-6 md:flex-row md:items-center md:justify-between">
           <div className="max-w-xl flex-1 space-y-3">
             <div className="flex items-center gap-2">
-              <Skeleton className="h-5 w-32 rounded-full" />
+              <Skeleton className="h-5 w-32" />
               <Skeleton className="h-4 w-24" />
             </div>
             <Skeleton className="h-8 w-72 sm:w-96" />
             <Skeleton className="h-4 w-full max-w-md" />
             <div className="pt-2">
-              <Skeleton className="h-9 w-32 rounded-lg" />
+              <Skeleton className="h-9 w-32" />
             </div>
           </div>
-          <Skeleton className="hidden md:block h-32 w-44 rounded-xl shrink-0" />
+          <Skeleton className="hidden md:block h-32 w-44 shrink-0" />
         </div>
       </div>
 
@@ -29,49 +29,49 @@ export function SalesOverviewSkeleton() {
 
       {/* Sales Analytics Charts (2 cards side by side) */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
+        <div className="border border-border bg-card p-6 shadow-xs space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-border">
             <div className="space-y-1">
               <Skeleton className="h-5 w-48" />
               <Skeleton className="h-3.5 w-64" />
             </div>
-            <Skeleton className="h-6 w-20 rounded-full" />
+            <Skeleton className="h-6 w-20" />
           </div>
-          <Skeleton className="h-60 w-full rounded-xl" />
+          <Skeleton className="h-60 w-full" />
         </div>
 
-        <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
+        <div className="border border-border bg-card p-6 shadow-xs space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-border">
             <div className="space-y-1">
               <Skeleton className="h-5 w-44" />
               <Skeleton className="h-3.5 w-60" />
             </div>
-            <Skeleton className="h-6 w-20 rounded-full" />
+            <Skeleton className="h-6 w-20" />
           </div>
-          <Skeleton className="h-60 w-full rounded-xl" />
+          <Skeleton className="h-60 w-full" />
         </div>
       </div>
 
       {/* Recent Shipments & Rate Comparison Snapshot */}
-      <div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
+      <div className="border border-border bg-card p-6 shadow-xs space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-border">
           <div className="space-y-1">
             <Skeleton className="h-5 w-52" />
             <Skeleton className="h-3.5 w-72" />
           </div>
-          <Skeleton className="h-6 w-24 rounded-full" />
+          <Skeleton className="h-6 w-24" />
         </div>
         <div className="space-y-3">
           {Array.from({ length: 3 }).map((_, idx) => (
             <div
               key={idx}
-              className="flex items-center justify-between p-3.5 rounded-xl border border-border/60 bg-muted/20"
+              className="flex items-center justify-between p-3.5 border border-border/60 bg-muted/20"
             >
               <div className="space-y-1">
                 <Skeleton className="h-4 w-40" />
                 <Skeleton className="h-3 w-28" />
               </div>
-              <Skeleton className="h-6 w-20 rounded-md" />
+              <Skeleton className="h-6 w-20" />
             </div>
           ))}
         </div>
@@ -80,7 +80,7 @@ export function SalesOverviewSkeleton() {
       {/* Carrier Performance & Customer Portfolio (2 cols left, 1 col right) */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Top Carriers & Freight Agents by Profit (2 cols) */}
-        <div className="lg:col-span-2 rounded-2xl border border-border bg-card shadow-xs overflow-hidden">
+        <div className="lg:col-span-2 border border-border bg-card shadow-xs overflow-hidden">
           <div className="flex items-center justify-between border-b border-border/60 p-5">
             <div className="space-y-1">
               <Skeleton className="h-5 w-56" />
@@ -105,7 +105,7 @@ export function SalesOverviewSkeleton() {
                   <tr key={idx}>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-2">
-                        <Skeleton className="size-5 rounded-full shrink-0" />
+                        <Skeleton className="size-5 shrink-0" />
                         <div className="space-y-1">
                           <Skeleton className="h-3.5 w-32" />
                           <Skeleton className="h-2.5 w-24" />
@@ -126,7 +126,7 @@ export function SalesOverviewSkeleton() {
         {/* Right Column: Key Customers & Quick Operations (1 col) */}
         <div className="space-y-6">
           {/* Key Customer Accounts */}
-          <div className="rounded-2xl border border-border bg-card p-5 shadow-xs space-y-4">
+          <div className="border border-border bg-card p-5 shadow-xs space-y-4">
             <div className="flex items-center justify-between pb-2 border-b border-border/60">
               <Skeleton className="h-5 w-36" />
               <Skeleton className="h-3.5 w-16" />
@@ -135,20 +135,20 @@ export function SalesOverviewSkeleton() {
               {Array.from({ length: 3 }).map((_, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between p-2.5 rounded-lg border border-border/60 bg-muted/20"
+                  className="flex items-center justify-between p-2.5 border border-border/60 bg-muted/20"
                 >
                   <div className="space-y-1">
                     <Skeleton className="h-3.5 w-28" />
                     <Skeleton className="h-3 w-20" />
                   </div>
-                  <Skeleton className="h-5 w-16 rounded-md" />
+                  <Skeleton className="h-5 w-16" />
                 </div>
               ))}
             </div>
           </div>
 
           {/* Quick Operations Launchpad */}
-          <div className="rounded-2xl border border-border bg-card p-5 shadow-xs space-y-4">
+          <div className="border border-border bg-card p-5 shadow-xs space-y-4">
             <div className="space-y-1 pb-2 border-b border-border/60">
               <Skeleton className="h-5 w-32" />
               <Skeleton className="h-3 w-48" />
@@ -157,10 +157,10 @@ export function SalesOverviewSkeleton() {
               {Array.from({ length: 3 }).map((_, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between p-2.5 rounded-lg border border-border/80 bg-background"
+                  className="flex items-center justify-between p-2.5 border border-border/80 bg-background"
                 >
                   <div className="flex items-center gap-2.5">
-                    <Skeleton className="size-7 rounded-md shrink-0" />
+                    <Skeleton className="size-7 shrink-0" />
                     <div className="space-y-1">
                       <Skeleton className="h-3.5 w-24" />
                       <Skeleton className="h-2.5 w-36" />

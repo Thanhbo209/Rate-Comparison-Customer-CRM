@@ -8,6 +8,9 @@ export interface FreightItemRecord {
   gross: number;
   profit: number;
   currency: string;
+  exportCharge?: string | null;
+  importCharge?: string | null;
+  fare?: number | null;
   createdAt: Date | string;
   updatedAt: Date | string;
 }
@@ -20,6 +23,9 @@ export interface FreightItemFormData {
   net: number;
   gross: number;
   currency?: string;
+  exportCharge?: string;
+  importCharge?: string;
+  fare?: number;
 }
 
 export interface RateItemTotals {

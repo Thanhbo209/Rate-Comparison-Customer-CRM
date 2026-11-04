@@ -9,7 +9,6 @@
  *   RatesTotalStrip     – summary strip for the per-shipment CARD view
  */
 
-import React from "react";
 import { TrendingUp, TrendingDown, Trophy, Minus } from "lucide-react";
 import type { ShipmentRankResult } from "@/lib/rate/shipment-ranking";
 
@@ -24,7 +23,6 @@ function sign(n: number): string {
 }
 
 // ─── ShipmentProfitCell ───────────────────────────────────────────────────────
-
 interface ShipmentProfitCellProps {
   result: ShipmentRankResult | undefined;
   baseCurrency: string;
@@ -76,7 +74,7 @@ export function ShipmentProfitCell({
 
       {/* Ranking badge — only when comparing ≥ 2 shipments for same customer */}
       {result.comparedWith >= 2 && result.isBest && (
-        <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/15 px-1.5 py-0.5 text-[9px] font-bold text-emerald-800 dark:text-emerald-300 w-fit">
+        <span className="inline-flex items-center gap-1 bg-emerald-500/15 px-1.5 py-0.5 text-[9px] font-bold text-emerald-800 dark:text-emerald-300 w-fit">
           <Trophy className="size-2.5" />
           Best choice
         </span>
@@ -96,7 +94,6 @@ export function ShipmentProfitCell({
 }
 
 // ─── RatesTotalRow ────────────────────────────────────────────────────────────
-
 interface RatesTotalRowProps {
   result: ShipmentRankResult | undefined;
   baseCurrency: string;
@@ -116,19 +113,19 @@ export function RatesTotalRow({ result, baseCurrency }: RatesTotalRowProps) {
   if (!result || result.rateCount === 0) return null;
 
   return (
-    <tr className="border-2 border-primary bg-primary/20 text-[15px] font-semibold">
-      <td colSpan={2} className="px-4 py-3 text-foreground font-semibold">
+    <tr className="bg-sky-200/80 text-[12px] font-semibold ">
+      <td colSpan={2} className="px-4 py-3 text-foreground font-semibold ">
         Shipment Total ({result.rateCount}{" "}
         {result.rateCount === 1 ? "rate" : "rates"})
       </td>
-      <td className="px-4 py-3 font-semibold text-destructive">
+      <td className="px-4 py-3 font-semibold text-destructive text-center">
         {fmt(result.net)} {baseCurrency}
       </td>
-      <td className="px-4 py-3 font-bold text-primary">
+      <td className="px-4 py-3 font-bold text-primary text-center">
         {fmt(result.gross)} {baseCurrency}
       </td>
       <td
-        className={`px-4 py-3 font-bold ${
+        className={`px-4 py-3 font-bold text-center ${
           result.profit >= 0
             ? "text-emerald-600 dark:text-emerald-400"
             : "text-destructive"
@@ -137,7 +134,7 @@ export function RatesTotalRow({ result, baseCurrency }: RatesTotalRowProps) {
         {sign(result.profit)}
         {fmt(result.profit)} {baseCurrency}
       </td>
-      <td className="px-4 py-3  text-foreground font-semibold">
+      <td className="px-4 py-3  text-foreground font-semibold text-center">
         {result.marginPercent.toFixed(1)}%
       </td>
       <td className="px-4 py-3 text-right" />
@@ -164,7 +161,7 @@ export function RatesTotalStrip({
   if (!result || result.rateCount === 0) return null;
 
   return (
-    <div className="mx-4 sm:mx-6 mt-4 rounded-xl border border-border/80 bg-primary/30 px-4 py-2.5 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs">
+    <div className="mx-4 sm:mx-6 mt-4 border border-border/80 bg-primary/30 px-4 py-2.5 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs">
       {/* Label */}
       <span className="font-semibold text-foreground shrink-0">
         Shipment Total
@@ -206,7 +203,7 @@ export function RatesTotalStrip({
       </span>
 
       {result.comparedWith >= 2 && result.isBest && (
-        <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/15 px-2 py-0.5 text-[9px] font-bold text-emerald-800 dark:text-emerald-300 shrink-0">
+        <span className="inline-flex items-center gap-1 bg-emerald-500/15 px-2 py-0.5 text-[9px] font-bold text-emerald-800 dark:text-emerald-300 shrink-0">
           <Trophy className="size-2.5" />
           Best choice
         </span>

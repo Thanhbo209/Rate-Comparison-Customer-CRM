@@ -69,7 +69,7 @@ export function RateCalculator() {
   };
 
   return (
-    <div className="rounded-xl border border-border bg-card shadow-xs">
+    <div className="border border-border bg-card shadow-xs">
       <div className="flex flex-col gap-3 border-b border-border p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-2">
@@ -85,37 +85,37 @@ export function RateCalculator() {
         </div>
 
         {/* Equipment Selector */}
-        <div className="flex items-center rounded-lg border border-border bg-muted/50 p-1 text-xs">
+        <div className="flex items-center border border-border bg-muted/50 p-1 text-xs">
           <button
             type="button"
             onClick={() => setEquipment("rate20")}
-            className={`rounded-md px-2.5 py-1 font-medium transition-colors ${
-              equipment === "rate20"
-                ? "bg-background font-semibold text-foreground shadow-xs"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
+            className={`px-2.5 py-1 font-medium transition-colors ${
+ equipment === "rate20"
+ ? "bg-background font-semibold text-foreground shadow-xs"
+ : "text-muted-foreground hover:text-foreground"
+ }`}
           >
             20&apos; GP
           </button>
           <button
             type="button"
             onClick={() => setEquipment("rate40")}
-            className={`rounded-md px-2.5 py-1 font-medium transition-colors ${
-              equipment === "rate40"
-                ? "bg-background font-semibold text-foreground shadow-xs"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
+            className={`px-2.5 py-1 font-medium transition-colors ${
+ equipment === "rate40"
+ ? "bg-background font-semibold text-foreground shadow-xs"
+ : "text-muted-foreground hover:text-foreground"
+ }`}
           >
             40&apos; GP
           </button>
           <button
             type="button"
             onClick={() => setEquipment("rate40HC")}
-            className={`rounded-md px-2.5 py-1 font-medium transition-colors ${
-              equipment === "rate40HC"
-                ? "bg-background font-semibold text-foreground shadow-xs"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
+            className={`px-2.5 py-1 font-medium transition-colors ${
+ equipment === "rate40HC"
+ ? "bg-background font-semibold text-foreground shadow-xs"
+ : "text-muted-foreground hover:text-foreground"
+ }`}
           >
             40&apos; HC
           </button>
@@ -131,7 +131,7 @@ export function RateCalculator() {
           <select
             value={origin}
             onChange={(e) => setOrigin(e.target.value)}
-            className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+            className="mt-1 w-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary"
           >
             <option value="CNSHA - Shanghai, China">
               CNSHA - Shanghai, China
@@ -153,7 +153,7 @@ export function RateCalculator() {
           <select
             value={destination}
             onChange={(e) => setDestination(e.target.value)}
-            className="mt-1 w-full rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+            className="mt-1 w-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary"
           >
             <option value="USLAX - Los Angeles, USA">
               USLAX - Los Angeles, USA
@@ -203,7 +203,7 @@ export function RateCalculator() {
                         {item.carrier}
                       </div>
                       {item.direct && (
-                        <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-medium text-emerald-600 dark:text-emerald-400">
+                        <span className="bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-medium text-emerald-600 dark:text-emerald-400">
                           Direct
                         </span>
                       )}
@@ -231,11 +231,11 @@ export function RateCalculator() {
                     <button
                       type="button"
                       onClick={() => setSelectedCarrier(item.carrier)}
-                      className={`inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
-                        isSelected
-                          ? "bg-primary text-primary-foreground"
-                          : "border border-border bg-background text-foreground hover:bg-muted"
-                      }`}
+                      className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium transition-colors ${
+ isSelected
+ ? "bg-primary text-primary-foreground"
+ : "border border-border bg-background text-foreground hover:bg-muted"
+ }`}
                     >
                       {isSelected ? (
                         <Check className="size-3" />
@@ -266,7 +266,7 @@ export function RateCalculator() {
           type="button"
           onClick={handleCreateQuote}
           disabled={quoteSent}
-          className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 disabled:opacity-50"
+          className="inline-flex items-center justify-center gap-1.5 bg-primary px-4 py-2 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 disabled:opacity-50"
         >
           {quoteSent ? (
             <>

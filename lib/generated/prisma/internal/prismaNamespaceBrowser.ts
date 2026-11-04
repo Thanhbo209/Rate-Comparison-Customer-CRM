@@ -195,6 +195,9 @@ export const FreightItemScalarFieldEnum = {
   quantity: 'quantity',
   gross: 'gross',
   currency: 'currency',
+  exportCharge: 'exportCharge',
+  importCharge: 'importCharge',
+  fare: 'fare',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

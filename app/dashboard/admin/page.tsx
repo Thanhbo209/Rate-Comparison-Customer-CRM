@@ -38,7 +38,7 @@ export default async function AdminDashboardPage() {
       <DashboardBanner
         organizationName={profile.organization?.name}
         tag={
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+          <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
             <ShieldCheck className="size-3.5" />
             System Administrator
           </span>
@@ -49,14 +49,14 @@ export default async function AdminDashboardPage() {
           <>
             <button
               type="button"
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary px-4 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
+              className="inline-flex h-9 items-center gap-1.5 bg-primary px-4 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
             >
               <UserPlus className="size-3.5" />
               Invite Team Member
             </button>
             <button
               type="button"
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border bg-card px-4 text-xs font-medium text-foreground shadow-xs transition-colors hover:bg-muted"
+              className="inline-flex h-9 items-center gap-1.5 border border-border bg-card px-4 text-xs font-medium text-foreground shadow-xs transition-colors hover:bg-muted"
             >
               <Settings className="size-3.5" />
               Org Settings
@@ -118,7 +118,7 @@ export default async function AdminDashboardPage() {
           title="Organization Team Members"
           subtitle={`Active staff accounts in ${profile.organization?.name}`}
           badge={
-            <span className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+            <span className="bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
               {memberCount} total
             </span>
           }
@@ -147,7 +147,7 @@ export default async function AdminDashboardPage() {
                     >
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
-                          <div className="flex size-7 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                          <div className="flex size-7 items-center justify-center bg-primary/10 text-xs font-bold text-primary">
                             {member.name.charAt(0).toUpperCase()}
                           </div>
                           <div>
@@ -162,13 +162,13 @@ export default async function AdminDashboardPage() {
                       </td>
                       <td className="px-5 py-3.5">
                         <span
-                          className={`inline-flex items-center rounded px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
-                            isAdminRole
-                              ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
-                              : isManagerRole
-                                ? "bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300"
-                                : "bg-sky-100 text-sky-800 dark:bg-sky-950/60 dark:text-sky-300"
-                          }`}
+                          className={`inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
+ isAdminRole
+ ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
+ : isManagerRole
+ ? "bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300"
+ : "bg-sky-100 text-sky-800 dark:bg-sky-950/60 dark:text-sky-300"
+ }`}
                         >
                           {member.role}
                         </span>
@@ -185,7 +185,7 @@ export default async function AdminDashboardPage() {
                       </td>
                       <td className="px-5 py-3.5">
                         <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
-                          <span className="size-1.5 rounded-full bg-emerald-500" />
+                          <span className="size-1.5 bg-emerald-500" />
                           <span>Active</span>
                         </span>
                       </td>
@@ -222,7 +222,7 @@ export default async function AdminDashboardPage() {
               </div>
               <div className="flex items-center justify-between pt-1">
                 <span className="text-muted-foreground">Plan</span>
-                <span className="rounded bg-primary/10 px-2 py-0.5 font-semibold text-primary">
+                <span className="bg-primary/10 px-2 py-0.5 font-semibold text-primary">
                   Enterprise FWD
                 </span>
               </div>
@@ -233,7 +233,7 @@ export default async function AdminDashboardPage() {
           <SectionCard title="Recent Activity">
             <div className="space-y-4 text-xs">
               <div className="flex items-start gap-3">
-                <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600">
+                <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center bg-emerald-500/10 text-emerald-600">
                   <CheckCircle2 className="size-3.5" />
                 </div>
                 <div>
@@ -250,7 +250,7 @@ export default async function AdminDashboardPage() {
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-sky-500/10 text-sky-600">
+                <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center bg-sky-500/10 text-sky-600">
                   <Users className="size-3.5" />
                 </div>
                 <div>
@@ -267,7 +267,7 @@ export default async function AdminDashboardPage() {
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center bg-primary/10 text-primary">
                   <Building2 className="size-3.5" />
                 </div>
                 <div>
