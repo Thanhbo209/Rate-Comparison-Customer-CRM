@@ -23,7 +23,6 @@ function sign(n: number): string {
 }
 
 // ─── ShipmentProfitCell ───────────────────────────────────────────────────────
-
 interface ShipmentProfitCellProps {
   result: ShipmentRankResult | undefined;
   baseCurrency: string;
@@ -95,7 +94,6 @@ export function ShipmentProfitCell({
 }
 
 // ─── RatesTotalRow ────────────────────────────────────────────────────────────
-
 interface RatesTotalRowProps {
   result: ShipmentRankResult | undefined;
   baseCurrency: string;

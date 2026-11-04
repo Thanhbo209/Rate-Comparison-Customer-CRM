@@ -148,7 +148,7 @@ export function RecentShipmentsRates({
                             {totals.rateCount === 1 ? "quote" : "quotes"}
                           </span>
                           {providerNames.length > 0 && (
-                            <span className="text-[11px] text-muted-foreground truncate max-w-[200px]">
+                            <span className="text-[11px] text-muted-foreground truncate max-w-50">
                               {providerNames.join(", ")}
                             </span>
                           )}

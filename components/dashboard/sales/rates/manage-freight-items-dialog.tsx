@@ -26,13 +26,6 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -44,7 +37,7 @@ import {
 import type { ShipmentRateItem, FreightItemSummary } from "@/lib/rate/types";
 import { toast } from "react-toastify";
 import { FreightDeleteDialog } from "./freight-delete-dialog";
-
+import { createPortal } from "react-dom";
 interface ManageFreightItemsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -223,6 +216,49 @@ function NumberField({
   );
 }
 
+interface ListPlacement {
+  host: HTMLElement | null; // the dialog element the list is rendered into
+  openUp: boolean;
+  maxHeight: number;
+  left: number;
+  top: number;
+  width: number;
+}
+
+const LIST_GAP = 4;
+const LIST_MAX_HEIGHT = 224;
+const VIEWPORT_MARGIN = 12;
+
+/** Decides where the list goes: below the field if it fits, otherwise above, never past the viewport. */
+function measurePlacement(anchor: HTMLElement): ListPlacement {
+  const a = anchor.getBoundingClientRect();
+  const below = window.innerHeight - a.bottom - VIEWPORT_MARGIN;
+  const above = a.top - VIEWPORT_MARGIN;
+  const openUp = below < 160 && above > below;
+  const maxHeight = Math.max(
+    96,
+    Math.min(LIST_MAX_HEIGHT, (openUp ? above : below) - LIST_GAP),
+  );
+
+  const host = anchor.closest<HTMLElement>('[role="dialog"]');
+  if (!host) {
+    return { host: null, openUp, maxHeight, left: 0, top: 0, width: a.width };
+  }
+
+  const h = host.getBoundingClientRect();
+  return {
+    host,
+    openUp,
+    maxHeight,
+    width: a.width,
+    left: a.left - h.left + host.scrollLeft,
+    top:
+      (openUp ? a.top - LIST_GAP : a.bottom + LIST_GAP) -
+      h.top +
+      host.scrollTop,
+  };
+}
+
 function UnitSelect({
   id,
   value,
@@ -235,29 +271,118 @@ function UnitSelect({
   options?: string[];
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [placement, setPlacement] = useState<ListPlacement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const openList = () => {
+    if (containerRef.current) {
+      setPlacement(measurePlacement(containerRef.current));
+    }
+    setIsOpen(true);
+  };
+
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    if (!isOpen) return;
+
+    // The list lives outside containerRef (it's portaled), so check both.
+    const handleMouseDown = (event: MouseEvent) => {
+      const target = event.target as Node;
       if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
+        !containerRef.current?.contains(target) &&
+        !listRef.current?.contains(target)
       ) {
         setIsOpen(false);
       }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    };
+
+    let frame = 0;
+    const reposition = (event?: Event) => {
+      // Scrolling the list itself shouldn't move it.
+      if (
+        event?.target instanceof Node &&
+        listRef.current?.contains(event.target)
+      ) {
+        return;
+      }
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        if (containerRef.current) {
+          setPlacement(measurePlacement(containerRef.current));
+        }
+      });
+    };
+
+    document.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("resize", reposition);
+    window.addEventListener("scroll", reposition, true);
+    return () => {
+      document.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("resize", reposition);
+      window.removeEventListener("scroll", reposition, true);
+      cancelAnimationFrame(frame);
+    };
+  }, [isOpen]);
 
   const filteredOptions = options.filter(
     (opt) =>
-      !value.trim() ||
-      opt.toLowerCase().includes(value.trim().toLowerCase()) ||
-      opt.toLowerCase() === value.trim().toLowerCase(),
+      !value.trim() || opt.toLowerCase().includes(value.trim().toLowerCase()),
   );
   const displayOptions = filteredOptions.length > 0 ? filteredOptions : options;
+
+  const list = isOpen && placement && (
+    <div
+      ref={listRef}
+      role="listbox"
+      style={
+        placement.host
+          ? {
+              left: placement.left,
+              top: placement.top,
+              width: placement.width,
+              maxHeight: placement.maxHeight,
+              transform: placement.openUp ? "translateY(-100%)" : undefined,
+            }
+          : { maxHeight: placement.maxHeight }
+      }
+      className={cn(
+        "z-100 overflow-y-auto border border-border bg-popover p-1 text-popover-foreground shadow-lg",
+        placement.host
+          ? "absolute"
+          : cn(
+              "absolute left-0 w-full",
+              placement.openUp ? "bottom-full mb-1" : "top-full mt-1",
+            ),
+      )}
+    >
+      <div className="px-2 py-1 text-[10px] font-semibold tracking-wider text-muted-foreground uppercase">
+        Existing choices
+      </div>
+      {displayOptions.map((u) => {
+        const isSelected = value.trim().toUpperCase() === u.toUpperCase();
+        return (
+          <button
+            key={u}
+            type="button"
+            role="option"
+            aria-selected={isSelected}
+            onClick={() => {
+              onChange(u);
+              setIsOpen(false);
+            }}
+            className={cn(
+              "flex w-full items-center justify-between px-2.5 py-1.5 text-left text-xs transition-colors hover:bg-accent hover:text-accent-foreground",
+              isSelected && "bg-accent/60 font-semibold text-primary",
+            )}
+          >
+            <span>{u}</span>
+            {isSelected && <Check className="size-3.5 text-primary" />}
+          </button>
+        );
+      })}
+    </div>
+  );
 
   return (
     <div ref={containerRef} className="relative w-full">
@@ -269,9 +394,9 @@ function UnitSelect({
           value={value}
           onChange={(e) => {
             onChange(e.target.value);
-            setIsOpen(true);
+            openList();
           }}
-          onFocus={() => setIsOpen(true)}
+          onFocus={openList}
           onKeyDown={(e) => {
             if (e.key === "Escape" && isOpen) {
               e.stopPropagation();
@@ -281,17 +406,24 @@ function UnitSelect({
           placeholder="e.g. CONTAINER"
           className="h-10 w-full pr-8 text-sm uppercase"
           autoComplete="off"
+          role="combobox"
+          aria-expanded={isOpen}
+          aria-controls={`${id}-list`}
         />
         <button
           type="button"
           onClick={() => {
-            setIsOpen((prev) => !prev);
+            if (isOpen) {
+              setIsOpen(false);
+              return;
+            }
+            openList();
             inputRef.current?.focus();
           }}
           tabIndex={-1}
           className="absolute right-1 flex size-7 items-center justify-center text-muted-foreground transition-colors hover:text-foreground focus:outline-none"
-          title="Toggle unit list"
-          aria-label="Toggle unit list"
+          title="Toggle list"
+          aria-label="Toggle list"
         >
           <ChevronDown
             className={cn(
@@ -302,37 +434,10 @@ function UnitSelect({
         </button>
       </div>
 
-      {isOpen && (
-        <div className="absolute z-50 mt-1 max-h-56 w-full overflow-y-auto border border-border bg-popover p-1 text-popover-foreground shadow-lg">
-          <div className="px-2 py-1 text-[10px] font-semibold tracking-wider text-muted-foreground uppercase">
-            Existing choices
-          </div>
-          {displayOptions.map((u) => {
-            const isSelected = value.trim().toUpperCase() === u.toUpperCase();
-            return (
-              <button
-                key={u}
-                type="button"
-                onClick={() => {
-                  onChange(u);
-                  setIsOpen(false);
-                }}
-                className={cn(
-                  "flex w-full items-center justify-between px-2.5 py-1.5 text-left text-xs transition-colors hover:bg-accent hover:text-accent-foreground",
-                  isSelected && "bg-accent/60 font-semibold text-primary",
-                )}
-              >
-                <span>{u}</span>
-                {isSelected && <Check className="size-3.5 text-primary" />}
-              </button>
-            );
-          })}
-        </div>
-      )}
+      {list && placement?.host ? createPortal(list, placement.host) : list}
     </div>
   );
 }
-
 function InlineError({ children }: { children: ReactNode }) {
   return (
     <div
@@ -552,13 +657,17 @@ function ChargeRow({
         </p>
         {item.exportCharge && (
           <p className="mt-0.5 text-[11px] text-muted-foreground">
-            <span className="font-medium text-amber-600 dark:text-amber-400">Export:</span>{" "}
+            <span className="font-medium text-amber-600 dark:text-amber-400">
+              Export:
+            </span>{" "}
             {item.exportCharge}
           </p>
         )}
         {item.importCharge && (
           <p className="mt-0.5 text-[11px] text-muted-foreground">
-            <span className="font-medium text-sky-600 dark:text-sky-400">Import:</span>{" "}
+            <span className="font-medium text-sky-600 dark:text-sky-400">
+              Import:
+            </span>{" "}
             {item.importCharge}
           </p>
         )}
@@ -665,7 +774,16 @@ function ChargeEditRow({
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            onSave({ freight, unit, quantity, net, gross, exportCharge, importCharge, fare });
+            onSave({
+              freight,
+              unit,
+              quantity,
+              net,
+              gross,
+              exportCharge,
+              importCharge,
+              fare,
+            });
           }}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
@@ -835,7 +953,16 @@ function AddChargeForm({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const ok = await onSubmit({ freight, unit, quantity, net, gross, exportCharge, importCharge, fare });
+    const ok = await onSubmit({
+      freight,
+      unit,
+      quantity,
+      net,
+      gross,
+      exportCharge,
+      importCharge,
+      fare,
+    });
     if (ok) {
       setFreight("");
       setNet("");
@@ -946,7 +1073,11 @@ function AddChargeForm({
             suffix={baseCurrency}
           />
         </Field>
-        <Field label="Export charge" htmlFor="new-export" className="col-span-2">
+        <Field
+          label="Export charge"
+          htmlFor="new-export"
+          className="col-span-2"
+        >
           <UnitSelect
             id="new-export"
             value={exportCharge}
@@ -954,7 +1085,11 @@ function AddChargeForm({
             options={EXPORT_CHARGES}
           />
         </Field>
-        <Field label="Import charge" htmlFor="new-import" className="col-span-2">
+        <Field
+          label="Import charge"
+          htmlFor="new-import"
+          className="col-span-2"
+        >
           <UnitSelect
             id="new-import"
             value={importCharge}
@@ -1171,7 +1306,7 @@ export function ManageFreightItemsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         onClose={() => onOpenChange(false)}
-        className="max-h-[90vh] w-screen max-w-7xl overflow-y-auto sm:max-w-7xl"
+        className="w-screen max-w-7xl overflow-visible sm:max-w-7xl"
       >
         <DialogHeader>
           <div className="flex items-center gap-3">
@@ -1208,7 +1343,7 @@ export function ManageFreightItemsDialog({
 
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
             {/* ───────────── Charges list ───────────── */}
-            <section className="overflow-hidden border border-border">
+            <section className="h-full border border-border">
               <div className="flex items-center justify-between border-b border-border bg-muted/40 px-4 py-3">
                 <h3 className="text-sm font-semibold text-foreground">
                   Charges ({items.length})
@@ -1229,8 +1364,8 @@ export function ManageFreightItemsDialog({
                   </p>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-sm">
+                <div className="overflow-x-auto w-full">
+                  <table className="w-full table-fixed text-left text-sm">
                     <thead className="border-b border-border text-xs text-muted-foreground">
                       <tr>
                         <th scope="col" className="px-4 py-2.5 font-medium">
