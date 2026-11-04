@@ -19,6 +19,9 @@ export interface FreightItemSummary {
   originalNet: number;
   originalGross: number;
   originalCurrency: string;
+  exportCharge?: string | null;
+  importCharge?: string | null;
+  fare?: number | null;
 }
 
 export interface CurrencyFinancialBucket {

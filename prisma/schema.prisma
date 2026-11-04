@@ -163,15 +163,15 @@ model FreightItem {
   id             String @id @default(cuid())
   shipmentRateId String
 
-  freight  String
-  unit     String?
-  net      Decimal
-  quantity Decimal @db.Decimal(12, 3)
-  gross    Decimal
-  currency String
-  // exportCharge String
-  // importCharge String
-  // fare Decimal
+  freight      String
+  unit         String?
+  net          Decimal
+  quantity     Decimal @db.Decimal(12, 3)
+  gross        Decimal
+  currency     String
+  exportCharge String?
+  importCharge String?
+  fare         Decimal?
 
   shipmentRate ShipmentRate @relation(fields: [shipmentRateId], references: [id], onDelete: Cascade)
 

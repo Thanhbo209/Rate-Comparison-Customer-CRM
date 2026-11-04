@@ -190,6 +190,9 @@ export async function getShipmentRateComparison(
         originalNet: net,
         originalGross: gross,
         originalCurrency: itemCurrency,
+        exportCharge: fi.exportCharge ?? null,
+        importCharge: fi.importCharge ?? null,
+        fare: fi.fare != null ? Number(fi.fare) : null,
       };
     });
 

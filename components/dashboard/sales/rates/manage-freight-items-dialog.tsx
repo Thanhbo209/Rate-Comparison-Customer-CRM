@@ -80,6 +80,31 @@ const COMMON_UNITS = [
   "TRUCK",
 ];
 
+const EXPORT_CHARGES = [
+  "Origin THC",
+  "DOC Fee",
+  "Seal Fee",
+  "VGM Fee",
+  "Origin Handling",
+  "Export Customs",
+  "Origin Trucking",
+  "BAF",
+  "CAF",
+  "PSS",
+  "Other",
+];
+
+const IMPORT_CHARGES = [
+  "Destination THC",
+  "D/O Fee",
+  "Destination Handling",
+  "Import Customs",
+  "Destination Delivery",
+  "Detention",
+  "Demurrage",
+  "Other",
+];
+
 const moneyFmt = new Intl.NumberFormat("en-US", {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
@@ -106,6 +131,9 @@ interface ChargeDraft {
   quantity: string;
   net: string;
   gross: string;
+  exportCharge: string;
+  importCharge: string;
+  fare: string;
 }
 
 const toPayload = (d: ChargeDraft) => ({
@@ -114,6 +142,9 @@ const toPayload = (d: ChargeDraft) => ({
   quantity: parseFloat(d.quantity) || 1,
   net: parseFloat(d.net) || 0,
   gross: parseFloat(d.gross) || 0,
+  exportCharge: d.exportCharge.trim() || undefined,
+  importCharge: d.importCharge.trim() || undefined,
+  fare: d.fare !== "" ? parseFloat(d.fare) || undefined : undefined,
 });
 
 /* -------------------------------------------------------------------------- */
@@ -519,6 +550,24 @@ function ChargeRow({
         <p className="mt-0.5 text-xs text-muted-foreground">
           {qtyFmt.format(item.quantity)} &times; {item.unit || "UNIT"}
         </p>
+        {item.exportCharge && (
+          <p className="mt-0.5 text-[11px] text-muted-foreground">
+            <span className="font-medium text-amber-600 dark:text-amber-400">Export:</span>{" "}
+            {item.exportCharge}
+          </p>
+        )}
+        {item.importCharge && (
+          <p className="mt-0.5 text-[11px] text-muted-foreground">
+            <span className="font-medium text-sky-600 dark:text-sky-400">Import:</span>{" "}
+            {item.importCharge}
+          </p>
+        )}
+        {item.fare != null && (
+          <p className="mt-0.5 text-[11px] text-muted-foreground">
+            <span className="font-medium text-foreground">Fare:</span>{" "}
+            {money(item.fare)}
+          </p>
+        )}
         {hasOriginal && (
           <p className="mt-0.5 text-[11px] text-muted-foreground">
             Original: {money(item.originalNet)} buy /{" "}
@@ -601,6 +650,9 @@ function ChargeEditRow({
   const [quantity, setQuantity] = useState(String(item.quantity));
   const [net, setNet] = useState(String(item.net));
   const [gross, setGross] = useState(String(item.gross));
+  const [exportCharge, setExportCharge] = useState(item.exportCharge || "");
+  const [importCharge, setImportCharge] = useState(item.importCharge || "");
+  const [fare, setFare] = useState(item.fare != null ? String(item.fare) : "");
 
   const currentUnit = item.unit || "CONTAINER";
   const unitOptions = COMMON_UNITS.includes(currentUnit)
@@ -613,7 +665,7 @@ function ChargeEditRow({
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            onSave({ freight, unit, quantity, net, gross });
+            onSave({ freight, unit, quantity, net, gross, exportCharge, importCharge, fare });
           }}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
@@ -682,6 +734,43 @@ function ChargeEditRow({
                 suffix={baseCurrency}
               />
             </Field>
+            <Field
+              label="Export charge"
+              htmlFor={`edit-export-${item.id}`}
+              className="sm:col-span-2"
+            >
+              <UnitSelect
+                id={`edit-export-${item.id}`}
+                value={exportCharge}
+                onChange={setExportCharge}
+                options={EXPORT_CHARGES}
+              />
+            </Field>
+            <Field
+              label="Import charge"
+              htmlFor={`edit-import-${item.id}`}
+              className="sm:col-span-2"
+            >
+              <UnitSelect
+                id={`edit-import-${item.id}`}
+                value={importCharge}
+                onChange={setImportCharge}
+                options={IMPORT_CHARGES}
+              />
+            </Field>
+            <Field
+              label="Fare"
+              htmlFor={`edit-fare-${item.id}`}
+              className="sm:col-span-2"
+            >
+              <NumberField
+                id={`edit-fare-${item.id}`}
+                value={fare}
+                onChange={setFare}
+                placeholder="0.00"
+                suffix={baseCurrency}
+              />
+            </Field>
           </div>
 
           {error && <InlineError>{error}</InlineError>}
@@ -737,18 +826,24 @@ function AddChargeForm({
   const [quantity, setQuantity] = useState("1");
   const [net, setNet] = useState("");
   const [gross, setGross] = useState("");
+  const [exportCharge, setExportCharge] = useState("");
+  const [importCharge, setImportCharge] = useState("");
+  const [fare, setFare] = useState("");
 
   const nameRef = useRef<HTMLInputElement>(null);
   const netRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const ok = await onSubmit({ freight, unit, quantity, net, gross });
+    const ok = await onSubmit({ freight, unit, quantity, net, gross, exportCharge, importCharge, fare });
     if (ok) {
       setFreight("");
       setNet("");
       setGross("");
       setQuantity("1");
+      setExportCharge("");
+      setImportCharge("");
+      setFare("");
       nameRef.current?.focus(); // ready for the next charge
     }
   };
@@ -847,6 +942,31 @@ function AddChargeForm({
             id="new-gross"
             value={gross}
             onChange={setGross}
+            placeholder="0.00"
+            suffix={baseCurrency}
+          />
+        </Field>
+        <Field label="Export charge" htmlFor="new-export" className="col-span-2">
+          <UnitSelect
+            id="new-export"
+            value={exportCharge}
+            onChange={setExportCharge}
+            options={EXPORT_CHARGES}
+          />
+        </Field>
+        <Field label="Import charge" htmlFor="new-import" className="col-span-2">
+          <UnitSelect
+            id="new-import"
+            value={importCharge}
+            onChange={setImportCharge}
+            options={IMPORT_CHARGES}
+          />
+        </Field>
+        <Field label="Fare" htmlFor="new-fare" className="col-span-2">
+          <NumberField
+            id="new-fare"
+            value={fare}
+            onChange={setFare}
             placeholder="0.00"
             suffix={baseCurrency}
           />
@@ -969,6 +1089,9 @@ export function ManageFreightItemsDialog({
           originalNet: created.net,
           originalGross: created.gross,
           originalCurrency: rate.baseCurrency,
+          exportCharge: created.exportCharge ?? null,
+          importCharge: created.importCharge ?? null,
+          fare: created.fare ?? null,
         },
       ]);
 
@@ -1024,6 +1147,9 @@ export function ManageFreightItemsDialog({
                 gross: updated.gross,
                 profit: updated.profit,
                 currency: updated.currency,
+                exportCharge: updated.exportCharge ?? null,
+                importCharge: updated.importCharge ?? null,
+                fare: updated.fare ?? null,
               }
             : i,
         ),
