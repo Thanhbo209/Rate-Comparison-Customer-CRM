@@ -207,13 +207,7 @@ export function DashboardSidebar({
       return;
     }
 
-    if (
-      e.metaKey ||
-      e.ctrlKey ||
-      e.shiftKey ||
-      e.altKey ||
-      e.button !== 0
-    ) {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) {
       return;
     }
 
@@ -359,18 +353,6 @@ export function DashboardSidebar({
                 );
               })}
             </nav>
-          </div>
-
-          {/* Quick info promo box */}
-          <div className="mt-3 shrink-0 border border-primary/20 bg-primary/5 p-2.5 text-xs">
-            <div className="flex items-center gap-1.5 font-medium text-primary">
-              <span>FWD Rate Engine</span>
-            </div>
-            <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
-              {isAdmin
-                ? "Manage customer margins, rate parity, and agent access controls."
-                : "Compare air & ocean freight quotes in real-time with automated parity."}
-            </p>
           </div>
         </div>
 

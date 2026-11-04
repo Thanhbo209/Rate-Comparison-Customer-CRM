@@ -1,16 +1,13 @@
 "use client";
 
-import React, { useState, useTransition, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   Truck,
   Plus,
-  Trash2,
-  Award,
   ArrowDownLeft,
   ArrowUpRight,
   Tag,
-  Layers,
   ArrowLeftRight,
   ChevronDown,
   ChevronRight,
@@ -22,7 +19,7 @@ import {
   SlidersHorizontal,
   X,
   RotateCcw,
-  Pencil,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -43,9 +40,7 @@ import type {
   MultiShipmentRateOverview,
 } from "@/lib/rate/types";
 import { rankShipments } from "@/lib/rate/shipment-ranking";
-import {
-  RatesTotalRow,
-} from "@/components/rate/shipment-profit";
+import { FreightRatesTable } from "./freight-rate-table";
 
 interface RateComparisonViewProps {
   shipment: ShipmentComparisonDetail | null;
@@ -94,7 +89,6 @@ export function RateComparisonView({
     useState<ShipmentRateItem | null>(null);
   const [activeManageShipmentName, setActiveManageShipmentName] =
     useState<string>("");
-  const [isPending, startTransition] = useTransition();
 
   const toggleShipmentExpand = (id: string) => {
     setExpandedShipments((prev) => ({
@@ -137,6 +131,7 @@ export function RateComparisonView({
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
   // List of shipments to render
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const shipmentsToDisplay =
     overview?.shipments || (shipment ? [shipment] : []);
   const baseCurrency =
@@ -370,7 +365,7 @@ export function RateComparisonView({
         <div className="border border-border bg-card p-3 sm:p-4 shadow-2xs space-y-3">
           <div className="flex flex-wrap items-center gap-2.5">
             {/* Search Input */}
-            <div className="relative flex-1 min-w-[200px] sm:min-w-[240px]">
+            <div className="relative flex-1 min-w-50 sm:min-w-60">
               <Search className="size-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
               <input
                 type="text"
@@ -397,7 +392,7 @@ export function RateComparisonView({
             </div>
 
             {/* Customer Selection Filter (Advanced filter requirement) */}
-            <div className="min-w-[190px] sm:min-w-[220px]">
+            <div className="min-w-47.5 sm:min-w-55">
               <Select
                 value={selectedCustomerId}
                 onValueChange={(val) => {
@@ -406,10 +401,10 @@ export function RateComparisonView({
               >
                 <SelectTrigger
                   className={`h-9 w-full text-xs transition-colors ${
- selectedCustomerId !== "ALL"
- ? "border-primary bg-primary/5 text-primary font-semibold"
- : "border-border bg-background"
- }`}
+                    selectedCustomerId !== "ALL"
+                      ? "border-primary bg-primary/5 text-primary font-semibold"
+                      : "border-border bg-background"
+                  }`}
                 >
                   <div className="flex items-center gap-2 truncate">
                     <Building2 className="size-3.5 text-muted-foreground shrink-0" />
@@ -442,66 +437,69 @@ export function RateComparisonView({
 
             {/* Direction Filter Pills */}
             <div className="inline-flex items-center gap-1 p-0.5 border border-border bg-muted/40">
-              <button
+              <Button
                 type="button"
+                variant={"ghost"}
                 onClick={() => {
                   setSelectedDirection("ALL");
                   setCurrentPage(1);
                 }}
                 className={`px-2.5 py-1 text-xs font-medium transition-colors ${
- selectedDirection === "ALL"
- ? "bg-background text-foreground shadow-2xs font-semibold"
- : "text-muted-foreground hover:text-foreground"
- }`}
+                  selectedDirection === "ALL"
+                    ? "bg-sky-600 text-white shadow-2xs font-semibold"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
                 All
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
+                variant={"ghost"}
                 onClick={() => {
                   setSelectedDirection("IMPORT");
                   setCurrentPage(1);
                 }}
                 className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium transition-colors ${
- selectedDirection === "IMPORT"
- ? "bg-blue-600 text-white font-semibold shadow-2xs"
- : "text-muted-foreground hover:text-foreground"
- }`}
+                  selectedDirection === "IMPORT"
+                    ? "bg-primary/80 text-white font-semibold shadow-2xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
                 <ArrowDownLeft className="size-3" />
                 <span>Imports</span>
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
+                variant={"ghost"}
                 onClick={() => {
                   setSelectedDirection("EXPORT");
                   setCurrentPage(1);
                 }}
                 className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium transition-colors ${
- selectedDirection === "EXPORT"
- ? "bg-emerald-600 text-white font-semibold shadow-2xs"
- : "text-muted-foreground hover:text-foreground"
- }`}
+                  selectedDirection === "EXPORT"
+                    ? "bg-destructive/80 text-white font-semibold shadow-2xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
                 <ArrowUpRight className="size-3" />
                 <span>Exports</span>
-              </button>
+              </Button>
             </div>
 
             {/* Advanced Filters Expand/Collapse Toggle */}
             <Button
               type="button"
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
               className={`h-9 gap-1.5 text-xs ${
- showAdvancedFilters ||
- selectedRateStatus !== "ALL" ||
- selectedProfitability !== "ALL" ||
- sortBy !== "DEFAULT"
- ? "border-primary text-primary bg-primary/5"
- : ""
- }`}
+                showAdvancedFilters ||
+                selectedRateStatus !== "ALL" ||
+                selectedProfitability !== "ALL" ||
+                sortBy !== "DEFAULT"
+                  ? "border-primary text-primary bg-primary/10"
+                  : ""
+              }`}
             >
               <SlidersHorizontal className="size-3.5" />
               <span>More Filters</span>
@@ -546,7 +544,7 @@ export function RateComparisonView({
                   <SelectContent className="">
                     <SelectItem value="ALL">All Freight Statuses</SelectItem>
                     <SelectItem value="WITH_RATES">
-                      Has Freight (≥ 1 rate)
+                      Has Freight (More than 1 rate)
                     </SelectItem>
                     <SelectItem value="NO_RATES">
                       Empty Freight (0 rates)
@@ -623,11 +621,9 @@ export function RateComparisonView({
                     <SelectItem value="DEFAULT">
                       Default (Creation Order)
                     </SelectItem>
-                    <SelectItem value="MOST_RATES">
-                      Most Carrier Options
-                    </SelectItem>
+                    <SelectItem value="MOST_RATES">Most Carriers</SelectItem>
                     <SelectItem value="HIGHEST_PROFIT">
-                      Highest Quoted Profit
+                      Highest Profit
                     </SelectItem>
                     <SelectItem value="NAME">Shipment Name (A–Z)</SelectItem>
                   </SelectContent>
@@ -646,7 +642,7 @@ export function RateComparisonView({
 
                 {selectedCustomerId !== "ALL" && (
                   <span className="inline-flex items-center gap-1 bg-primary/10 border border-primary/20 px-2 py-0.5 text-[11px] font-semibold text-primary">
-                    <Building2 className="size-3" />
+                    <User className="size-3" />
                     <span>
                       Customer: {selectedCustomerObj?.companyName || "Selected"}
                     </span>
@@ -803,10 +799,10 @@ export function RateComparisonView({
             )}
           </div>
         ) : (
-          <div className="border border-border bg-card shadow-xs overflow-hidden">
+          <div className="border border-border bg-white shadow-xs overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
-                <thead className="bg-muted/50 border-b border-border text-[11px] text-muted-foreground uppercase font-semibold">
+                <thead className="text-[11px] text-black uppercase font-semibold">
                   <tr>
                     <th className="py-3 px-3 w-10 text-center"></th>
                     <th className="py-3 px-4">Shipment</th>
@@ -826,9 +822,9 @@ export function RateComparisonView({
                         {/* SHIPMENT ROW (CLICKABLE TO OPEN DROPDOWN) */}
                         <tr
                           onClick={() => toggleShipmentExpand(s.id)}
-                          className={`cursor-pointer transition-colors ${
+                          className={`cursor-pointer border-t transition-colors ${
                             isExpanded
-                              ? "bg-muted-foreground/10 border-2 border-muted-foreground/40  font-medium"
+                              ? "bg-muted-foreground/10 font-medium"
                               : "hover:bg-muted/20"
                           }`}
                         >
@@ -919,7 +915,7 @@ export function RateComparisonView({
                                   });
                                   setAddRateOpen(true);
                                 }}
-                                className="h-7.5 px-2.5 text-xs font-medium gap-1"
+                                className="h-7.5 px-2.5 text-background text-xs font-medium gap-1 bg-primary"
                               >
                                 <Plus className="size-3" />
                                 <span>Add Rate</span>
@@ -984,213 +980,18 @@ export function RateComparisonView({
                                   </Button>
                                 </div>
                               ) : (
-                                <div className="space-y-4">
-                                  <div className="overflow-x-auto border border-border bg-card">
-                                    <table className="w-full text-left text-xs">
-                                      <thead className="bg-muted/50 border-b border-border text-[13px] text-muted-foreground uppercase font-semibold">
-                                        <tr>
-                                          <th className="px-4 py-3">Freight</th>
-                                          <th className="px-4 py-3">
-                                            Charges Breakdown
-                                          </th>
-                                          <th className="px-4 py-3">Net</th>
-                                          <th className="px-4 py-3">Gross</th>
-                                          <th className="px-4 py-3">Profit</th>
-                                          <th className="px-4 py-3">
-                                            Margin %
-                                          </th>
-                                          <th className="px-4 py-3 text-right">
-                                            Actions
-                                          </th>
-                                        </tr>
-                                      </thead>
-                                      <tbody className="divide-y divide-border">
-                                        {s.rates.map((rate) => {
-                                          const isWinner =
-                                            rate.id === s.bestCustomerRateId;
-                                          const isBestCost =
-                                            rate.id === s.bestRateId;
-                                          const isBestMargin =
-                                            rate.id === s.highestMarginRateId;
-
-                                          return (
-                                            <tr
-                                              key={rate.id}
-                                              className={`hover:bg-muted/20 transition-colors ${
-                                                isWinner ? " font-medium" : ""
-                                              }`}
-                                            >
-                                              <td className="px-4 py-3">
-                                                <div className="flex items-center gap-2 flex-wrap">
-                                                  <span className="font-bold text-[17px] text-foreground font-heading">
-                                                    {rate.provider.name}
-                                                  </span>
-                                                  <button
-                                                    type="button"
-                                                    onClick={(e) => {
-                                                      e.stopPropagation();
-                                                      setEditingRate({
-                                                        rate,
-                                                        shipmentName: s.name,
-                                                      });
-                                                    }}
-                                                    className="p-1 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors inline-flex items-center"
-                                                    title="Change Provider / Freight"
-                                                  >
-                                                    <Pencil className="size-3.5" />
-                                                  </button>
-                                                  {isWinner && (
-                                                    <span className="inline-flex items-center gap-1 bg-emerald-600 px-2.5 py-0.5 text-[10px] font-bold text-white shadow-2xs">
-                                                      <Award className="size-2.5" />
-                                                      Most Profit
-                                                      {s.tieBreakUsed && (
-                                                        <span className="text-[9px] opacity-90 ml-0.5 font-normal">
-                                                          (tie-break)
-                                                        </span>
-                                                      )}
-                                                    </span>
-                                                  )}
-                                                  {isBestCost && !isWinner && (
-                                                    <span className="bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                                                      Lowest Cost
-                                                    </span>
-                                                  )}
-                                                  {isBestMargin && (
-                                                    <span className="bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
-                                                      Top Margin
-                                                    </span>
-                                                  )}
-                                                  {rate.hasMissingExchangeRate && (
-                                                    <span
-                                                      className="inline-flex items-center gap-1 bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:text-amber-400"
-                                                      title={`Missing exchange rates: ${rate.missingCurrencies?.join(", ") || "foreign currency"}. Excluded from ranking.`}
-                                                    >
-                                                      <AlertTriangle className="size-2.5" />
-                                                      Missing FX
-                                                    </span>
-                                                  )}
-                                                </div>
-                                                {rate.optionName && (
-                                                  <span className="text-[11px] text-primary block mt-0.5 font-medium">
-                                                    {rate.optionName}
-                                                  </span>
-                                                )}
-                                              </td>
-
-                                              {/* Freight Charges Pills */}
-                                              <td className="px-4 py-3">
-                                                {rate.freightItems.length ===
-                                                0 ? (
-                                                  <span className="text-muted-foreground italic text-[11px]">
-                                                    No charges added
-                                                  </span>
-                                                ) : (
-                                                  <div className="flex flex-wrap gap-1 max-w-xs">
-                                                    {rate.freightItems.map(
-                                                      (fi) => (
-                                                        <span
-                                                          key={fi.id}
-                                                          className="inline-flex items-center bg-muted/40 px-2 py-0.5 text-[12px] text-foreground"
-                                                        >
-                                                          {fi.freight}
-                                                        </span>
-                                                      ),
-                                                    )}
-                                                  </div>
-                                                )}
-                                              </td>
-
-                                              <td className="px-4 py-3 text-[13px] font-semibold text-destructive">
-                                                {rate.consolidatedNet.toLocaleString(
-                                                  undefined,
-                                                  { maximumFractionDigits: 2 },
-                                                )}{" "}
-                                                {baseCurrency}
-                                              </td>
-
-                                              <td className="px-4 py-3 text-[13px] font-bold text-primary">
-                                                {rate.consolidatedGross.toLocaleString(
-                                                  undefined,
-                                                  { maximumFractionDigits: 2 },
-                                                )}{" "}
-                                                {baseCurrency}
-                                              </td>
-
-                                              <td
-                                                className={`px-4 py-3 text-[13px] font-bold ${
-                                                  rate.consolidatedProfit >= 0
-                                                    ? "text-emerald-600 dark:text-emerald-400"
-                                                    : "text-destructive"
-                                                }`}
-                                              >
-                                                {rate.consolidatedProfit >= 0
-                                                  ? "+"
-                                                  : ""}
-                                                {rate.consolidatedProfit.toLocaleString(
-                                                  undefined,
-                                                  { maximumFractionDigits: 2 },
-                                                )}{" "}
-                                                {baseCurrency}
-                                              </td>
-
-                                              <td className="px-4 py-3  text-foreground font-semibold">
-                                                {rate.consolidatedMarginPercent.toFixed(
-                                                  1,
-                                                )}
-                                                %
-                                              </td>
-
-                                              <td className="px-4 py-3 text-right">
-                                                <div className="flex items-center justify-end gap-1.5">
-                                                  <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    onClick={() => {
-                                                      setActiveManageRate(rate);
-                                                      setActiveManageShipmentName(
-                                                        s.name,
-                                                      );
-                                                      onManageFreightItems?.(
-                                                        rate,
-                                                      );
-                                                    }}
-                                                    className="h-7 px-2.5 text-[11px] gap-1"
-                                                  >
-                                                    <Layers className="size-3" />
-                                                    <span>Manage Items</span>
-                                                  </Button>
-                                                  <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                      setDeletingRate({
-                                                        id: rate.id,
-                                                        providerName:
-                                                          rate.provider.name,
-                                                        optionName:
-                                                          rate.optionName,
-                                                      })
-                                                    }
-                                                    className="text-muted-foreground hover:text-destructive transition-colors p-1"
-                                                    title="Delete Quote Option"
-                                                  >
-                                                    <Trash2 className="size-3.5" />
-                                                  </button>
-                                                </div>
-                                              </td>
-                                            </tr>
-                                          );
-                                        })}
-                                      </tbody>
-                                      <tfoot>
-                                        <RatesTotalRow
-                                          result={rankings.get(s.id)}
-                                          baseCurrency={baseCurrency}
-                                          colCount={7}
-                                        />
-                                      </tfoot>
-                                    </table>
-                                  </div>
-                                </div>
+                                <FreightRatesTable
+                                  shipment={s}
+                                  rankings={rankings}
+                                  baseCurrency={baseCurrency}
+                                  onEditRate={setEditingRate}
+                                  onDeleteRate={setDeletingRate}
+                                  onManageItems={(rate, shipmentName) => {
+                                    setActiveManageRate(rate);
+                                    setActiveManageShipmentName(shipmentName);
+                                    onManageFreightItems?.(rate);
+                                  }}
+                                />
                               )}
                             </td>
                           </tr>
@@ -1233,10 +1034,10 @@ export function RateComparisonView({
                           type="button"
                           onClick={() => setCurrentPage(pageNum)}
                           className={`size-8 text-xs font-semibold transition-all ${
- validCurrentPage === pageNum
- ? "bg-primary text-primary-foreground shadow-2xs"
- : "text-muted-foreground hover:bg-muted hover:text-foreground"
- }`}
+                            validCurrentPage === pageNum
+                              ? "bg-primary text-primary-foreground shadow-2xs"
+                              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                          }`}
                         >
                           {pageNum}
                         </button>

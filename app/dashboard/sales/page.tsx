@@ -73,7 +73,7 @@ export default async function SalesDashboardPage() {
               className="inline-flex h-9 items-center gap-1.5 bg-primary px-4 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
             >
               <PlusCircle className="size-3.5" />
-              New Customer
+              Add New Customer
             </Button>
           </Link>
         }

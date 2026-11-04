@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu, Building2 } from "lucide-react";
+import { Menu } from "lucide-react";
 import { SignOutButton } from "../shared/sign-out-button";
 import type { AppRole } from "@/lib/auth/roles";
 import { cn } from "@/lib/utils";
@@ -19,7 +19,6 @@ export function DashboardHeader({
   role,
   title,
   subtitle,
-  organizationName,
   userName,
   onOpenSidebar,
   children,
@@ -27,7 +26,7 @@ export function DashboardHeader({
   const isAdmin = role === "ADMIN";
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b border-border bg-background/95 px-4 backdrop-blur-md sm:px-6">
+    <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b border-border bg-white px-4 sm:px-6">
       <div className="flex items-center gap-3">
         {/* Mobile menu trigger */}
         <button
@@ -67,15 +66,6 @@ export function DashboardHeader({
       {/* Right side items */}
       <div className="flex items-center gap-2.5">
         {children}
-
-        {organizationName && (
-          <div className="hidden items-center gap-1.5 border border-border px-2.5 py-1 text-xs text-muted-foreground md:flex">
-            <Building2 className="size-3.5 text-muted-foreground" />
-            <span className="font-medium text-foreground">
-              {organizationName}
-            </span>
-          </div>
-        )}
 
         {userName && (
           <div className="hidden text-right text-xs lg:block">

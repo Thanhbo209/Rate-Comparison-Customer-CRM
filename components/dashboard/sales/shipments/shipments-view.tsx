@@ -37,9 +37,15 @@ export function ShipmentsView({
 
   // Dialog states
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
-  const [editingShipment, setEditingShipment] = useState<ShipmentItem | null>(null);
-  const [viewingShipment, setViewingShipment] = useState<ShipmentItem | null>(null);
-  const [deletingShipment, setDeletingShipment] = useState<ShipmentItem | null>(null);
+  const [editingShipment, setEditingShipment] = useState<ShipmentItem | null>(
+    null,
+  );
+  const [viewingShipment, setViewingShipment] = useState<ShipmentItem | null>(
+    null,
+  );
+  const [deletingShipment, setDeletingShipment] = useState<ShipmentItem | null>(
+    null,
+  );
 
   const handleSuccess = () => {
     router.refresh();

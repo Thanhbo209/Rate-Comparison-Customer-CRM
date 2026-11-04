@@ -126,12 +126,12 @@ export function RecentShipmentsRates({
                     {/* Direction Badge */}
                     <td className="px-5 py-3.5">
                       {s.direction === "IMPORT" ? (
-                        <span className="inline-flex items-center gap-1 bg-sky-500/10 px-2.5 py-1 text-[11px] font-semibold text-sky-600 dark:text-sky-400">
+                        <span className="inline-flex items-center gap-1 bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary dark:text-primary">
                           <ArrowDownLeft className="size-3" />
                           Import
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 bg-purple-500/10 px-2.5 py-1 text-[11px] font-semibold text-purple-600 dark:text-purple-400">
+                        <span className="inline-flex items-center gap-1 bg-destructive/10 px-2.5 py-1 text-[11px] font-semibold text-destructive dark:text-destructive">
                           <ArrowUpRight className="size-3" />
                           Export
                         </span>

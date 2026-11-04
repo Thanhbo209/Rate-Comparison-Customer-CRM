@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import Link from "next/link";
+
 import {
   Search,
-  Filter,
   Eye,
   Pencil,
   Trash2,
@@ -26,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { ShipmentItem, ShipmentDirection } from "@/lib/shipment/types";
+import type { ShipmentItem } from "@/lib/shipment/types";
 
 interface CustomerOption {
   id: string;
@@ -83,7 +82,12 @@ export function ShipmentTable({
           .includes(q);
         const matchesCommodity = s.commodity?.toLowerCase().includes(q);
         const matchesRoute = s.route?.toLowerCase().includes(q);
-        if (!matchesName && !matchesCustomer && !matchesCommodity && !matchesRoute)
+        if (
+          !matchesName &&
+          !matchesCustomer &&
+          !matchesCommodity &&
+          !matchesRoute
+        )
           return false;
       }
 
@@ -128,10 +132,10 @@ export function ShipmentTable({
                 setCurrentPage(1);
               }}
               className={`px-2.5 py-1.5 text-xs font-medium transition-colors ${
- selectedDirection === "ALL"
- ? "bg-primary text-primary-foreground font-semibold"
- : "bg-muted text-muted-foreground hover:text-foreground"
- }`}
+                selectedDirection === "ALL"
+                  ? "bg-primary text-primary-foreground font-semibold"
+                  : "bg-muted text-muted-foreground hover:text-foreground"
+              }`}
             >
               All
             </button>
@@ -142,10 +146,10 @@ export function ShipmentTable({
                 setCurrentPage(1);
               }}
               className={`inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium transition-colors ${
- selectedDirection === "IMPORT"
- ? "bg-blue-600 text-white font-semibold"
- : "bg-muted text-muted-foreground hover:text-foreground"
- }`}
+                selectedDirection === "IMPORT"
+                  ? "bg-blue-600 text-white font-semibold"
+                  : "bg-muted text-muted-foreground hover:text-foreground"
+              }`}
             >
               <ArrowDownLeft className="size-3" />
               <span>Imports</span>
@@ -157,10 +161,10 @@ export function ShipmentTable({
                 setCurrentPage(1);
               }}
               className={`inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium transition-colors ${
- selectedDirection === "EXPORT"
- ? "bg-emerald-600 text-white font-semibold"
- : "bg-muted text-muted-foreground hover:text-foreground"
- }`}
+                selectedDirection === "EXPORT"
+                  ? "bg-emerald-600 text-white font-semibold"
+                  : "bg-muted text-muted-foreground hover:text-foreground"
+              }`}
             >
               <ArrowUpRight className="size-3" />
               <span>Exports</span>
@@ -171,7 +175,7 @@ export function ShipmentTable({
         {/* Customer Select Filter */}
         <div className="flex items-center gap-2">
           {customers.length > 0 && (
-            <div className="min-w-[180px]">
+            <div className="min-w-45">
               <Select
                 value={selectedCustomer}
                 onValueChange={(val) => {
@@ -264,7 +268,7 @@ export function ShipmentTable({
                         <Package className="size-4" />
                       </div>
                       <div className="min-w-0">
-                        <p className="font-semibold text-foreground truncate max-w-[220px]">
+                        <p className="font-semibold text-foreground truncate max-w-55">
                           {shipment.name}
                         </p>
                         <p className="text-[10px] text-muted-foreground">
@@ -277,7 +281,7 @@ export function ShipmentTable({
                   {/* Customer Account */}
                   <td className="px-5 py-3.5">
                     <div className="min-w-0">
-                      <p className="font-medium text-foreground truncate max-w-[180px]">
+                      <p className="font-medium text-foreground truncate max-w-45">
                         {shipment.customer.companyName}
                       </p>
                       {role === "ADMIN" && shipment.customer.organization && (
@@ -309,7 +313,10 @@ export function ShipmentTable({
                     {shipment.route ? (
                       <span className="inline-flex items-center gap-1 bg-muted/60 px-2 py-0.5 text-[11px] font-medium text-foreground">
                         <MapPin className="size-3 shrink-0 text-muted-foreground" />
-                        <span className="truncate max-w-[160px]" title={shipment.route}>
+                        <span
+                          className="truncate max-w-40"
+                          title={shipment.route}
+                        >
                           {shipment.route}
                         </span>
                       </span>
@@ -323,7 +330,7 @@ export function ShipmentTable({
                     {shipment.commodity ? (
                       <span className="inline-flex items-center gap-1 bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
                         <Tag className="size-3 shrink-0" />
-                        <span className="truncate max-w-[120px]">
+                        <span className="truncate max-w-30">
                           {shipment.commodity}
                         </span>
                       </span>
@@ -339,7 +346,6 @@ export function ShipmentTable({
                       onClick={() => onViewRates?.(shipment)}
                       className="inline-flex items-center gap-1 bg-primary/10 px-2.5 py-0.5 text-[11px] font-medium text-primary hover:bg-primary/20 transition-colors"
                     >
-                      <Calculator className="size-3" />
                       <span>{shipment._count?.rates ?? 0} rates</span>
                     </button>
                   </td>

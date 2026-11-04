@@ -9,7 +9,6 @@
  *   RatesTotalStrip     – summary strip for the per-shipment CARD view
  */
 
-import React from "react";
 import { TrendingUp, TrendingDown, Trophy, Minus } from "lucide-react";
 import type { ShipmentRankResult } from "@/lib/rate/shipment-ranking";
 
@@ -116,19 +115,19 @@ export function RatesTotalRow({ result, baseCurrency }: RatesTotalRowProps) {
   if (!result || result.rateCount === 0) return null;
 
   return (
-    <tr className="border-2 border-primary bg-primary/20 text-[15px] font-semibold">
-      <td colSpan={2} className="px-4 py-3 text-foreground font-semibold">
+    <tr className="bg-sky-200/80 text-[12px] font-semibold ">
+      <td colSpan={2} className="px-4 py-3 text-foreground font-semibold ">
         Shipment Total ({result.rateCount}{" "}
         {result.rateCount === 1 ? "rate" : "rates"})
       </td>
-      <td className="px-4 py-3 font-semibold text-destructive">
+      <td className="px-4 py-3 font-semibold text-destructive text-center">
         {fmt(result.net)} {baseCurrency}
       </td>
-      <td className="px-4 py-3 font-bold text-primary">
+      <td className="px-4 py-3 font-bold text-primary text-center">
         {fmt(result.gross)} {baseCurrency}
       </td>
       <td
-        className={`px-4 py-3 font-bold ${
+        className={`px-4 py-3 font-bold text-center ${
           result.profit >= 0
             ? "text-emerald-600 dark:text-emerald-400"
             : "text-destructive"
@@ -137,7 +136,7 @@ export function RatesTotalRow({ result, baseCurrency }: RatesTotalRowProps) {
         {sign(result.profit)}
         {fmt(result.profit)} {baseCurrency}
       </td>
-      <td className="px-4 py-3  text-foreground font-semibold">
+      <td className="px-4 py-3  text-foreground font-semibold text-center">
         {result.marginPercent.toFixed(1)}%
       </td>
       <td className="px-4 py-3 text-right" />
