@@ -34,7 +34,7 @@ export function DashboardHeader({
           type="button"
           onClick={onOpenSidebar}
           aria-label="Open navigation menu"
-          className="flex size-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted lg:hidden"
+          className="flex size-9 items-center justify-center border border-border text-foreground hover:bg-muted lg:hidden"
         >
           <Menu className="size-4" />
         </button>
@@ -47,7 +47,7 @@ export function DashboardHeader({
             </h1>
             <span
               className={cn(
-                "hidden rounded-full px-2 py-0.5 text-[12px] font-semibold sm:inline-block",
+                "hidden px-2 py-0.5 text-[12px] font-semibold sm:inline-block",
                 isAdmin
                   ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
                   : "bg-primary/10 text-primary dark:text-sky-400",
@@ -69,7 +69,7 @@ export function DashboardHeader({
         {children}
 
         {organizationName && (
-          <div className="hidden items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs text-muted-foreground md:flex">
+          <div className="hidden items-center gap-1.5 border border-border px-2.5 py-1 text-xs text-muted-foreground md:flex">
             <Building2 className="size-3.5 text-muted-foreground" />
             <span className="font-medium text-foreground">
               {organizationName}

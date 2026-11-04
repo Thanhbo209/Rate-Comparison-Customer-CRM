@@ -53,7 +53,7 @@ export function CustomersView({
             <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
               Customer Directory
             </h1>
-            <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+            <span className="bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
               {stats.totalCustomers} Accounts
             </span>
           </div>
@@ -66,7 +66,7 @@ export function CustomersView({
         <button
           type="button"
           onClick={() => setCreateDialogOpen(true)}
-          className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-primary px-4 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
+          className="inline-flex h-9 items-center justify-center gap-1.5 bg-primary px-4 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
         >
           <Plus className="size-4" />
           <span>New Customer</span>

@@ -76,7 +76,7 @@ function SummaryTile({
   return (
     <div
       className={cn(
-        "rounded-xl border p-4",
+        "border p-4",
         tone === "default" && "border-border bg-muted/30",
         tone === "good" && "border-emerald-500/25 bg-emerald-500/10",
         tone === "bad" && "border-destructive/25 bg-destructive/10",
@@ -309,7 +309,7 @@ export function ManageFreightItemsDialog({
       >
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <div className="flex size-11 shrink-0 items-center justify-center bg-primary/10 text-primary">
               <Layers className="size-5" />
             </div>
             <div>
@@ -360,7 +360,7 @@ export function ManageFreightItemsDialog({
             {/* Where the selling price goes: cost vs profit */}
             {totals.gross > 0 && (
               <div>
-                <div className="flex h-3 overflow-hidden rounded-full bg-muted">
+                <div className="flex h-3 overflow-hidden bg-muted">
                   {totalProfit >= 0 ? (
                     <>
                       <div
@@ -375,13 +375,13 @@ export function ManageFreightItemsDialog({
                 </div>
                 <div className="mt-1.5 flex items-center justify-between text-xs text-muted-foreground">
                   <span className="flex items-center gap-1.5">
-                    <span className="inline-block size-2 rounded-full bg-muted-foreground/40" />
+                    <span className="inline-block size-2 bg-muted-foreground/40" />
                     Cost {costShare.toFixed(0)}%
                   </span>
                   <span className="flex items-center gap-1.5">
                     <span
                       className={cn(
-                        "inline-block size-2 rounded-full",
+                        "inline-block size-2",
                         totalProfit >= 0 ? "bg-emerald-500" : "bg-destructive",
                       )}
                     />
@@ -396,7 +396,7 @@ export function ManageFreightItemsDialog({
           {formError && (
             <div
               role="alert"
-              className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive"
+              className="border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive"
             >
               {formError}
             </div>
@@ -404,7 +404,7 @@ export function ManageFreightItemsDialog({
 
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
             {/* ───────────── Charges list ───────────── */}
-            <section className="overflow-hidden rounded-xl border border-border">
+            <section className="overflow-hidden border border-border">
               <div className="flex items-center justify-between border-b border-border bg-muted/40 px-4 py-3">
                 <h3 className="text-sm font-semibold text-foreground">
                   Charges ({items.length})
@@ -505,7 +505,7 @@ export function ManageFreightItemsDialog({
                                       >
                                         <SelectTrigger
                                           id={`edit-unit-${item.id}`}
-                                          className="h-10 w-full rounded-lg border-border bg-background text-sm"
+                                          className="h-10 w-full border-border bg-background text-sm"
                                         >
                                           <SelectValue placeholder="Select unit...">
                                             {(val: string | null) =>
@@ -513,7 +513,7 @@ export function ManageFreightItemsDialog({
                                             }
                                           </SelectValue>
                                         </SelectTrigger>
-                                        <SelectContent className="rounded-xl max-h-60">
+                                        <SelectContent className="max-h-60">
                                           {editUnitOptions.map((u) => (
                                             <SelectItem key={u} value={u}>
                                               {u}
@@ -651,10 +651,10 @@ export function ManageFreightItemsDialog({
                                 {profit >= 0 ? "+" : ""}
                                 {fmt(profit)}
                               </p>
-                              <div className="ml-auto mt-1.5 h-1.5 w-20 overflow-hidden rounded-full bg-muted">
+                              <div className="ml-auto mt-1.5 h-1.5 w-20 overflow-hidden bg-muted">
                                 <div
                                   className={cn(
-                                    "h-full rounded-full",
+                                    "h-full",
                                     profit >= 0
                                       ? "bg-emerald-500"
                                       : "bg-destructive",
@@ -674,7 +674,7 @@ export function ManageFreightItemsDialog({
                                   type="button"
                                   onClick={() => handleStartEdit(item)}
                                   aria-label={`Edit ${item.freight}`}
-                                  className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                                  className="p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                                 >
                                   <Pencil className="size-4" />
                                 </button>
@@ -682,7 +682,7 @@ export function ManageFreightItemsDialog({
                                   type="button"
                                   onClick={() => setDeletingItem(item)}
                                   aria-label={`Delete ${item.freight}`}
-                                  className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                                  className="p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
                                 >
                                   <Trash2 className="size-4" />
                                 </button>
@@ -700,7 +700,7 @@ export function ManageFreightItemsDialog({
             {/* ───────────── Add a charge ───────────── */}
             <form
               onSubmit={handleAddItem}
-              className="space-y-4 self-start rounded-xl border border-border bg-card p-4 lg:sticky lg:top-0"
+              className="space-y-4 self-start border border-border bg-card p-4 lg:sticky lg:top-0"
             >
               <h3 className="text-sm font-semibold text-foreground">
                 Add a charge
@@ -718,7 +718,7 @@ export function ManageFreightItemsDialog({
                         netRef.current?.focus();
                       }}
                       className={cn(
-                        "rounded-full border px-3 py-1 text-xs transition-colors",
+                        "border px-3 py-1 text-xs transition-colors",
                         freightName === preset
                           ? "border-primary bg-primary/10 font-medium text-primary"
                           : "border-border text-muted-foreground hover:border-primary hover:text-foreground",
@@ -752,13 +752,13 @@ export function ManageFreightItemsDialog({
                   >
                     <SelectTrigger
                       id="new-unit"
-                      className="h-10 w-full rounded-lg border-border bg-background text-sm"
+                      className="h-10 w-full border-border bg-background text-sm"
                     >
                       <SelectValue placeholder="Select unit...">
                         {(val: string | null) => val || "Select unit..."}
                       </SelectValue>
                     </SelectTrigger>
-                    <SelectContent className="rounded-xl max-h-60">
+                    <SelectContent className="max-h-60">
                       {COMMON_UNITS.map((u) => (
                         <SelectItem key={u} value={u}>
                           {u}
@@ -811,7 +811,7 @@ export function ManageFreightItemsDialog({
               </div>
 
               {/* Live preview */}
-              <div className="rounded-lg bg-muted/40 p-3 text-sm">
+              <div className="bg-muted/40 p-3 text-sm">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Total buy</span>
                   <span>{fmt(previewBuy)}</span>

@@ -165,7 +165,7 @@ function NavLinkStatus({ isHighlighted }: { isHighlighted: boolean }) {
           )}
         />
       ) : isHighlighted ? (
-        <span className="size-1.5 rounded-full bg-primary-foreground" />
+        <span className="size-1.5 bg-primary-foreground" />
       ) : null}
     </span>
   );
@@ -276,7 +276,7 @@ export function DashboardSidebar({
             type="button"
             onClick={onClose}
             aria-label="Close sidebar"
-            className="flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground lg:hidden"
+            className="flex size-8 items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground lg:hidden"
           >
             <X className="size-4" />
           </button>
@@ -284,8 +284,8 @@ export function DashboardSidebar({
 
         {/* Organization context badge */}
         <div className="shrink-0 px-4 py-3">
-          <div className="flex items-center gap-2.5 rounded-lg border border-border/80 bg-background/60 p-2 text-xs">
-            <div className="flex size-7 shrink-0 items-center justify-center rounded-md font-semibold text-white">
+          <div className="flex items-center gap-2.5 border border-border/80 bg-background/60 p-2 text-xs">
+            <div className="flex size-7 shrink-0 items-center justify-center font-semibold text-white">
               <Building2 className="text-muted-foreground" />
             </div>
             <div className="min-w-0 flex-1">
@@ -317,13 +317,13 @@ export function DashboardSidebar({
                   return (
                     <div
                       key={item.label}
-                      className="flex items-center justify-between rounded-md px-3 py-2 text-xs font-medium text-muted-foreground/70 transition-colors"
+                      className="flex items-center justify-between px-3 py-2 text-xs font-medium text-muted-foreground/70 transition-colors"
                     >
                       <div className="flex items-center gap-2.5">
                         <Icon className="size-4 text-muted-foreground/50" />
                         <span>{item.label}</span>
                       </div>
-                      <span className="rounded bg-muted px-1.5 py-0.5 text-[9px] font-medium text-muted-foreground">
+                      <span className="bg-muted px-1.5 py-0.5 text-[9px] font-medium text-muted-foreground">
                         Soon
                       </span>
                     </div>
@@ -337,7 +337,7 @@ export function DashboardSidebar({
                     onClick={(e) => handleNavClick(e, item.href)}
                     aria-current={isCurrent ? "page" : undefined}
                     className={cn(
-                      "flex items-center justify-between rounded-md px-3 py-2 text-xs font-medium transition-colors",
+                      "flex items-center justify-between px-3 py-2 text-xs font-medium transition-colors",
                       isHighlighted
                         ? "bg-primary text-primary-foreground shadow-xs font-semibold"
                         : "text-foreground/80 hover:bg-muted hover:text-foreground",
@@ -362,7 +362,7 @@ export function DashboardSidebar({
           </div>
 
           {/* Quick info promo box */}
-          <div className="mt-3 shrink-0 rounded-xl border border-primary/20 bg-primary/5 p-2.5 text-xs">
+          <div className="mt-3 shrink-0 border border-primary/20 bg-primary/5 p-2.5 text-xs">
             <div className="flex items-center gap-1.5 font-medium text-primary">
               <span>FWD Rate Engine</span>
             </div>
@@ -386,13 +386,13 @@ export function DashboardSidebar({
               return (
                 <div
                   key={item.label}
-                  className="flex items-center justify-between rounded-md px-3 py-2 text-xs font-medium text-muted-foreground/70 transition-colors"
+                  className="flex items-center justify-between px-3 py-2 text-xs font-medium text-muted-foreground/70 transition-colors"
                 >
                   <div className="flex items-center gap-2.5">
                     <Icon className="size-4 text-muted-foreground/50" />
                     <span>{item.label}</span>
                   </div>
-                  <span className="rounded bg-muted px-1.5 py-0.5 text-[9px] font-medium text-muted-foreground">
+                  <span className="bg-muted px-1.5 py-0.5 text-[9px] font-medium text-muted-foreground">
                     Soon
                   </span>
                 </div>
@@ -406,7 +406,7 @@ export function DashboardSidebar({
                 onClick={(e) => handleNavClick(e, item.href)}
                 aria-current={isCurrent ? "page" : undefined}
                 className={cn(
-                  "flex items-center justify-between rounded-md px-3 py-2 text-xs font-medium transition-colors",
+                  "flex items-center justify-between px-3 py-2 text-xs font-medium transition-colors",
                   isHighlighted
                     ? "bg-primary text-primary-foreground shadow-xs font-semibold"
                     : "text-foreground/80 hover:bg-muted hover:text-foreground",
@@ -431,10 +431,10 @@ export function DashboardSidebar({
 
         {/* User profile footer */}
         <div className="shrink-0 border-t border-border p-3">
-          <div className="flex items-center gap-2.5 rounded-lg bg-background/50 p-2">
+          <div className="flex items-center gap-2.5 bg-background/50 p-2">
             <div
               className={cn(
-                "flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white",
+                "flex size-8 shrink-0 items-center justify-center text-xs font-bold text-white",
                 isAdmin ? "bg-emerald-600" : "bg-sky-600",
               )}
             >
@@ -447,7 +447,7 @@ export function DashboardSidebar({
               <div className="flex items-center gap-1">
                 <span
                   className={cn(
-                    "inline-block rounded px-1 text-[9px] font-bold uppercase tracking-wider",
+                    "inline-block px-1 text-[9px] font-bold uppercase tracking-wider",
                     isAdmin
                       ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
                       : "bg-sky-100 text-sky-800 dark:bg-sky-950/60 dark:text-sky-300",

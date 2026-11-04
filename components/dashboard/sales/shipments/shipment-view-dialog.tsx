@@ -43,7 +43,7 @@ export function ShipmentViewDialog({
       <DialogContent onClose={() => onOpenChange(false)} className="max-w-lg">
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <div className="flex size-10 shrink-0 items-center justify-center bg-primary/10 text-primary">
               <Package className="size-5" />
             </div>
             <div>
@@ -51,7 +51,7 @@ export function ShipmentViewDialog({
               <DialogDescription className="flex items-center gap-2 flex-wrap">
                 <span>Shipment ID: {shipment.id}</span>
                 {shipment.customer?.organization && (
-                  <span className="inline-flex items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground font-medium">
+                  <span className="inline-flex items-center gap-1 bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground font-medium">
                     <Building2 className="size-2.5" />
                     {shipment.customer.organization.name}
                   </span>
@@ -64,7 +64,7 @@ export function ShipmentViewDialog({
         <div className="mt-4 space-y-4 text-xs">
           {/* Key Metrics Grid */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-xl border border-border/70 bg-muted/20 p-3">
+            <div className="border border-border/70 bg-muted/20 p-3">
               <span className="text-[11px] font-medium text-muted-foreground">
                 Direction
               </span>
@@ -83,7 +83,7 @@ export function ShipmentViewDialog({
               </div>
             </div>
 
-            <div className="rounded-xl border border-border/70 bg-muted/20 p-3">
+            <div className="border border-border/70 bg-muted/20 p-3">
               <span className="text-[11px] font-medium text-muted-foreground">
                 Configured Provider Rates
               </span>
@@ -95,7 +95,7 @@ export function ShipmentViewDialog({
           </div>
 
           {/* Account & Cargo Info */}
-          <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+          <div className="border border-border bg-card p-4 space-y-3">
             <div className="flex items-center justify-between border-b border-border/50 pb-2.5">
               <span className="text-muted-foreground flex items-center gap-1.5">
                 <Building2 className="size-3.5" />
@@ -148,7 +148,7 @@ export function ShipmentViewDialog({
                 onOpenChange(false);
                 onViewRates(shipment);
               }}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-2 font-medium text-primary hover:bg-primary/20 text-xs"
+              className="inline-flex items-center gap-1.5 bg-primary/10 px-3 py-2 font-medium text-primary hover:bg-primary/20 text-xs"
             >
               <Calculator className="size-3.5" />
               <span>Compare Rates</span>
@@ -159,7 +159,7 @@ export function ShipmentViewDialog({
             <button
               type="button"
               onClick={() => onOpenChange(false)}
-              className="rounded-lg border border-border bg-background px-4 py-2 font-medium text-foreground hover:bg-muted"
+              className="border border-border bg-background px-4 py-2 font-medium text-foreground hover:bg-muted"
             >
               Close
             </button>
@@ -169,7 +169,7 @@ export function ShipmentViewDialog({
                 onOpenChange(false);
                 onEdit(shipment);
               }}
-              className="rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground hover:bg-primary/90"
+              className="bg-primary px-4 py-2 font-medium text-primary-foreground hover:bg-primary/90"
             >
               Edit Shipment
             </button>

@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Roboto } from "next/font/google";
+import { Aleo, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/shared/toaster";
 
-const robotoHeading = Roboto({subsets:['latin'],variable:'--font-heading'});
-
-const geistSans = Geist({
+const aleo = Aleo({
+  subsets: ["latin", "vietnamese"],
   variable: "--font-sans",
-  subsets: ["latin"],
+});
+
+const aleoHeading = Aleo({
+  subsets: ["latin", "vietnamese"],
+  variable: "--font-heading",
 });
 
 const geistMono = Geist_Mono({
@@ -29,7 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       suppressHydrationWarning 
       lang="en"
-      className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, robotoHeading.variable)}
+      className={cn("h-full", "antialiased", aleo.variable, aleoHeading.variable, geistMono.variable)}
     >
       <body className="min-h-full flex flex-col">
         {children}

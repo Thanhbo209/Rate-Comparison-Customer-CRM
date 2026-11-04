@@ -88,7 +88,7 @@ export function CustomerViewDialog({
       <DialogContent onClose={() => onOpenChange(false)} className="max-w-lg">
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary font-bold text-base">
+            <div className="flex size-10 shrink-0 items-center justify-center bg-primary/10 text-primary font-bold text-base">
               {customer.companyName.charAt(0).toUpperCase()}
             </div>
             <div>
@@ -96,7 +96,7 @@ export function CustomerViewDialog({
               <DialogDescription className="flex items-center gap-2 flex-wrap">
                 <span>Customer ID: {customer.id}</span>
                 {customer.organization && (
-                  <span className="inline-flex items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground font-medium">
+                  <span className="inline-flex items-center gap-1 bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground font-medium">
                     <Building2 className="size-2.5" />
                     {customer.organization.name}
                   </span>
@@ -109,7 +109,7 @@ export function CustomerViewDialog({
         <div className="mt-4 space-y-4 text-xs">
           {/* Key Info Cards */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-xl border border-border/70 bg-muted/20 p-3">
+            <div className="border border-border/70 bg-muted/20 p-3">
               <span className="text-[11px] font-medium text-muted-foreground">
                 Primary Commodity
               </span>
@@ -119,7 +119,7 @@ export function CustomerViewDialog({
               </p>
             </div>
 
-            <div className="rounded-xl border border-border/70 bg-muted/20 p-3">
+            <div className="border border-border/70 bg-muted/20 p-3">
               <span className="text-[11px] font-medium text-muted-foreground">
                 Active Shipments
               </span>
@@ -131,7 +131,7 @@ export function CustomerViewDialog({
           </div>
 
           {/* Contact Details */}
-          <div className="rounded-xl border border-border bg-card p-4 space-y-2.5">
+          <div className="border border-border bg-card p-4 space-y-2.5">
             <h4 className="font-heading text-xs font-semibold text-foreground uppercase tracking-wider text-muted-foreground">
               Contact Person
             </h4>
@@ -185,7 +185,7 @@ export function CustomerViewDialog({
           </div>
 
           {/* Facility Location */}
-          <div className="rounded-xl border border-border bg-card p-4 space-y-2.5">
+          <div className="border border-border bg-card p-4 space-y-2.5">
             <h4 className="font-heading text-xs font-semibold text-foreground uppercase tracking-wider text-muted-foreground">
               Facility Location
             </h4>
@@ -207,7 +207,7 @@ export function CustomerViewDialog({
           </div>
 
           {/* BEST AGENT & AGENT PERFORMANCE ROLL-UP */}
-          <div className="rounded-xl border border-border bg-card p-4 space-y-3">
+          <div className="border border-border bg-card p-4 space-y-3">
             <div className="flex items-center justify-between border-b border-border/60 pb-2">
               <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
                 <Award className="size-4 text-emerald-600 dark:text-emerald-400" />
@@ -231,7 +231,7 @@ export function CustomerViewDialog({
               <div className="space-y-3">
                 {/* Best Agent Highlight Card */}
                 {bestAgent && (
-                  <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/8 p-3 flex items-center justify-between">
+                  <div className="border border-emerald-500/30 bg-emerald-500/8 p-3 flex items-center justify-between">
                     <div>
                       <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300">
                         Top Performing Agent
@@ -269,7 +269,7 @@ export function CustomerViewDialog({
                 )}
 
                 {/* Agents Summary Table */}
-                <div className="overflow-x-auto rounded-lg border border-border/80">
+                <div className="overflow-x-auto border border-border/80">
                   <table className="w-full text-left text-xs">
                     <thead className="bg-muted/50 border-b border-border text-[10px] text-muted-foreground uppercase font-semibold">
                       <tr>
@@ -288,7 +288,7 @@ export function CustomerViewDialog({
                           className="hover:bg-muted/20 transition-colors"
                         >
                           <td className="py-2 px-3 font-semibold text-foreground flex items-center gap-1.5">
-                            <span className="flex size-4.5 shrink-0 items-center justify-center rounded-full bg-muted text-[9px] font-bold text-muted-foreground">
+                            <span className="flex size-4.5 shrink-0 items-center justify-center bg-muted text-[9px] font-bold text-muted-foreground">
                               {idx + 1}
                             </span>
                             <span className="truncate">{ag.providerName}</span>
@@ -338,7 +338,7 @@ export function CustomerViewDialog({
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="inline-flex h-9 items-center justify-center rounded-lg border border-border bg-background px-4 text-xs font-medium text-foreground transition-colors hover:bg-muted"
+            className="inline-flex h-9 items-center justify-center border border-border bg-background px-4 text-xs font-medium text-foreground transition-colors hover:bg-muted"
           >
             Close
           </button>
@@ -348,7 +348,7 @@ export function CustomerViewDialog({
               onOpenChange(false);
               onEdit(customer);
             }}
-            className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
+            className="inline-flex h-9 items-center justify-center bg-primary px-4 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
           >
             Edit Customer
           </button>

@@ -44,14 +44,14 @@ export function ShipmentStats({ stats }: { stats: ShipmentStatsType }) {
         return (
           <div
             key={c.title}
-            className="rounded-2xl border border-border bg-card p-5 shadow-xs"
+            className="border border-border bg-card p-5 shadow-xs"
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-muted-foreground">
                 {c.title}
               </span>
               <div
-                className={`flex size-8 items-center justify-center rounded-lg ${c.bg} ${c.tone}`}
+                className={`flex size-8 items-center justify-center ${c.bg} ${c.tone}`}
               >
                 <Icon className="size-4" />
               </div>

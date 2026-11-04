@@ -103,7 +103,7 @@ export function CostVsProfitShipmentChart({
           <select
             value={selectedCustomerId}
             onChange={(e) => setSelectedCustomerId(e.target.value)}
-            className="h-8 max-w-40 rounded-lg border border-border bg-background px-2.5 py-1 text-sm text-foreground focus:outline-hidden focus:ring-2 focus:ring-primary/20"
+            className="h-8 max-w-40 border border-border bg-background px-2.5 py-1 text-sm text-foreground focus:outline-hidden focus:ring-2 focus:ring-primary/20"
           >
             {customers.map((c) => (
               <option key={c.id} value={c.id}>
@@ -126,7 +126,7 @@ export function CostVsProfitShipmentChart({
         <div className="space-y-3 pt-1">
           {/* Highlight Banner if there is a Best Choice */}
           {bestShipment && chartData.length > 1 && (
-            <div className="flex items-center justify-between rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-800 dark:text-emerald-300">
+            <div className="flex items-center justify-between border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-800 dark:text-emerald-300">
               <span className="flex items-center gap-1.5 font-medium">
                 <span>
                   Best Choice: <strong>{bestShipment.fullName}</strong>
@@ -213,11 +213,11 @@ export function CostVsProfitShipmentChart({
           <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-1 border-t border-border/40">
             <div className="flex items-center gap-4">
               <span className="inline-flex items-center gap-1.5">
-                <span className="size-2 rounded-xs bg-[#ff7d13]" />
+                <span className="size-2 bg-[#ff7d13]" />
                 <span>Agent Cost (Pay)</span>
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <span className="size-2 rounded-xs bg-emerald-500" />
+                <span className="size-2 bg-emerald-500" />
                 <span>Profit (Keep)</span>
               </span>
             </div>

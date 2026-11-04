@@ -24,12 +24,12 @@ export function RecentShipmentsRates({
   const recentShipments = shipments.slice(0, 5);
 
   return (
-    <div className="rounded-xl border border-border bg-card shadow-xs overflow-hidden">
+    <div className="border border-border bg-card shadow-xs overflow-hidden">
       {/* Header */}
       <div className="flex flex-col gap-3 border-b border-border p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <div className="flex size-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <div className="flex size-7 items-center justify-center bg-primary/10 text-primary">
               <ArrowLeftRight className="size-4" />
             </div>
             <h3 className="font-heading text-base font-semibold text-foreground">
@@ -54,7 +54,7 @@ export function RecentShipmentsRates({
       {/* Table Content */}
       {recentShipments.length === 0 ? (
         <div className="p-12 text-center">
-          <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
+          <div className="mx-auto flex size-12 items-center justify-center bg-muted text-muted-foreground">
             <Package className="size-6 opacity-60" />
           </div>
           <h4 className="mt-4 font-heading text-sm font-semibold text-foreground">
@@ -66,7 +66,7 @@ export function RecentShipmentsRates({
           </p>
           <Link
             href="/dashboard/sales/shipments"
-            className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
+            className="mt-4 inline-flex items-center gap-1.5 bg-primary px-3.5 py-1.5 text-xs font-medium text-primary-foreground shadow-xs transition-colors hover:bg-primary/90"
           >
             <span>Go to Shipments</span>
             <ArrowRight className="size-3.5" />
@@ -126,12 +126,12 @@ export function RecentShipmentsRates({
                     {/* Direction Badge */}
                     <td className="px-5 py-3.5">
                       {s.direction === "IMPORT" ? (
-                        <span className="inline-flex items-center gap-1 rounded-md bg-sky-500/10 px-2.5 py-1 text-[11px] font-semibold text-sky-600 dark:text-sky-400">
+                        <span className="inline-flex items-center gap-1 bg-sky-500/10 px-2.5 py-1 text-[11px] font-semibold text-sky-600 dark:text-sky-400">
                           <ArrowDownLeft className="size-3" />
                           Import
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 rounded-md bg-purple-500/10 px-2.5 py-1 text-[11px] font-semibold text-purple-600 dark:text-purple-400">
+                        <span className="inline-flex items-center gap-1 bg-purple-500/10 px-2.5 py-1 text-[11px] font-semibold text-purple-600 dark:text-purple-400">
                           <ArrowUpRight className="size-3" />
                           Export
                         </span>
@@ -142,7 +142,7 @@ export function RecentShipmentsRates({
                     <td className="px-5 py-3.5">
                       {hasRates ? (
                         <div className="flex flex-col gap-1">
-                          <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-muted/80 px-2.5 py-0.5 text-[11px] font-medium text-foreground">
+                          <span className="inline-flex w-fit items-center gap-1.5 bg-muted/80 px-2.5 py-0.5 text-[11px] font-medium text-foreground">
                             <Layers className="size-3 text-muted-foreground" />
                             {totals.rateCount}{" "}
                             {totals.rateCount === 1 ? "quote" : "quotes"}
@@ -154,7 +154,7 @@ export function RecentShipmentsRates({
                           )}
                         </div>
                       ) : (
-                        <span className="rounded-full bg-muted/50 px-2.5 py-0.5 text-[11px] text-muted-foreground italic">
+                        <span className="bg-muted/50 px-2.5 py-0.5 text-[11px] text-muted-foreground italic">
                           0 quotes
                         </span>
                       )}
@@ -186,7 +186,7 @@ export function RecentShipmentsRates({
                     <td className="px-5 py-3.5 text-right">
                       <Link
                         href={`/dashboard/sales/rates?shipmentId=${s.id}`}
-                        className="inline-flex items-center gap-1 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold text-foreground shadow-xs transition-colors hover:bg-muted hover:text-foreground"
+                        className="inline-flex items-center gap-1 border border-border bg-background px-3 py-1.5 text-xs font-semibold text-foreground shadow-xs transition-colors hover:bg-muted hover:text-foreground"
                       >
                         <span>Open in Rate Comparison</span>
                         <ArrowRight className="size-3.5 text-muted-foreground" />

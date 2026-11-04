@@ -119,7 +119,7 @@ export function AuthPanel({
       {/* Layered cards, pinned to the right of the panel (hidden below xl so they never cover the headline) */}
       <div className="absolute bottom-24 right-12 hidden w-88 xl:right-16 xl:block">
         {/* Back card: current shipment */}
-        <div className="rounded-2xl border border-primary-foreground/20 bg-primary-foreground/10 p-5 pb-10 backdrop-blur-md">
+        <div className="border border-primary-foreground/20 bg-primary-foreground/10 p-5 pb-10 backdrop-blur-md">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-sm text-primary-foreground/65">
@@ -139,11 +139,11 @@ export function AuthPanel({
             {STEPS.map((step, i) => (
               <li key={step}>
                 <div
-                  className={`h-1.5 rounded-full ${
-                    i <= CURRENT_STEP
-                      ? "bg-chart-1"
-                      : "bg-primary-foreground/20"
-                  }`}
+                  className={`h-1.5 ${
+ i <= CURRENT_STEP
+ ? "bg-chart-1"
+ : "bg-primary-foreground/20"
+ }`}
                 />
                 <p
                   className={`mt-2 text-xs leading-tight ${

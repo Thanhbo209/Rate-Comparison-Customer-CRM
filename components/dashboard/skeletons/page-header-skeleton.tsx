@@ -19,13 +19,13 @@ export function PageHeaderSkeleton({
       <div className="space-y-1.5">
         <div className="flex items-center gap-2">
           <Skeleton className="h-8 w-52 sm:w-64" />
-          <Skeleton className="h-5 w-24 rounded-full" />
+          <Skeleton className="h-5 w-24" />
         </div>
         <Skeleton className="h-4 w-72 sm:w-96 max-w-full" />
       </div>
 
       {hasAction && (
-        <Skeleton className="h-9 w-32 rounded-lg shrink-0" />
+        <Skeleton className="h-9 w-32 shrink-0" />
       )}
     </div>
   );

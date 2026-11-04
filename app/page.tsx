@@ -100,9 +100,9 @@ const FAQ = [
 ];
 
 const primaryBtn =
-  "inline-flex h-11 items-center justify-center rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
+  "inline-flex h-11 items-center justify-center bg-primary px-6 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
 const outlineBtn =
-  "inline-flex h-11 items-center justify-center rounded-lg border border-border bg-background px-6 text-sm font-medium transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
+  "inline-flex h-11 items-center justify-center border border-border bg-background px-6 text-sm font-medium transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
 
 export default function Home() {
   return (
@@ -153,7 +153,7 @@ export default function Home() {
 
             {/* Dispatch board */}
             <div className="relative pb-8">
-              <div className="rounded-2xl border border-border bg-card p-5 shadow-xl shadow-primary/5">
+              <div className="border border-border bg-card p-5 shadow-xl shadow-primary/5">
                 <div className="flex items-center justify-between">
                   <p className="font-heading text-lg font-semibold">
                     Today&apos;s deliveries
@@ -176,7 +176,7 @@ export default function Home() {
                       </div>
                       <div className="shrink-0 text-right">
                         <span
-                          className={`inline-block rounded-full px-2.5 py-1 text-xs font-medium ${CHIP[s.tone]}`}
+                          className={`inline-block px-2.5 py-1 text-xs font-medium ${CHIP[s.tone]}`}
                         >
                           {s.status}
                         </span>
@@ -190,7 +190,7 @@ export default function Home() {
               </div>
 
               {/* What the customer receives */}
-              <div className="absolute -bottom-2 -left-2 max-w-60 rounded-2xl rounded-bl-sm bg-primary p-3.5 text-sm leading-snug text-primary-foreground shadow-lg sm:-left-8">
+              <div className="absolute -bottom-2 -left-2 max-w-60 bg-primary p-3.5 text-sm leading-snug text-primary-foreground shadow-lg sm:-left-8">
                 Your order RD-48213 is out for delivery. Arriving around 2:40
                 PM.
               </div>
@@ -247,7 +247,7 @@ export default function Home() {
                       className="absolute left-14 right-0 top-5 hidden border-t-2 border-dotted border-primary/30 lg:block"
                     />
                   )}
-                  <span className="relative flex size-10 items-center justify-center rounded-full bg-primary font-heading text-base font-semibold text-primary-foreground">
+                  <span className="relative flex size-10 items-center justify-center bg-primary font-heading text-base font-semibold text-primary-foreground">
                     {i + 1}
                   </span>
                   <h3 className="mt-5 font-heading text-lg font-semibold">
@@ -301,7 +301,7 @@ export default function Home() {
 
         {/* ───────────── Contact ─────────────
         <section id="contact" className="scroll-mt-28 px-4 pb-20 sm:px-8">
-          <div className="mx-auto grid max-w-6xl items-center gap-12 rounded-3xl bg-primary p-8 text-primary-foreground sm:p-14 lg:grid-cols-2">
+          <div className="mx-auto grid max-w-6xl items-center gap-12 bg-primary p-8 text-primary-foreground sm:p-14 lg:grid-cols-2">
             <div>
               <h2 className="font-heading text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
                 See it with your own orders
@@ -312,7 +312,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="rounded-2xl bg-background p-6 text-foreground sm:p-8">
+            <div className="bg-background p-6 text-foreground sm:p-8">
               <ContactForm />
             </div>
           </div>

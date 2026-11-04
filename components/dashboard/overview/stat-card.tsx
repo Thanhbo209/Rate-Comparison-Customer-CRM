@@ -39,7 +39,7 @@ export function StatCard({
   return (
     <div
       className={cn(
-        "rounded-xl border border-border bg-card p-5 shadow-xs transition-shadow hover:shadow-sm",
+        "border border-border bg-card p-5 shadow-xs transition-shadow hover:shadow-sm",
         className
       )}
     >
@@ -47,7 +47,7 @@ export function StatCard({
         <span className="text-xs font-medium text-muted-foreground">{title}</span>
         <div
           className={cn(
-            "flex size-9 items-center justify-center rounded-lg",
+            "flex size-9 items-center justify-center",
             VARIANT_ICON_STYLES[variant]
           )}
         >

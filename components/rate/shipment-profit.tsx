@@ -76,7 +76,7 @@ export function ShipmentProfitCell({
 
       {/* Ranking badge — only when comparing ≥ 2 shipments for same customer */}
       {result.comparedWith >= 2 && result.isBest && (
-        <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/15 px-1.5 py-0.5 text-[9px] font-bold text-emerald-800 dark:text-emerald-300 w-fit">
+        <span className="inline-flex items-center gap-1 bg-emerald-500/15 px-1.5 py-0.5 text-[9px] font-bold text-emerald-800 dark:text-emerald-300 w-fit">
           <Trophy className="size-2.5" />
           Best choice
         </span>
@@ -164,7 +164,7 @@ export function RatesTotalStrip({
   if (!result || result.rateCount === 0) return null;
 
   return (
-    <div className="mx-4 sm:mx-6 mt-4 rounded-xl border border-border/80 bg-primary/30 px-4 py-2.5 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs">
+    <div className="mx-4 sm:mx-6 mt-4 border border-border/80 bg-primary/30 px-4 py-2.5 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs">
       {/* Label */}
       <span className="font-semibold text-foreground shrink-0">
         Shipment Total
@@ -206,7 +206,7 @@ export function RatesTotalStrip({
       </span>
 
       {result.comparedWith >= 2 && result.isBest && (
-        <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/15 px-2 py-0.5 text-[9px] font-bold text-emerald-800 dark:text-emerald-300 shrink-0">
+        <span className="inline-flex items-center gap-1 bg-emerald-500/15 px-2 py-0.5 text-[9px] font-bold text-emerald-800 dark:text-emerald-300 shrink-0">
           <Trophy className="size-2.5" />
           Best choice
         </span>
