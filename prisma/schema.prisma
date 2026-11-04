@@ -169,6 +169,9 @@ model FreightItem {
   quantity Decimal @db.Decimal(12, 3)
   gross    Decimal
   currency String
+  // exportCharge String
+  // importCharge String
+  // fare Decimal
 
   shipmentRate ShipmentRate @relation(fields: [shipmentRateId], references: [id], onDelete: Cascade)
 
