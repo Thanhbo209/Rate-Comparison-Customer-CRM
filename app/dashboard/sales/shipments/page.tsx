@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { requireRole } from "@/lib/auth/session";
 import { getShipments, getShipmentStats } from "@/lib/shipment/queries";
 import { getCustomers } from "@/lib/customer/queries";
-import { ShipmentsView } from "@/components/dashboard/sales/shipments/shipments-view";
+import { ShipmentsView } from "@/components/dashboard/shipments/shipments-view";
 
 export const metadata: Metadata = {
   title: "Shipments & Freight Flows | Dropwell",
-  description: "Manage import/export shipments, account assignments, and rates.",
+  description:
+    "Manage import/export shipments, account assignments, and rates.",
 };
 
 export const dynamic = "force-dynamic";

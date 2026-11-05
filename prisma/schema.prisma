@@ -159,6 +159,12 @@ model ShipmentRate {
   @@index([providerId])
 }
 
+enum FreightChargeType {
+  STANDARD
+  EXPORT_CHARGE
+  IMPORT_CHARGE
+  FARE
+}
 model FreightItem {
   id             String @id @default(cuid())
   shipmentRateId String
@@ -169,9 +175,7 @@ model FreightItem {
   quantity     Decimal @db.Decimal(12, 3)
   gross        Decimal
   currency     String
-  exportCharge String?
-  importCharge String?
-  fare         Decimal?
+  chargeType   FreightChargeType @default(STANDARD)
 
   shipmentRate ShipmentRate @relation(fields: [shipmentRateId], references: [id], onDelete: Cascade)
 

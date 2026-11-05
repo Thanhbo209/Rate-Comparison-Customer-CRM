@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/layout/navbar";
+import { Navbar } from "@/components/dashboard/layout/navbar";
 import { BRAND, Logo } from "@/components/shared/brand";
 import Link from "next/link";
 // import { ContactForm } from "@/components/contact-form";

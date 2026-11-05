@@ -7,7 +7,7 @@ import {
   getProviders,
   getAllShipmentsRateOverview,
 } from "@/lib/rate/queries";
-import { RateComparisonView } from "@/components/dashboard/sales/rates/rate-comparison-view";
+import { RateComparisonView } from "@/components/dashboard/rates/rate-comparison-view";
 import { RateComparisonSkeleton } from "@/components/dashboard/skeletons";
 
 export const metadata: Metadata = {
@@ -41,7 +41,7 @@ async function AdminRatesContent({
     ? await getShipmentRateComparison(
         targetShipmentId,
         profile.organizationId,
-        isPlatformAdmin
+        isPlatformAdmin,
       )
     : null;
 

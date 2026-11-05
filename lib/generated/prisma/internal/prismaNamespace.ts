@@ -1247,9 +1247,7 @@ export const FreightItemScalarFieldEnum = {
   quantity: 'quantity',
   gross: 'gross',
   currency: 'currency',
-  exportCharge: 'exportCharge',
-  importCharge: 'importCharge',
-  fare: 'fare',
+  chargeType: 'chargeType',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1354,6 +1352,20 @@ export type EnumShipmentDirectionFieldRefInput<$PrismaModel> = FieldRefInputType
  * Reference to a field of type 'ShipmentDirection[]'
  */
 export type ListEnumShipmentDirectionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ShipmentDirection[]'>
+    
+
+
+/**
+ * Reference to a field of type 'FreightChargeType'
+ */
+export type EnumFreightChargeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FreightChargeType'>
+    
+
+
+/**
+ * Reference to a field of type 'FreightChargeType[]'
+ */
+export type ListEnumFreightChargeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FreightChargeType[]'>
     
 
 
