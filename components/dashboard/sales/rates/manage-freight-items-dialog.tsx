@@ -8,6 +8,7 @@ import {
   type ReactNode,
   type Ref,
 } from "react";
+import { createPortal } from "react-dom";
 import {
   AlertTriangle,
   Check,
@@ -26,6 +27,13 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -37,7 +45,7 @@ import {
 import type { ShipmentRateItem, FreightItemSummary } from "@/lib/rate/types";
 import { toast } from "react-toastify";
 import { FreightDeleteDialog } from "./freight-delete-dialog";
-import { createPortal } from "react-dom";
+
 interface ManageFreightItemsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -73,29 +81,37 @@ const COMMON_UNITS = [
   "TRUCK",
 ];
 
-const EXPORT_CHARGES = [
-  "Origin THC",
-  "DOC Fee",
-  "Seal Fee",
-  "VGM Fee",
-  "Origin Handling",
-  "Export Customs",
-  "Origin Trucking",
-  "BAF",
-  "CAF",
-  "PSS",
-  "Other",
+/** Classification of a charge: the FreightItem.chargeType enum. */
+type ChargeType = NonNullable<FreightItemSummary["chargeType"]>;
+
+const DEFAULT_CHARGE_TYPE: ChargeType = "STANDARD";
+
+const CHARGE_TYPE_OPTIONS: { value: ChargeType; label: string }[] = [
+  { value: "STANDARD", label: "Standard" },
+  { value: "EXPORT_CHARGE", label: "Export charge" },
+  { value: "IMPORT_CHARGE", label: "Import charge" },
+  { value: "FARE", label: "Fare" },
 ];
 
-const IMPORT_CHARGES = [
-  "Destination THC",
-  "D/O Fee",
-  "Destination Handling",
-  "Import Customs",
-  "Destination Delivery",
-  "Detention",
-  "Demurrage",
-  "Other",
+const CHARGE_TYPE_LABEL: Record<string, string> = Object.fromEntries(
+  CHARGE_TYPE_OPTIONS.map((o) => [o.value, o.label]),
+);
+
+/**
+ * Sections of the quote sheet, in print order. Charges are grouped by the
+ * classification the user chose. Edit the wording here.
+ */
+const CHARGE_SECTIONS: { type: ChargeType; title: string }[] = [
+  {
+    type: "EXPORT_CHARGE",
+    title: "Export Charges",
+  },
+  { type: "FARE", title: "Ocean Freight" },
+  {
+    type: "IMPORT_CHARGE",
+    title: "Import Charges",
+  },
+  { type: "STANDARD", title: "Other Charges" },
 ];
 
 const moneyFmt = new Intl.NumberFormat("en-US", {
@@ -120,24 +136,20 @@ function lineMath(net: number, gross: number, quantity: number) {
 /** What the forms hold: raw strings, parsed only when saving. */
 interface ChargeDraft {
   freight: string;
+  chargeType: ChargeType;
   unit: string;
   quantity: string;
   net: string;
   gross: string;
-  exportCharge: string;
-  importCharge: string;
-  fare: string;
 }
 
 const toPayload = (d: ChargeDraft) => ({
   freight: d.freight.trim(),
+  chargeType: d.chargeType,
   unit: d.unit.trim(),
   quantity: parseFloat(d.quantity) || 1,
   net: parseFloat(d.net) || 0,
   gross: parseFloat(d.gross) || 0,
-  exportCharge: d.exportCharge.trim() || undefined,
-  importCharge: d.importCharge.trim() || undefined,
-  fare: d.fare !== "" ? parseFloat(d.fare) || undefined : undefined,
 });
 
 /* -------------------------------------------------------------------------- */
@@ -216,6 +228,54 @@ function NumberField({
   );
 }
 
+/**
+ * Classification picker (FreightItem.chargeType).
+ *
+ * Uses the library Select, which portals its popup to the body and layers it
+ * correctly above the dialog. `alignItemWithTrigger={false}` makes it open as a
+ * normal dropdown under the trigger (flipping when there's no room) instead of
+ * sliding the selected item over the trigger, which is what pushes a dialog
+ * around when you pick an option.
+ */
+function ChargeTypeSelect({
+  id,
+  value,
+  onChange,
+}: {
+  id: string;
+  value: ChargeType;
+  onChange: (value: ChargeType) => void;
+}) {
+  return (
+    <Select
+      value={value}
+      onValueChange={(val) => {
+        if (val) onChange(val as ChargeType);
+      }}
+    >
+      <SelectTrigger
+        id={id}
+        className="h-10 w-full border-border bg-background text-sm"
+      >
+        <SelectValue placeholder="Select classification...">
+          {(val: string | null) =>
+            (val && CHARGE_TYPE_LABEL[val]) || "Select classification..."
+          }
+        </SelectValue>
+      </SelectTrigger>
+      <SelectContent alignItemWithTrigger={false} className="max-h-60">
+        {CHARGE_TYPE_OPTIONS.map((o) => (
+          <SelectItem key={o.value} value={o.value}>
+            {o.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+
+/* ───────────── Unit combobox (free text with suggestions) ───────────── */
+
 interface ListPlacement {
   host: HTMLElement | null; // the dialog element the list is rendered into
   openUp: boolean;
@@ -227,34 +287,59 @@ interface ListPlacement {
 
 const LIST_GAP = 4;
 const LIST_MAX_HEIGHT = 224;
+const LIST_MIN_HEIGHT = 96;
 const VIEWPORT_MARGIN = 12;
 
-/** Decides where the list goes: below the field if it fits, otherwise above, never past the viewport. */
+/**
+ * Decides where the list goes: below the field if it fits, otherwise above.
+ *
+ * The list is rendered inside the dialog (so the dialog's outside-click handling
+ * treats it as part of the dialog). That means it can't be allowed to poke past
+ * the dialog's own visible area when the dialog scrolls or clips, or it either
+ * grows the scroll height or gets cut off. So the available space is bounded by
+ * the viewport and, when the dialog clips, by the dialog's edges too.
+ */
 function measurePlacement(anchor: HTMLElement): ListPlacement {
   const a = anchor.getBoundingClientRect();
-  const below = window.innerHeight - a.bottom - VIEWPORT_MARGIN;
-  const above = a.top - VIEWPORT_MARGIN;
-  const openUp = below < 160 && above > below;
+  const host = anchor.closest<HTMLElement>('[role="dialog"]');
+
+  let boundsTop = VIEWPORT_MARGIN;
+  let boundsBottom = window.innerHeight - VIEWPORT_MARGIN;
+  let h: DOMRect | null = null;
+
+  if (host) {
+    h = host.getBoundingClientRect();
+    const clips = /(auto|scroll|hidden|clip)/.test(
+      getComputedStyle(host).overflowY,
+    );
+    if (clips) {
+      boundsTop = Math.max(boundsTop, h.top + VIEWPORT_MARGIN);
+      boundsBottom = Math.min(boundsBottom, h.bottom - VIEWPORT_MARGIN);
+    }
+  }
+
+  const below = boundsBottom - a.bottom;
+  const above = a.top - boundsTop;
+  const openUp = below < LIST_MIN_HEIGHT && above > below;
   const maxHeight = Math.max(
-    96,
+    LIST_MIN_HEIGHT,
     Math.min(LIST_MAX_HEIGHT, (openUp ? above : below) - LIST_GAP),
   );
 
-  const host = anchor.closest<HTMLElement>('[role="dialog"]');
-  if (!host) {
+  if (!host || !h) {
     return { host: null, openUp, maxHeight, left: 0, top: 0, width: a.width };
   }
 
-  const h = host.getBoundingClientRect();
   return {
     host,
     openUp,
     maxHeight,
     width: a.width,
-    left: a.left - h.left + host.scrollLeft,
+    left: a.left - h.left - host.clientLeft + host.scrollLeft,
     top:
       (openUp ? a.top - LIST_GAP : a.bottom + LIST_GAP) -
-      h.top +
+      h.top -
+      host.clientTop +
       host.scrollTop,
   };
 }
@@ -334,6 +419,7 @@ function UnitSelect({
   const list = isOpen && placement && (
     <div
       ref={listRef}
+      id={`${id}-list`}
       role="listbox"
       style={
         placement.host
@@ -347,7 +433,7 @@ function UnitSelect({
           : { maxHeight: placement.maxHeight }
       }
       className={cn(
-        "z-100 overflow-y-auto border border-border bg-popover p-1 text-popover-foreground shadow-lg",
+        "z-100 overflow-y-auto overscroll-contain border border-border bg-popover p-1 text-popover-foreground shadow-lg",
         placement.host
           ? "absolute"
           : cn(
@@ -418,7 +504,8 @@ function UnitSelect({
               return;
             }
             openList();
-            inputRef.current?.focus();
+            // Don't let focusing the input scroll the dialog.
+            inputRef.current?.focus({ preventScroll: true });
           }}
           tabIndex={-1}
           className="absolute right-1 flex size-7 items-center justify-center text-muted-foreground transition-colors hover:text-foreground focus:outline-none"
@@ -438,6 +525,7 @@ function UnitSelect({
     </div>
   );
 }
+
 function InlineError({ children }: { children: ReactNode }) {
   return (
     <div
@@ -629,6 +717,88 @@ function SummaryBar({
 /* Charge rows                                                                */
 /* -------------------------------------------------------------------------- */
 
+/** Number of columns in the sheet: Charge, Unit, Quantity, Price, Total, Profit, Actions. */
+const SHEET_COLUMNS = 7;
+
+interface ChargeGroup {
+  section: (typeof CHARGE_SECTIONS)[number];
+  items: FreightItemSummary[];
+  sell: number;
+  profit: number;
+}
+
+/** Splits charges into non-empty sections. Anything with an unknown type lands in Standard. */
+function groupCharges(items: FreightItemSummary[]): ChargeGroup[] {
+  const known = new Set<string>(CHARGE_SECTIONS.map((s) => s.type));
+  const typeOf = (i: FreightItemSummary): string => {
+    const t = i.chargeType ?? DEFAULT_CHARGE_TYPE;
+    return known.has(t) ? t : DEFAULT_CHARGE_TYPE;
+  };
+
+  return CHARGE_SECTIONS.map((section) => {
+    const groupItems = items.filter((i) => typeOf(i) === section.type);
+    let sell = 0;
+    let profit = 0;
+    for (const i of groupItems) {
+      sell += i.gross * i.quantity;
+      profit += lineMath(i.net, i.gross, i.quantity).profit;
+    }
+    return { section, items: groupItems, sell, profit };
+  }).filter((g) => g.items.length > 0);
+}
+
+function HeaderCell({
+  en,
+  align = "left",
+  className,
+}: {
+  en: string;
+  align?: "left" | "right";
+  className?: string;
+}) {
+  return (
+    <th
+      scope="col"
+      className={cn(
+        "px-3 py-2.5 align-bottom",
+        align === "right" ? "text-right" : "text-left",
+        className,
+      )}
+    >
+      <span className="block text-xs font-semibold text-foreground">{en}</span>
+    </th>
+  );
+}
+
+/** Gray band that opens a section, with its subtotals aligned under the Total and Profit columns. */
+function SectionBand({ group }: { group: ChargeGroup }) {
+  const { section, items, sell, profit } = group;
+  return (
+    <tr className="bg-primary/10">
+      <th scope="rowgroup" colSpan={4} className="px-4 py-2.5 text-left">
+        <span className="block text-sm font-bold text-foreground">
+          {section.title}
+          <span className="ml-2 text-xs font-normal text-muted-foreground">
+            ({items.length})
+          </span>
+        </span>
+      </th>
+      <td className="px-3 py-2.5 text-right text-sm font-semibold text-foreground tabular-nums">
+        {money(sell)}
+      </td>
+      <td
+        className={cn(
+          "px-3 py-2.5 text-right text-sm font-semibold tabular-nums",
+          profit >= 0 ? PROFIT_TEXT : "text-destructive",
+        )}
+      >
+        {signed(profit)}
+      </td>
+      <td />
+    </tr>
+  );
+}
+
 function ChargeRow({
   item,
   baseCurrency,
@@ -649,34 +819,9 @@ function ChargeRow({
     item.originalCurrency && item.originalCurrency !== baseCurrency;
 
   return (
-    <tr className="align-top transition-colors hover:bg-muted/20">
-      <td className="px-4 py-3">
-        <p className="font-semibold text-foreground">{item.freight}</p>
-        <p className="mt-0.5 text-xs text-muted-foreground">
-          {qtyFmt.format(item.quantity)} &times; {item.unit || "UNIT"}
-        </p>
-        {item.exportCharge && (
-          <p className="mt-0.5 text-[11px] text-muted-foreground">
-            <span className="font-medium text-amber-600 dark:text-amber-400">
-              Export:
-            </span>{" "}
-            {item.exportCharge}
-          </p>
-        )}
-        {item.importCharge && (
-          <p className="mt-0.5 text-[11px] text-muted-foreground">
-            <span className="font-medium text-sky-600 dark:text-sky-400">
-              Import:
-            </span>{" "}
-            {item.importCharge}
-          </p>
-        )}
-        {item.fare != null && (
-          <p className="mt-0.5 text-[11px] text-muted-foreground">
-            <span className="font-medium text-foreground">Fare:</span>{" "}
-            {money(item.fare)}
-          </p>
-        )}
+    <tr className="transition-colors hover:bg-muted/20">
+      <td className="px-4 py-3.5">
+        <p className="font-medium text-foreground">{item.freight}</p>
         {hasOriginal && (
           <p className="mt-0.5 text-[11px] text-muted-foreground">
             Original: {money(item.originalNet)} buy /{" "}
@@ -684,42 +829,47 @@ function ChargeRow({
           </p>
         )}
       </td>
-      <td className="px-3 py-3 text-right tabular-nums text-foreground">
-        {money(item.net)}
+      <td className="px-3 py-3.5 text-xs text-muted-foreground italic">
+        <span className="block truncate" title={item.unit || "UNIT"}>
+          {item.unit || "UNIT"}
+        </span>
       </td>
-      <td className="px-3 py-3 text-right font-semibold tabular-nums text-foreground">
-        {money(item.gross)}
+      <td className="px-3 py-3.5 text-right text-foreground tabular-nums">
+        {qtyFmt.format(item.quantity)}
       </td>
-      <td className="px-3 py-3 text-right">
+      <td className="px-3 py-3.5 text-right tabular-nums">
+        <p className="font-medium text-foreground">{money(item.gross)}</p>
+        <p
+          className="mt-0.5 text-[11px] text-muted-foreground"
+          title="Buying price per unit"
+        >
+          Buy {money(item.net)}
+        </p>
+      </td>
+      <td className="px-3 py-3.5 text-right font-semibold text-foreground tabular-nums">
+        {money(item.gross * item.quantity)}
+      </td>
+      <td className="px-3 py-3.5 text-right tabular-nums">
         <p
           className={cn(
-            "font-bold tabular-nums",
+            "font-semibold",
             profit >= 0 ? PROFIT_TEXT : "text-destructive",
           )}
         >
           {signed(profit)}
         </p>
-        <div className="ml-auto mt-1.5 h-1.5 w-20 overflow-hidden bg-muted">
-          <div
-            className={cn(
-              "h-full",
-              profit >= 0 ? "bg-emerald-500" : "bg-destructive",
-            )}
-            style={{ width: `${Math.min(100, Math.abs(marginPercent))}%` }}
-          />
-        </div>
-        <p className="mt-1 text-[11px] tabular-nums text-muted-foreground">
-          {marginPercent.toFixed(1)}% margin
+        <p className="mt-0.5 text-[11px] text-muted-foreground">
+          {marginPercent.toFixed(1)}%
         </p>
       </td>
-      <td className="px-3 py-3 text-right">
-        <div className="flex items-center justify-end gap-1">
+      <td className="px-2 py-3.5 text-right">
+        <div className="flex items-center justify-end gap-0.5">
           <button
             type="button"
             onClick={onEdit}
             aria-label={`Edit ${item.freight}`}
             title="Edit charge"
-            className="p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           >
             <Pencil className="size-4" />
           </button>
@@ -728,7 +878,7 @@ function ChargeRow({
             onClick={onDelete}
             aria-label={`Delete ${item.freight}`}
             title="Delete charge"
-            className="p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           >
             <Trash2 className="size-4" />
           </button>
@@ -738,7 +888,126 @@ function ChargeRow({
   );
 }
 
-/** Inline editor. It owns its draft state, so the dialog doesn't carry six edit fields. */
+/** The charges as a quotation sheet: one band per classification, a grand total at the bottom. */
+function ChargeSheet({
+  items,
+  baseCurrency,
+  editingId,
+  busyId,
+  rowError,
+  onEdit,
+  onDelete,
+  onSave,
+  onCancel,
+}: {
+  items: FreightItemSummary[];
+  baseCurrency: string;
+  editingId: string | null;
+  busyId: string | null;
+  rowError: string | null;
+  onEdit: (item: FreightItemSummary) => void;
+  onDelete: (item: FreightItemSummary) => void;
+  onSave: (item: FreightItemSummary, draft: ChargeDraft) => void;
+  onCancel: () => void;
+}) {
+  const groups = groupCharges(items);
+  const grandSell = groups.reduce((sum, g) => sum + g.sell, 0);
+  const grandProfit = groups.reduce((sum, g) => sum + g.profit, 0);
+  const grandMargin = grandSell > 0 ? (grandProfit / grandSell) * 100 : 0;
+
+  return (
+    <div className="w-full overflow-x-auto">
+      <table className="w-full min-w-80 table-fixed text-left text-sm">
+        {/* Fixed widths keep every section's columns lined up; Charge takes the rest. */}
+        <colgroup>
+          <col />
+          <col className="w-24" />
+          <col className="w-16" />
+          <col className="w-24" />
+          <col className="w-28" />
+          <col className="w-28" />
+          <col className="w-20" />
+        </colgroup>
+
+        <thead className="border-b border-border">
+          <tr>
+            <HeaderCell en="Charge" className="px-4" />
+            <HeaderCell en="Unit" />
+            <HeaderCell en="Quantity" align="right" />
+            <HeaderCell en="Price/unit" align="right" />
+            <HeaderCell en="Total" align="right" />
+            <HeaderCell en="Profit" align="right" />
+            <th scope="col" className="px-2 py-2.5">
+              <span className="sr-only">Actions</span>
+            </th>
+          </tr>
+        </thead>
+
+        {groups.map((group) => (
+          <tbody
+            key={group.section.type}
+            className="divide-y divide-border/60 border-b border-border"
+          >
+            <SectionBand group={group} />
+            {group.items.map((item) =>
+              editingId === item.id ? (
+                <ChargeEditRow
+                  key={item.id}
+                  item={item}
+                  baseCurrency={baseCurrency}
+                  saving={busyId === item.id}
+                  error={rowError}
+                  onSave={(draft) => onSave(item, draft)}
+                  onCancel={onCancel}
+                />
+              ) : (
+                <ChargeRow
+                  key={item.id}
+                  item={item}
+                  baseCurrency={baseCurrency}
+                  onEdit={() => onEdit(item)}
+                  onDelete={() => onDelete(item)}
+                />
+              ),
+            )}
+          </tbody>
+        ))}
+
+        <tfoot>
+          <tr className="bg-sky-100">
+            <th scope="row" colSpan={4} className="px-4 py-3.5 text-left">
+              <span className="text-sm font-bold text-foreground">
+                Grand total:
+              </span>
+              <span className="ml-2 text-xs font-normal text-muted-foreground">
+                {baseCurrency}
+              </span>
+            </th>
+            <td className="px-3 py-3.5 text-right text-base font-bold text-foreground tabular-nums">
+              {money(grandSell)}
+            </td>
+            <td className="px-3 py-3.5 text-right tabular-nums">
+              <p
+                className={cn(
+                  "text-sm font-bold",
+                  grandProfit >= 0 ? PROFIT_TEXT : "text-destructive",
+                )}
+              >
+                {signed(grandProfit)}
+              </p>
+              <p className="mt-0.5 text-[11px] text-muted-foreground">
+                {grandMargin.toFixed(1)}%
+              </p>
+            </td>
+            <td />
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  );
+}
+
+/** Inline editor. It owns its draft state, so the dialog doesn't carry the edit fields. */
 function ChargeEditRow({
   item,
   baseCurrency,
@@ -755,13 +1024,13 @@ function ChargeEditRow({
   onCancel: () => void;
 }) {
   const [freight, setFreight] = useState(item.freight);
+  const [chargeType, setChargeType] = useState<ChargeType>(
+    item.chargeType ?? DEFAULT_CHARGE_TYPE,
+  );
   const [unit, setUnit] = useState(item.unit || "CONTAINER");
   const [quantity, setQuantity] = useState(String(item.quantity));
   const [net, setNet] = useState(String(item.net));
   const [gross, setGross] = useState(String(item.gross));
-  const [exportCharge, setExportCharge] = useState(item.exportCharge || "");
-  const [importCharge, setImportCharge] = useState(item.importCharge || "");
-  const [fare, setFare] = useState(item.fare != null ? String(item.fare) : "");
 
   const currentUnit = item.unit || "CONTAINER";
   const unitOptions = COMMON_UNITS.includes(currentUnit)
@@ -769,21 +1038,12 @@ function ChargeEditRow({
     : [currentUnit, ...COMMON_UNITS];
 
   return (
-    <tr className="bg-primary/5">
-      <td colSpan={5} className="p-4">
+    <tr className="bg-white">
+      <td colSpan={SHEET_COLUMNS} className="p-4">
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            onSave({
-              freight,
-              unit,
-              quantity,
-              net,
-              gross,
-              exportCharge,
-              importCharge,
-              fare,
-            });
+            onSave({ freight, chargeType, unit, quantity, net, gross });
           }}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
@@ -793,11 +1053,11 @@ function ChargeEditRow({
           }}
           className="space-y-4"
         >
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-6">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-12">
             <Field
               label="Charge"
               htmlFor={`edit-name-${item.id}`}
-              className="col-span-2 sm:col-span-3"
+              className="col-span-2 sm:col-span-4"
             >
               <Input
                 id={`edit-name-${item.id}`}
@@ -809,9 +1069,20 @@ function ChargeEditRow({
               />
             </Field>
             <Field
+              label="Classification"
+              htmlFor={`edit-type-${item.id}`}
+              className="col-span-2 sm:col-span-3"
+            >
+              <ChargeTypeSelect
+                id={`edit-type-${item.id}`}
+                value={chargeType}
+                onChange={setChargeType}
+              />
+            </Field>
+            <Field
               label="Unit"
               htmlFor={`edit-unit-${item.id}`}
-              className="sm:col-span-2"
+              className="col-span-1 sm:col-span-3"
             >
               <UnitSelect
                 id={`edit-unit-${item.id}`}
@@ -820,7 +1091,11 @@ function ChargeEditRow({
                 options={unitOptions}
               />
             </Field>
-            <Field label="Quantity" htmlFor={`edit-qty-${item.id}`}>
+            <Field
+              label="Quantity"
+              htmlFor={`edit-qty-${item.id}`}
+              className="col-span-1 sm:col-span-2"
+            >
               <NumberField
                 id={`edit-qty-${item.id}`}
                 value={quantity}
@@ -831,7 +1106,7 @@ function ChargeEditRow({
             <Field
               label="Buy per unit"
               htmlFor={`edit-net-${item.id}`}
-              className="sm:col-span-3"
+              className="col-span-1 sm:col-span-6"
             >
               <NumberField
                 id={`edit-net-${item.id}`}
@@ -843,49 +1118,12 @@ function ChargeEditRow({
             <Field
               label="Sell per unit"
               htmlFor={`edit-gross-${item.id}`}
-              className="sm:col-span-3"
+              className="col-span-1 sm:col-span-6"
             >
               <NumberField
                 id={`edit-gross-${item.id}`}
                 value={gross}
                 onChange={setGross}
-                suffix={baseCurrency}
-              />
-            </Field>
-            <Field
-              label="Export charge"
-              htmlFor={`edit-export-${item.id}`}
-              className="sm:col-span-2"
-            >
-              <UnitSelect
-                id={`edit-export-${item.id}`}
-                value={exportCharge}
-                onChange={setExportCharge}
-                options={EXPORT_CHARGES}
-              />
-            </Field>
-            <Field
-              label="Import charge"
-              htmlFor={`edit-import-${item.id}`}
-              className="sm:col-span-2"
-            >
-              <UnitSelect
-                id={`edit-import-${item.id}`}
-                value={importCharge}
-                onChange={setImportCharge}
-                options={IMPORT_CHARGES}
-              />
-            </Field>
-            <Field
-              label="Fare"
-              htmlFor={`edit-fare-${item.id}`}
-              className="sm:col-span-2"
-            >
-              <NumberField
-                id={`edit-fare-${item.id}`}
-                value={fare}
-                onChange={setFare}
-                placeholder="0.00"
                 suffix={baseCurrency}
               />
             </Field>
@@ -940,13 +1178,11 @@ function AddChargeForm({
   onSubmit: (draft: ChargeDraft) => Promise<boolean>;
 }) {
   const [freight, setFreight] = useState("");
+  const [chargeType, setChargeType] = useState<ChargeType>(DEFAULT_CHARGE_TYPE);
   const [unit, setUnit] = useState("CONTAINER");
   const [quantity, setQuantity] = useState("1");
   const [net, setNet] = useState("");
   const [gross, setGross] = useState("");
-  const [exportCharge, setExportCharge] = useState("");
-  const [importCharge, setImportCharge] = useState("");
-  const [fare, setFare] = useState("");
 
   const nameRef = useRef<HTMLInputElement>(null);
   const netRef = useRef<HTMLInputElement>(null);
@@ -955,22 +1191,18 @@ function AddChargeForm({
     e.preventDefault();
     const ok = await onSubmit({
       freight,
+      chargeType,
       unit,
       quantity,
       net,
       gross,
-      exportCharge,
-      importCharge,
-      fare,
     });
     if (ok) {
       setFreight("");
+      setChargeType(DEFAULT_CHARGE_TYPE);
       setNet("");
       setGross("");
       setQuantity("1");
-      setExportCharge("");
-      setImportCharge("");
-      setFare("");
       nameRef.current?.focus(); // ready for the next charge
     }
   };
@@ -992,7 +1224,7 @@ function AddChargeForm({
               aria-pressed={freight === preset}
               onClick={() => {
                 setFreight(preset);
-                netRef.current?.focus();
+                netRef.current?.focus({ preventScroll: true });
               }}
               className={cn(
                 "border px-3 py-1 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -1007,17 +1239,27 @@ function AddChargeForm({
         </div>
       </div>
 
-      <Field label="Charge name" htmlFor="new-name">
-        <Input
-          id="new-name"
-          ref={nameRef}
-          value={freight}
-          onChange={(e) => setFreight(e.target.value)}
-          placeholder="e.g. Ocean Freight 40HC"
-          required
-          className="h-10"
-        />
-      </Field>
+      {/* Freight, then Classification, on one row (Unit follows below) */}
+      <div className="grid grid-cols-5 gap-3">
+        <Field label="Charge name" htmlFor="new-name" className="col-span-3">
+          <Input
+            id="new-name"
+            ref={nameRef}
+            value={freight}
+            onChange={(e) => setFreight(e.target.value)}
+            placeholder="e.g. Ocean Freight 40HC"
+            required
+            className="h-10"
+          />
+        </Field>
+        <Field label="Classification" htmlFor="new-type" className="col-span-2">
+          <ChargeTypeSelect
+            id="new-type"
+            value={chargeType}
+            onChange={setChargeType}
+          />
+        </Field>
+      </div>
 
       <div className="grid grid-cols-2 gap-3">
         <Field label="Unit" htmlFor="new-unit">
@@ -1069,39 +1311,6 @@ function AddChargeForm({
             id="new-gross"
             value={gross}
             onChange={setGross}
-            placeholder="0.00"
-            suffix={baseCurrency}
-          />
-        </Field>
-        <Field
-          label="Export charge"
-          htmlFor="new-export"
-          className="col-span-2"
-        >
-          <UnitSelect
-            id="new-export"
-            value={exportCharge}
-            onChange={setExportCharge}
-            options={EXPORT_CHARGES}
-          />
-        </Field>
-        <Field
-          label="Import charge"
-          htmlFor="new-import"
-          className="col-span-2"
-        >
-          <UnitSelect
-            id="new-import"
-            value={importCharge}
-            onChange={setImportCharge}
-            options={IMPORT_CHARGES}
-          />
-        </Field>
-        <Field label="Fare" htmlFor="new-fare" className="col-span-2">
-          <NumberField
-            id="new-fare"
-            value={fare}
-            onChange={setFare}
             placeholder="0.00"
             suffix={baseCurrency}
           />
@@ -1215,6 +1424,7 @@ export function ManageFreightItemsDialog({
         {
           id: created.id,
           freight: created.freight,
+          chargeType: created.chargeType,
           unit: created.unit,
           quantity: created.quantity,
           net: created.net,
@@ -1224,9 +1434,6 @@ export function ManageFreightItemsDialog({
           originalNet: created.net,
           originalGross: created.gross,
           originalCurrency: rate.baseCurrency,
-          exportCharge: created.exportCharge ?? null,
-          importCharge: created.importCharge ?? null,
-          fare: created.fare ?? null,
         },
       ]);
 
@@ -1276,15 +1483,13 @@ export function ManageFreightItemsDialog({
             ? {
                 ...i,
                 freight: updated.freight,
+                chargeType: updated.chargeType,
                 unit: updated.unit,
                 quantity: updated.quantity,
                 net: updated.net,
                 gross: updated.gross,
                 profit: updated.profit,
                 currency: updated.currency,
-                exportCharge: updated.exportCharge ?? null,
-                importCharge: updated.importCharge ?? null,
-                fare: updated.fare ?? null,
               }
             : i,
         ),
@@ -1344,12 +1549,13 @@ export function ManageFreightItemsDialog({
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]">
             {/* ───────────── Charges list ───────────── */}
             <section className="h-full border border-border">
-              <div className="flex items-center justify-between border-b border-border bg-muted/40 px-4 py-3">
+              <div className="flex items-center justify-between gap-3 border-b border-border bg-muted/40 px-4 py-3">
                 <h3 className="text-sm font-semibold text-foreground">
                   Charges ({items.length})
                 </h3>
-                <span className="text-xs text-muted-foreground">
-                  Buy and sell are per unit. Profit is the line total.
+                <span className="text-right text-xs text-muted-foreground">
+                  All amounts in {baseCurrency}. Price is per unit; total and
+                  profit are per line.
                 </span>
               </div>
 
@@ -1364,61 +1570,17 @@ export function ManageFreightItemsDialog({
                   </p>
                 </div>
               ) : (
-                <div className="overflow-x-auto w-full">
-                  <table className="w-full table-fixed text-left text-sm">
-                    <thead className="border-b border-border text-xs text-muted-foreground">
-                      <tr>
-                        <th scope="col" className="px-4 py-2.5 font-medium">
-                          Charge
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-3 py-2.5 text-right font-medium"
-                        >
-                          Buy / unit
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-3 py-2.5 text-right font-medium"
-                        >
-                          Sell / unit
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-3 py-2.5 text-right font-medium"
-                        >
-                          Profit
-                        </th>
-                        <th scope="col" className="px-3 py-2.5">
-                          <span className="sr-only">Actions</span>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border">
-                      {items.map((item) =>
-                        editingId === item.id ? (
-                          <ChargeEditRow
-                            key={item.id}
-                            item={item}
-                            baseCurrency={baseCurrency}
-                            saving={busyId === item.id}
-                            error={rowError}
-                            onSave={(draft) => handleSaveEdit(item, draft)}
-                            onCancel={handleCancelEdit}
-                          />
-                        ) : (
-                          <ChargeRow
-                            key={item.id}
-                            item={item}
-                            baseCurrency={baseCurrency}
-                            onEdit={() => handleStartEdit(item)}
-                            onDelete={() => setDeletingItem(item)}
-                          />
-                        ),
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                <ChargeSheet
+                  items={items}
+                  baseCurrency={baseCurrency}
+                  editingId={editingId}
+                  busyId={busyId}
+                  rowError={rowError}
+                  onEdit={handleStartEdit}
+                  onDelete={setDeletingItem}
+                  onSave={handleSaveEdit}
+                  onCancel={handleCancelEdit}
+                />
               )}
             </section>
 
