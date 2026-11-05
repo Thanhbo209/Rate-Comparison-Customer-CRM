@@ -85,7 +85,10 @@ export function CustomerViewDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent onClose={() => onOpenChange(false)} className="max-w-lg">
+      <DialogContent
+        onClose={() => onOpenChange(false)}
+        className="w-[50vw] max-w-[1600px]"
+      >
         <DialogHeader>
           <div className="flex items-center gap-3">
             <div className="flex size-10 shrink-0 items-center justify-center bg-primary/10 text-primary font-bold text-base">
@@ -132,7 +135,7 @@ export function CustomerViewDialog({
 
           {/* Contact Details */}
           <div className="border border-border bg-card p-4 space-y-2.5">
-            <h4 className="font-heading text-xs font-semibold text-foreground uppercase tracking-wider text-muted-foreground">
+            <h4 className="font-heading text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               Contact Person
             </h4>
 
@@ -186,7 +189,7 @@ export function CustomerViewDialog({
 
           {/* Facility Location */}
           <div className="border border-border bg-card p-4 space-y-2.5">
-            <h4 className="font-heading text-xs font-semibold text-foreground uppercase tracking-wider text-muted-foreground">
+            <h4 className="font-heading text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Facility Location
             </h4>
 

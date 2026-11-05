@@ -1,6 +1,6 @@
+import { CustomersView } from "@/components/dashboard/customers/customers-view";
 import { requireRole } from "@/lib/auth/session";
 import { getCustomers, getCustomerStats } from "@/lib/customer/queries";
-import { CustomersView } from "@/components/dashboard/sales/customers/customers-view";
 
 export const dynamic = "force-dynamic";
 

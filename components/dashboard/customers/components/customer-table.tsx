@@ -46,7 +46,6 @@ export function CustomerTable({
   const [selectedZone, setSelectedZone] = useState<string>("ALL");
   const [selectedCommodity, setSelectedCommodity] = useState<string>("ALL");
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
 
   // Extract unique industrial zones and commodities for filter dropdowns
   const industrialZones = useMemo(() => {
@@ -158,7 +157,7 @@ export function CustomerTable({
 
           {/* Commodity Filter */}
           {commodities.length > 0 && (
-            <div className="min-w-[160px]">
+            <div className="min-w-40">
               <Select
                 value={selectedCommodity}
                 onValueChange={(val) => {
@@ -236,8 +235,6 @@ export function CustomerTable({
             </thead>
             <tbody className="divide-y divide-border">
               {paginated.map((customer) => {
-                const isMenuOpen = activeMenuId === customer.id;
-
                 return (
                   <tr
                     key={customer.id}
@@ -250,7 +247,7 @@ export function CustomerTable({
                           {customer.companyName.charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-semibold text-foreground truncate max-w-[200px]">
+                          <p className="font-semibold text-foreground truncate max-w-50">
                             {customer.companyName}
                           </p>
                           {role === "ADMIN" && customer.organization && (
@@ -260,7 +257,7 @@ export function CustomerTable({
                             </span>
                           )}
                           {customer.address && (
-                            <p className="truncate max-w-[200px] text-[11px] text-muted-foreground">
+                            <p className="truncate max-w-50 text-[11px] text-muted-foreground">
                               {customer.address}
                             </p>
                           )}
@@ -276,7 +273,7 @@ export function CustomerTable({
                         </p>
                         <div className="mt-0.5 flex flex-col text-[11px] text-muted-foreground">
                           {customer.email && (
-                            <span className="truncate max-w-[150px]">
+                            <span className="truncate max-w-37.5">
                               {customer.email}
                             </span>
                           )}
@@ -292,7 +289,7 @@ export function CustomerTable({
                       {customer.commodity ? (
                         <span className="inline-flex items-center gap-1 bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
                           <Tag className="size-3 shrink-0" />
-                          <span className="truncate max-w-[120px]">
+                          <span className="truncate max-w-30">
                             {customer.commodity}
                           </span>
                         </span>

@@ -1,7 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Loader2, Building2, User, Mail, Phone, MapPin, Tag } from "lucide-react";
+import {
+  Loader2,
+  Building2,
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Tag,
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +18,10 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { createCustomerAction, updateCustomerAction } from "@/lib/customer/actions";
+import {
+  createCustomerAction,
+  updateCustomerAction,
+} from "@/lib/customer/actions";
 import type { CustomerItem, CustomerFormData } from "@/lib/customer/types";
 import { toast } from "react-toastify";
 
@@ -45,6 +56,7 @@ export function CustomerDialog({
 
   useEffect(() => {
     if (customer) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         companyName: customer.companyName || "",
         industrialZone: customer.industrialZone || "",

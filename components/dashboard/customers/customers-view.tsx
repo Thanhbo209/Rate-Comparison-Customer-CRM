@@ -8,11 +8,11 @@ import type {
   CustomerItem,
   CustomerStats as CustomerStatsType,
 } from "@/lib/customer/types";
-import { CustomerStats } from "../sales/customers/customer-stats";
-import { CustomerTable } from "../sales/customers/customer-table";
-import { CustomerDialog } from "../sales/customers/customer-dialog";
-import { CustomerViewDialog } from "../sales/customers/customer-view-dialog";
-import { CustomerDeleteDialog } from "../sales/customers/customer-delete-dialog";
+import { CustomerStats } from "./components/customer-stats";
+import { CustomerTable } from "./components/customer-table";
+import { CustomerDialog } from "./components/customer-dialog";
+import { CustomerViewDialog } from "./components/customer-view-dialog";
+import { CustomerDeleteDialog } from "./components/customer-delete-dialog";
 
 interface CustomersViewProps {
   initialCustomers: CustomerItem[];
