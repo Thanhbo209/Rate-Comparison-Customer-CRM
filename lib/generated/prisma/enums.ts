@@ -24,3 +24,13 @@ export const ShipmentDirection = {
 } as const
 
 export type ShipmentDirection = (typeof ShipmentDirection)[keyof typeof ShipmentDirection]
+
+
+export const FreightChargeType = {
+  STANDARD: 'STANDARD',
+  EXPORT_CHARGE: 'EXPORT_CHARGE',
+  IMPORT_CHARGE: 'IMPORT_CHARGE',
+  FARE: 'FARE'
+} as const
+
+export type FreightChargeType = (typeof FreightChargeType)[keyof typeof FreightChargeType]

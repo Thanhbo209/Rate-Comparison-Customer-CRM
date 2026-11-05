@@ -11,11 +11,25 @@ export type FreightActionResponse<T = unknown> = {
   error?: string;
 };
 
+type ChargeType = FreightItemRecord["chargeType"];
+
+// Not exported on purpose: a "use server" file can only export async functions.
+const CHARGE_TYPES: readonly ChargeType[] = [
+  "STANDARD",
+  "EXPORT_CHARGE",
+  "IMPORT_CHARGE",
+  "FARE",
+];
+
+/** Server actions receive whatever the client sends, so check the enum at runtime. */
+const isChargeType = (value: unknown): value is ChargeType =>
+  CHARGE_TYPES.some((t) => t === value);
+
 /**
  * Add an itemized freight charge line to a shipment carrier rate.
  */
 export async function createFreightItemAction(
-  data: FreightItemFormData
+  data: FreightItemFormData,
 ): Promise<FreightActionResponse<FreightItemRecord>> {
   try {
     const profile = await getCurrentProfile();
@@ -28,11 +42,19 @@ export async function createFreightItemAction(
     }
 
     if (!data.freight?.trim()) {
-      return { success: false, error: "Freight item charge description is required." };
+      return {
+        success: false,
+        error: "Freight item charge description is required.",
+      };
     }
 
     if (!data.shipmentRateId) {
       return { success: false, error: "Shipment rate ID is required." };
+    }
+
+    const chargeType = data.chargeType ?? "STANDARD";
+    if (!isChargeType(chargeType)) {
+      return { success: false, error: "Invalid charge classification." };
     }
 
     // Verify tenant isolation: ensure rate belongs to customer of user's organization
@@ -74,14 +96,12 @@ export async function createFreightItemAction(
       data: {
         shipmentRateId: data.shipmentRateId,
         freight: data.freight.trim(),
+        chargeType,
         unit: data.unit?.trim() || "CONTAINER",
         quantity,
         net,
         gross,
         currency,
-        exportCharge: data.exportCharge?.trim() || null,
-        importCharge: data.importCharge?.trim() || null,
-        fare: data.fare != null ? data.fare : null,
       },
     });
 
@@ -95,15 +115,13 @@ export async function createFreightItemAction(
         id: item.id,
         shipmentRateId: item.shipmentRateId,
         freight: item.freight,
+        chargeType: item.chargeType,
         unit: item.unit,
         quantity: Number(item.quantity),
         net: Number(item.net),
         gross: Number(item.gross),
         profit: Number(item.gross) - Number(item.net),
         currency: item.currency,
-        exportCharge: item.exportCharge ?? null,
-        importCharge: item.importCharge ?? null,
-        fare: item.fare != null ? Number(item.fare) : null,
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,
       },
@@ -113,7 +131,9 @@ export async function createFreightItemAction(
     return {
       success: false,
       error:
-        error instanceof Error ? error.message : "Failed to create freight item.",
+        error instanceof Error
+          ? error.message
+          : "Failed to create freight item.",
     };
   }
 }
@@ -123,7 +143,7 @@ export async function createFreightItemAction(
  */
 export async function updateFreightItemAction(
   id: string,
-  data: Partial<FreightItemFormData>
+  data: Partial<FreightItemFormData>,
 ): Promise<FreightActionResponse<FreightItemRecord>> {
   try {
     const profile = await getCurrentProfile();
@@ -133,6 +153,10 @@ export async function updateFreightItemAction(
 
     if (!profile.organizationId && profile.role !== "ADMIN") {
       return { success: false, error: "Organization required." };
+    }
+
+    if (data.chargeType !== undefined && !isChargeType(data.chargeType)) {
+      return { success: false, error: "Invalid charge classification." };
     }
 
     const existing = await prisma.freightItem.findUnique({
@@ -158,7 +182,8 @@ export async function updateFreightItemAction(
       return { success: false, error: "Permission denied." };
     }
 
-    const net = data.net !== undefined ? Number(data.net) : Number(existing.net);
+    const net =
+      data.net !== undefined ? Number(data.net) : Number(existing.net);
     const gross =
       data.gross !== undefined ? Number(data.gross) : Number(existing.gross);
     const quantity =
@@ -170,14 +195,12 @@ export async function updateFreightItemAction(
       where: { id },
       data: {
         freight: data.freight?.trim() || existing.freight,
+        chargeType: data.chargeType ?? existing.chargeType,
         unit: data.unit !== undefined ? data.unit.trim() : existing.unit,
         quantity,
         net,
         gross,
         currency: data.currency?.trim() || existing.currency,
-        exportCharge: data.exportCharge !== undefined ? (data.exportCharge?.trim() || null) : existing.exportCharge,
-        importCharge: data.importCharge !== undefined ? (data.importCharge?.trim() || null) : existing.importCharge,
-        fare: data.fare !== undefined ? (data.fare ?? null) : existing.fare,
       },
     });
 
@@ -191,15 +214,13 @@ export async function updateFreightItemAction(
         id: updated.id,
         shipmentRateId: updated.shipmentRateId,
         freight: updated.freight,
+        chargeType: updated.chargeType,
         unit: updated.unit,
         quantity: Number(updated.quantity),
         net: Number(updated.net),
         gross: Number(updated.gross),
         profit: Number(updated.gross) - Number(updated.net),
         currency: updated.currency,
-        exportCharge: updated.exportCharge ?? null,
-        importCharge: updated.importCharge ?? null,
-        fare: updated.fare != null ? Number(updated.fare) : null,
         createdAt: updated.createdAt,
         updatedAt: updated.updatedAt,
       },
@@ -209,7 +230,9 @@ export async function updateFreightItemAction(
     return {
       success: false,
       error:
-        error instanceof Error ? error.message : "Failed to update freight item.",
+        error instanceof Error
+          ? error.message
+          : "Failed to update freight item.",
     };
   }
 }
@@ -218,7 +241,7 @@ export async function updateFreightItemAction(
  * Delete a freight line item.
  */
 export async function deleteFreightItemAction(
-  id: string
+  id: string,
 ): Promise<FreightActionResponse<{ id: string }>> {
   try {
     const profile = await getCurrentProfile();
@@ -267,7 +290,9 @@ export async function deleteFreightItemAction(
     return {
       success: false,
       error:
-        error instanceof Error ? error.message : "Failed to delete freight item.",
+        error instanceof Error
+          ? error.message
+          : "Failed to delete freight item.",
     };
   }
 }

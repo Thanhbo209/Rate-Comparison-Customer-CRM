@@ -11,6 +11,7 @@ export interface FreightItemSummary {
   id: string;
   freight: string;
   unit: string | null;
+  chargeType: string | "STANDARD";
   net: number; // Converted to system baseCurrency
   quantity: number;
   gross: number; // Converted to system baseCurrency
@@ -19,9 +20,6 @@ export interface FreightItemSummary {
   originalNet: number;
   originalGross: number;
   originalCurrency: string;
-  exportCharge?: string | null;
-  importCharge?: string | null;
-  fare?: number | null;
 }
 
 export interface CurrencyFinancialBucket {

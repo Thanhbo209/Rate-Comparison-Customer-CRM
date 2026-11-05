@@ -73,7 +73,8 @@ export async function createProviderAction({
     console.error("Failed to create provider:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to create provider.",
+      error:
+        error instanceof Error ? error.message : "Failed to create provider.",
     };
   }
 }
@@ -106,7 +107,10 @@ export async function addShipmentRateAction({
     const shipmentFilter =
       profile.role === "ADMIN" && !profile.organizationId
         ? { id: shipmentId }
-        : { id: shipmentId, customer: { organizationId: profile.organizationId! } };
+        : {
+            id: shipmentId,
+            customer: { organizationId: profile.organizationId! },
+          };
 
     const shipment = await prisma.shipment.findFirst({
       where: shipmentFilter,
@@ -294,12 +298,13 @@ export async function updateShipmentRateProviderAction({
     if (!providerCheck) {
       return {
         success: false,
-        error: "Selected provider not found or belongs to another organization.",
+        error:
+          "Selected provider not found or belongs to another organization.",
       };
     }
 
     const trimmedOptionName =
-      optionName !== undefined ? (optionName.trim() || null) : rate.optionName;
+      optionName !== undefined ? optionName.trim() || null : rate.optionName;
 
     const updated = await prisma.shipmentRate.update({
       where: { id: shipmentRateId },
@@ -403,7 +408,9 @@ export async function selectShipmentRateAction({
 }: {
   shipmentId: string;
   shipmentRateId: string | null;
-}): Promise<RateActionResponse<{ shipmentId: string; selectedRateId: string | null }>> {
+}): Promise<
+  RateActionResponse<{ shipmentId: string; selectedRateId: string | null }>
+> {
   try {
     const profile = await getCurrentProfile();
     if (!profile) {
@@ -418,7 +425,8 @@ export async function selectShipmentRateAction({
     if (profile.role !== "ADMIN" && profile.role !== "SALES_MANAGER") {
       return {
         success: false,
-        error: "Only Sales Managers and Administrators can select the carrier rate for a shipment.",
+        error:
+          "Only Sales Managers and Administrators can select the carrier rate for a shipment.",
       };
     }
 
@@ -487,4 +495,3 @@ export async function selectShipmentRateAction({
     };
   }
 }
-

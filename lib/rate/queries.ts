@@ -13,12 +13,14 @@ import { rankRatesByProfit } from "./ranking";
 
 export async function getProviders(
   organizationId?: string | null,
-  isPlatformAdmin = false
+  isPlatformAdmin = false,
 ): Promise<ProviderItem[]> {
   if (!organizationId && !isPlatformAdmin) return [];
 
   const filter =
-    isPlatformAdmin && !organizationId ? {} : { organizationId: organizationId! };
+    isPlatformAdmin && !organizationId
+      ? {}
+      : { organizationId: organizationId! };
 
   return prisma.provider.findMany({
     where: filter,
@@ -37,7 +39,7 @@ export async function getProviders(
 
 export async function getAvailableShipmentsForRates(
   organizationId?: string | null,
-  isPlatformAdmin = false
+  isPlatformAdmin = false,
 ) {
   if (!organizationId && !isPlatformAdmin) return [];
 
@@ -73,7 +75,7 @@ export async function getAvailableShipmentsForRates(
 export async function getShipmentRateComparison(
   shipmentId: string,
   organizationId?: string | null,
-  isPlatformAdmin = false
+  isPlatformAdmin = false,
 ): Promise<ShipmentComparisonDetail | null> {
   if (!organizationId && !isPlatformAdmin) return null;
 
@@ -124,13 +126,15 @@ export async function getShipmentRateComparison(
     if (fromCurrency === orgBaseCurrency) return 1;
     // Check direct rate: fromCurrency -> orgBaseCurrency
     const direct = orgExchangeRates.find(
-      (r) => r.fromCurrency === fromCurrency && r.toCurrency === orgBaseCurrency
+      (r) =>
+        r.fromCurrency === fromCurrency && r.toCurrency === orgBaseCurrency,
     );
     if (direct) return Number(direct.rate) || 1;
 
     // Check inverse rate: orgBaseCurrency -> fromCurrency
     const inverse = orgExchangeRates.find(
-      (r) => r.fromCurrency === orgBaseCurrency && r.toCurrency === fromCurrency
+      (r) =>
+        r.fromCurrency === orgBaseCurrency && r.toCurrency === fromCurrency,
     );
     if (inverse && Number(inverse.rate) > 0) {
       return 1 / Number(inverse.rate);
@@ -182,6 +186,7 @@ export async function getShipmentRateComparison(
         id: fi.id,
         freight: fi.freight,
         unit: fi.unit,
+        chargeType: fi.chargeType,
         net: convertedNet,
         quantity,
         gross: convertedGross,
@@ -190,14 +195,11 @@ export async function getShipmentRateComparison(
         originalNet: net,
         originalGross: gross,
         originalCurrency: itemCurrency,
-        exportCharge: fi.exportCharge ?? null,
-        importCharge: fi.importCharge ?? null,
-        fare: fi.fare != null ? Number(fi.fare) : null,
       };
     });
 
     const currencies: CurrencyFinancialBucket[] = Array.from(
-      bucketsMap.entries()
+      bucketsMap.entries(),
     ).map(([curr, b]) => {
       const margin =
         b.totalGross > 0 ? (b.totalProfit / b.totalGross) * 100 : 0;
@@ -264,11 +266,14 @@ export async function getShipmentRateComparison(
   const ranking = rankRatesByProfit(rates, orgBaseCurrency, orgExchangeRates);
   const bestCustomerRateId = ranking.winnerId || undefined;
   const bestCustomerRateProfit = ranking.winnerRate
-    ? (ranking.breakdowns.find((b) => b.rateId === ranking.winnerId)?.totalProfit ?? 0)
+    ? (ranking.breakdowns.find((b) => b.rateId === ranking.winnerId)
+        ?.totalProfit ?? 0)
     : undefined;
   const bestCustomerRateCarrier = ranking.winnerRate
     ? (ranking.winnerRate.provider?.name ?? "Provider") +
-      (ranking.winnerRate.optionName ? ` (${ranking.winnerRate.optionName})` : "")
+      (ranking.winnerRate.optionName
+        ? ` (${ranking.winnerRate.optionName})`
+        : "")
     : undefined;
 
   let bestRateId: string | undefined;
@@ -332,7 +337,7 @@ export async function getShipmentRateComparison(
  */
 export async function getAllShipmentsRateOverview(
   organizationId?: string | null,
-  isPlatformAdmin = false
+  isPlatformAdmin = false,
 ): Promise<MultiShipmentRateOverview | null> {
   if (!organizationId && !isPlatformAdmin) return null;
 
@@ -363,11 +368,13 @@ export async function getAllShipmentsRateOverview(
   const getFxRateToBase = (fromCurrency: string): number => {
     if (fromCurrency === orgBaseCurrency) return 1;
     const direct = orgExchangeRates.find(
-      (r) => r.fromCurrency === fromCurrency && r.toCurrency === orgBaseCurrency
+      (r) =>
+        r.fromCurrency === fromCurrency && r.toCurrency === orgBaseCurrency,
     );
     if (direct) return Number(direct.rate) || 1;
     const inverse = orgExchangeRates.find(
-      (r) => r.fromCurrency === orgBaseCurrency && r.toCurrency === fromCurrency
+      (r) =>
+        r.fromCurrency === orgBaseCurrency && r.toCurrency === fromCurrency,
     );
     if (inverse && Number(inverse.rate) > 0) {
       return 1 / Number(inverse.rate);
@@ -468,6 +475,7 @@ export async function getAllShipmentsRateOverview(
           id: fi.id,
           freight: fi.freight,
           unit: fi.unit,
+          chargeType: fi.chargeType,
           net: convertedNet,
           quantity,
           gross: convertedGross,
@@ -480,7 +488,7 @@ export async function getAllShipmentsRateOverview(
       });
 
       const currencies: CurrencyFinancialBucket[] = Array.from(
-        bucketsMap.entries()
+        bucketsMap.entries(),
       ).map(([curr, b]) => {
         const margin =
           b.totalGross > 0 ? (b.totalProfit / b.totalGross) * 100 : 0;
@@ -571,11 +579,14 @@ export async function getAllShipmentsRateOverview(
     const ranking = rankRatesByProfit(rates, orgBaseCurrency, orgExchangeRates);
     const bestCustomerRateId = ranking.winnerId || undefined;
     const bestCustomerRateProfit = ranking.winnerRate
-      ? (ranking.breakdowns.find((b) => b.rateId === ranking.winnerId)?.totalProfit ?? 0)
+      ? (ranking.breakdowns.find((b) => b.rateId === ranking.winnerId)
+          ?.totalProfit ?? 0)
       : undefined;
     const bestCustomerRateCarrier = ranking.winnerRate
       ? (ranking.winnerRate.provider?.name ?? "Provider") +
-        (ranking.winnerRate.optionName ? ` (${ranking.winnerRate.optionName})` : "")
+        (ranking.winnerRate.optionName
+          ? ` (${ranking.winnerRate.optionName})`
+          : "")
       : undefined;
 
     let bestRateId: string | undefined;
