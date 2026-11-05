@@ -40,7 +40,7 @@ import type {
   MultiShipmentRateOverview,
 } from "@/lib/rate/types";
 import { rankShipments } from "@/lib/rate/shipment-ranking";
-import { FreightRatesTable } from "./freights/freight-rate-table";
+import { FreightRatesTable } from "./freight-rate-table";
 
 interface RateComparisonViewProps {
   shipment: ShipmentComparisonDetail | null;

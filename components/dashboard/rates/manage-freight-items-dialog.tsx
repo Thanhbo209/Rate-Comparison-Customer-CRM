@@ -44,7 +44,7 @@ import {
 } from "@/lib/freight/actions";
 import type { ShipmentRateItem, FreightItemSummary } from "@/lib/rate/types";
 import { toast } from "react-toastify";
-import { FreightDeleteDialog } from "./freights/freight-delete-dialog";
+import { FreightDeleteDialog } from "./dialogs/freight-delete-dialog";
 
 interface ManageFreightItemsDialogProps {
   open: boolean;
@@ -913,7 +913,6 @@ function ChargeSheet({
   const groups = groupCharges(items);
   const grandSell = groups.reduce((sum, g) => sum + g.sell, 0);
   const grandProfit = groups.reduce((sum, g) => sum + g.profit, 0);
-  const grandMargin = grandSell > 0 ? (grandProfit / grandSell) * 100 : 0;
 
   return (
     <div className="w-full overflow-x-auto">
@@ -974,29 +973,24 @@ function ChargeSheet({
         ))}
 
         <tfoot>
-          <tr className="bg-sky-100">
+          <tr className="bg-muted-foreground/20">
             <th scope="row" colSpan={4} className="px-4 py-3.5 text-left">
               <span className="text-sm font-bold text-foreground">
                 Grand total:
               </span>
-              <span className="ml-2 text-xs font-normal text-muted-foreground">
-                {baseCurrency}
-              </span>
             </th>
-            <td className="px-3 py-3.5 text-right text-base font-bold text-foreground tabular-nums">
+            <td className="px-3 py-3.5 text-destructive text-right font-bold tabular-nums">
               {money(grandSell)}
             </td>
-            <td className="px-3 py-3.5 text-right tabular-nums">
+
+            <td className=" px-3 py-3.5 text-right tabular-nums">
               <p
                 className={cn(
-                  "text-sm font-bold",
+                  "text-sm font-bold ",
                   grandProfit >= 0 ? PROFIT_TEXT : "text-destructive",
                 )}
               >
                 {signed(grandProfit)}
-              </p>
-              <p className="mt-0.5 text-[11px] text-muted-foreground">
-                {grandMargin.toFixed(1)}%
               </p>
             </td>
             <td />
