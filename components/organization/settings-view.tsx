@@ -37,6 +37,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "react-toastify";
+import { Button } from "../ui/button";
 
 const COMMON_CURRENCIES = [
   "USD",
@@ -109,7 +110,9 @@ export function OrganizationSettingsView({
     initialData.organization.baseCurrency || "USD",
   );
   const [rateValue, setRateValue] = useState("");
-  const [deletingRate, setDeletingRate] = useState<ExchangeRateItem | null>(null);
+  const [deletingRate, setDeletingRate] = useState<ExchangeRateItem | null>(
+    null,
+  );
 
   // ── Handlers ───────────────────────────────────────────────────────────────
 
@@ -257,9 +260,6 @@ export function OrganizationSettingsView({
           <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
             Settings & Preferences
           </h1>
-          <span className="bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
-            Account & Workspace
-          </span>
         </div>
         <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
           Manage your personal profile, organization details, and multi-currency
@@ -270,11 +270,11 @@ export function OrganizationSettingsView({
       {/* ─────────────────────────────────────────────────────────────────────────
           SECTION 1: USER PROFILE
       ─────────────────────────────────────────────────────────────────────────── */}
-      <section className="border border-border bg-card p-6 shadow-xs transition-shadow hover:shadow-sm">
+      <section className="border border-border bg-card p-4 shadow-xs transition-shadow hover:shadow-sm">
         {/* Section Header */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pb-5 border-b border-border">
           <div className="flex items-center gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center bg-blue-500/10 text-blue-600 dark:text-blue-400">
+            <div className="flex size-10 shrink-0 items-center justify-center">
               <User className="size-5" />
             </div>
             <div>
@@ -282,7 +282,8 @@ export function OrganizationSettingsView({
                 Personal Profile
               </h2>
               <p className="text-xs text-muted-foreground">
-                Manage your personal identity, full name, and view your assigned role.
+                Manage your personal identity, full name, and view your assigned
+                role.
               </p>
             </div>
           </div>
@@ -356,7 +357,9 @@ export function OrganizationSettingsView({
             <div className="flex items-center gap-2.5">
               <ShieldCheck className="size-4 text-muted-foreground" />
               <div>
-                <p className="text-[11px] text-muted-foreground">Assigned Role</p>
+                <p className="text-[11px] text-muted-foreground">
+                  Assigned Role
+                </p>
                 <span
                   className={`mt-0.5 inline-block border px-2 py-0.5 text-[11px] font-semibold ${roleBadgeColor}`}
                 >
@@ -372,7 +375,9 @@ export function OrganizationSettingsView({
             <div className="flex items-center gap-2.5">
               <Calendar className="size-4 text-muted-foreground" />
               <div>
-                <p className="text-[11px] text-muted-foreground">Member Since</p>
+                <p className="text-[11px] text-muted-foreground">
+                  Member Since
+                </p>
                 <p className="mt-0.5 text-xs font-semibold text-foreground">
                   {new Date(initialData.user.createdAt).toLocaleDateString(
                     undefined,
@@ -401,16 +406,11 @@ export function OrganizationSettingsView({
             </button>
           </div>
         </form>
-      </section>
 
-      {/* ─────────────────────────────────────────────────────────────────────────
-          SECTION 2: ORGANIZATION NAME & WORKSPACE
-      ─────────────────────────────────────────────────────────────────────────── */}
-      <section className="border border-border bg-card p-6 shadow-xs transition-shadow hover:shadow-sm">
         {/* Section Header */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pb-5 border-b border-border">
+        <div className="flex flex-col gap-3 mt-8 sm:flex-row sm:items-center sm:justify-between pb-5 border-b border-border">
           <div className="flex items-center gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center bg-purple-500/10 text-purple-600 dark:text-purple-400">
+            <div className="flex size-10 shrink-0 items-center justify-center">
               <Building2 className="size-5" />
             </div>
             <div>
@@ -514,9 +514,7 @@ export function OrganizationSettingsView({
                 disabled={isPendingOrg || orgName.trim() === savedOrgName}
                 className="inline-flex h-9 items-center justify-center gap-1.5 bg-primary px-4 text-xs font-semibold text-primary-foreground shadow-xs transition-all hover:bg-primary/90 disabled:opacity-50"
               >
-                {isPendingOrg && (
-                  <Loader2 className="size-3.5 animate-spin" />
-                )}
+                {isPendingOrg && <Loader2 className="size-3.5 animate-spin" />}
                 <span>Save Organization Name</span>
               </button>
             </div>
@@ -525,13 +523,13 @@ export function OrganizationSettingsView({
       </section>
 
       {/* ─────────────────────────────────────────────────────────────────────────
-          SECTION 3: BASE CURRENCY SETTINGS
+          SECTION 2: BASE CURRENCY SETTINGS
       ─────────────────────────────────────────────────────────────────────────── */}
-      <section className="border border-border bg-card p-6 shadow-xs transition-shadow hover:shadow-sm">
+      <section className="border border-border bg-card p-4 shadow-xs transition-shadow hover:shadow-sm">
         {/* Section Header */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pb-5 border-b border-border">
           <div className="flex items-center gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center bg-amber-500/10 text-amber-600 dark:text-amber-400">
+            <div className="flex size-10 shrink-0 items-center justify-center">
               <Coins className="size-5" />
             </div>
             <div>
@@ -594,9 +592,7 @@ export function OrganizationSettingsView({
                     return (
                       <SelectItem key={curr} value={curr}>
                         {curr} —{" "}
-                        {detail
-                          ? `${detail.label} (${detail.symbol})`
-                          : curr}
+                        {detail ? `${detail.label} (${detail.symbol})` : curr}
                       </SelectItem>
                     );
                   })}
@@ -608,9 +604,7 @@ export function OrganizationSettingsView({
               {initialData.canEdit && (
                 <button
                   type="submit"
-                  disabled={
-                    isPendingCurrency || baseCurrency === savedCurrency
-                  }
+                  disabled={isPendingCurrency || baseCurrency === savedCurrency}
                   className="inline-flex h-9 items-center justify-center gap-1.5 bg-primary px-4 text-xs font-semibold text-primary-foreground shadow-xs transition-all hover:bg-primary/90 disabled:opacity-50"
                 >
                   {isPendingCurrency && (
@@ -630,16 +624,10 @@ export function OrganizationSettingsView({
             </p>
           </div>
         </form>
-      </section>
 
-      {/* ─────────────────────────────────────────────────────────────────────────
-          SECTION 4: MULTI-CURRENCY EXCHANGE RATES
-      ─────────────────────────────────────────────────────────────────────────── */}
-      <section className="border border-border bg-card p-6 shadow-xs space-y-6 transition-shadow hover:shadow-sm">
-        {/* Section Header */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pb-5 border-b border-border">
+        <div className="flex flex-col gap- mt-9 sm:flex-row sm:items-center sm:justify-between pb-5 border-b border-border">
           <div className="flex items-center gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+            <div className="flex size-10 shrink-0 items-center justify-center">
               <ArrowRightLeft className="size-5" />
             </div>
             <div>
@@ -673,6 +661,103 @@ export function OrganizationSettingsView({
 
         {/* Existing Rates Table */}
         <div className="overflow-hidden border border-border">
+          {/* Add/Update Exchange Rate Form */}
+          {initialData.canEdit && (
+            <form
+              onSubmit={handleAddExchangeRate}
+              className="border border-border/80 bg-muted/20 p-4 space-y-4"
+            >
+              <h3 className="font-heading text-xs font-semibold text-foreground flex items-center gap-1.5">
+                <Plus className="size-3.5 text-primary" />
+                Add or Update Currency Exchange Rate
+              </h3>
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
+                <div className="space-y-1">
+                  <label className="text-[11px] font-medium text-muted-foreground">
+                    From Currency
+                  </label>
+                  <Select
+                    value={fromCurr}
+                    onValueChange={(val) => {
+                      if (val) setFromCurr(val);
+                    }}
+                  >
+                    <SelectTrigger className="w-full h-8.5 border border-border text-xs font-medium">
+                      <SelectValue>
+                        {(val: string | null) => val || fromCurr}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent className="max-h-60">
+                      {COMMON_CURRENCIES.map((c) => (
+                        <SelectItem key={c} value={c}>
+                          {c} — {CURRENCY_DETAILS[c]?.label || c}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-medium text-muted-foreground">
+                    To Currency
+                  </label>
+                  <Select
+                    value={toCurr}
+                    onValueChange={(val) => {
+                      if (val) setToCurr(val);
+                    }}
+                  >
+                    <SelectTrigger className="w-full h-8.5 border border-border text-xs font-medium">
+                      <SelectValue>
+                        {(val: string | null) => val || toCurr}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent className="max-h-60">
+                      {COMMON_CURRENCIES.map((c) => (
+                        <SelectItem key={c} value={c}>
+                          {c} — {CURRENCY_DETAILS[c]?.label || c}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-medium text-muted-foreground">
+                    Rate / Multiplier
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    placeholder="e.g. 0.000039 or 25400"
+                    value={rateValue}
+                    onChange={(e) => setRateValue(e.target.value)}
+                    className="w-full border border-border bg-background px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-hidden"
+                  />
+                </div>
+
+                <div className="flex items-end">
+                  <Button
+                    type="submit"
+                    disabled={isPendingRates || !rateValue}
+                    className="w-full inline-flex h-8 items-center justify-center gap-1.5 bg-primary px-3 text-xs font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-all shadow-xs"
+                  >
+                    {isPendingRates && (
+                      <Loader2 className="size-3 animate-spin" />
+                    )}
+                    <span>Save Rate</span>
+                  </Button>
+                </div>
+              </div>
+
+              <p className="text-[11px] text-muted-foreground italic">
+                Example: If base currency is USD and local charges are in VND,
+                set From: <strong>VND</strong>, To: <strong>USD</strong> with
+                rate: <strong>0.000039</strong> (or 1 / 25,400).
+              </p>
+            </form>
+          )}
           <table className="w-full text-left text-xs">
             <thead className="bg-muted/50 border-b border-border text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
               <tr>
@@ -736,104 +821,6 @@ export function OrganizationSettingsView({
             </tbody>
           </table>
         </div>
-
-        {/* Add/Update Exchange Rate Form */}
-        {initialData.canEdit && (
-          <form
-            onSubmit={handleAddExchangeRate}
-            className="border border-border/80 bg-muted/20 p-4 space-y-4"
-          >
-            <h3 className="font-heading text-xs font-semibold text-foreground flex items-center gap-1.5">
-              <Plus className="size-3.5 text-primary" />
-              Add or Update Currency Exchange Rate
-            </h3>
-
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
-              <div className="space-y-1">
-                <label className="text-[11px] font-medium text-muted-foreground">
-                  From Currency
-                </label>
-                <Select
-                  value={fromCurr}
-                  onValueChange={(val) => {
-                    if (val) setFromCurr(val);
-                  }}
-                >
-                  <SelectTrigger className="w-full h-8.5 border border-border bg-background text-xs font-medium">
-                    <SelectValue>
-                      {(val: string | null) => val || fromCurr}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent className="max-h-60">
-                    {COMMON_CURRENCIES.map((c) => (
-                      <SelectItem key={c} value={c}>
-                        {c} — {CURRENCY_DETAILS[c]?.label || c}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-[11px] font-medium text-muted-foreground">
-                  To Currency
-                </label>
-                <Select
-                  value={toCurr}
-                  onValueChange={(val) => {
-                    if (val) setToCurr(val);
-                  }}
-                >
-                  <SelectTrigger className="w-full h-8.5 border border-border bg-background text-xs font-medium">
-                    <SelectValue>
-                      {(val: string | null) => val || toCurr}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent className="max-h-60">
-                    {COMMON_CURRENCIES.map((c) => (
-                      <SelectItem key={c} value={c}>
-                        {c} — {CURRENCY_DETAILS[c]?.label || c}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-[11px] font-medium text-muted-foreground">
-                  Rate / Multiplier
-                </label>
-                <input
-                  type="number"
-                  step="any"
-                  placeholder="e.g. 0.000039 or 25400"
-                  value={rateValue}
-                  onChange={(e) => setRateValue(e.target.value)}
-                  className="w-full border border-border bg-background px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-hidden"
-                />
-              </div>
-
-              <div className="flex items-end">
-                <button
-                  type="submit"
-                  disabled={isPendingRates || !rateValue}
-                  className="w-full inline-flex h-8 items-center justify-center gap-1.5 bg-primary px-3 text-xs font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-all shadow-xs"
-                >
-                  {isPendingRates && (
-                    <Loader2 className="size-3 animate-spin" />
-                  )}
-                  <span>Save Rate</span>
-                </button>
-              </div>
-            </div>
-
-            <p className="text-[11px] text-muted-foreground italic">
-              Example: If base currency is USD and local charges are in VND, set
-              From: <strong>VND</strong>, To: <strong>USD</strong> with rate:{" "}
-              <strong>0.000039</strong> (or 1 / 25,400).
-            </p>
-          </form>
-        )}
       </section>
 
       {/* Delete Confirmation Dialog */}
