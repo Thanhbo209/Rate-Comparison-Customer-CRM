@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { requireRole } from "@/lib/auth/session";
 import { getOrganizationTeamData } from "@/lib/organization/queries";
-import { MemberManagementView } from "@/components/organization/member-management-view";
+import { MemberManagementView } from "@/components/dashboard/organization/member-management-view";
 
 export const metadata: Metadata = {
   title: "Team & Members | Dropwell",

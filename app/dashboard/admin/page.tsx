@@ -11,9 +11,9 @@ import {
   CheckCircle2,
   Settings,
 } from "lucide-react";
-import { StatCard } from "@/components/dashboard/overview/stat-card";
-import { SectionCard } from "@/components/dashboard/overview/section-card";
-import { DashboardBanner } from "@/components/dashboard/overview/dashboard-banner";
+import { StatCard } from "@/components/ui/stat-card";
+import { SectionCard } from "@/components/dashboard/overview/components/section-card";
+import { DashboardBanner } from "@/components/dashboard/overview/components/dashboard-banner";
 
 export const dynamic = "force-dynamic";
 
@@ -163,12 +163,12 @@ export default async function AdminDashboardPage() {
                       <td className="px-5 py-3.5">
                         <span
                           className={`inline-flex items-center px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
- isAdminRole
- ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
- : isManagerRole
- ? "bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300"
- : "bg-sky-100 text-sky-800 dark:bg-sky-950/60 dark:text-sky-300"
- }`}
+                            isAdminRole
+                              ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
+                              : isManagerRole
+                                ? "bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300"
+                                : "bg-sky-100 text-sky-800 dark:bg-sky-950/60 dark:text-sky-300"
+                          }`}
                         >
                           {member.role}
                         </span>
@@ -211,7 +211,9 @@ export default async function AdminDashboardPage() {
               <div className="flex items-center justify-between border-b border-border/60 pb-2">
                 <span className="text-muted-foreground">Organization ID</span>
                 <span className="text-[11px] text-muted-foreground">
-                  {profile.organizationId ? `${profile.organizationId.slice(0, 10)}...` : "None"}
+                  {profile.organizationId
+                    ? `${profile.organizationId.slice(0, 10)}...`
+                    : "None"}
                 </span>
               </div>
               <div className="flex items-center justify-between border-b border-border/60 pb-2">

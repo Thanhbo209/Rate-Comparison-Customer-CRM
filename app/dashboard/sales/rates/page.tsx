@@ -8,7 +8,7 @@ import {
   getAllShipmentsRateOverview,
 } from "@/lib/rate/queries";
 import { getCustomers } from "@/lib/customer/queries";
-import { RateComparisonView } from "@/components/dashboard/sales/rates/rate-comparison-view";
+import { RateComparisonView } from "@/components/dashboard/rates/rate-comparison-view";
 import { RateComparisonSkeleton } from "@/components/dashboard/skeletons";
 
 export const metadata: Metadata = {

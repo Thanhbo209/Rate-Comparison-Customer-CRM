@@ -12,11 +12,11 @@ import {
   Building2,
   Layers,
 } from "lucide-react";
-import { RecentShipmentsRates } from "@/components/dashboard/overview/recent-shipments-rates";
+import { RecentShipmentsRates } from "@/components/dashboard/overview/components/recent-shipments-rates";
 import { SalesAnalyticsCharts } from "@/components/dashboard/overview/charts/sales-analytics-charts";
-import { StatCard } from "@/components/dashboard/overview/stat-card";
-import { SectionCard } from "@/components/dashboard/overview/section-card";
-import { DashboardBanner } from "@/components/dashboard/overview/dashboard-banner";
+import { StatCard } from "@/components/ui/stat-card";
+import { SectionCard } from "@/components/dashboard/overview/components/section-card";
+import { DashboardBanner } from "@/components/dashboard/overview/components/dashboard-banner";
 import { getCustomerStats, getCustomers } from "@/lib/customer/queries";
 import { getShipmentStats } from "@/lib/shipment/queries";
 import { getAllShipmentsRateOverview } from "@/lib/rate/queries";
