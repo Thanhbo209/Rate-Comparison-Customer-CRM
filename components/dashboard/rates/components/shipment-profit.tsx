@@ -1,14 +1,3 @@
-/**
- * shipment-profit.tsx
- *
- * Three presentational components for displaying shipment-level profit totals
- * and rankings in the Rate Comparison view.
- *
- *   ShipmentProfitCell  – replaces the "Best for Customer" directory-table cell
- *   RatesTotalRow       – <tr> footer row for the per-shipment TABLE view
- *   RatesTotalStrip     – summary strip for the per-shipment CARD view
- */
-
 import { TrendingUp, TrendingDown, Trophy, Minus } from "lucide-react";
 import type { ShipmentRankResult } from "@/lib/rate/shipment-ranking";
 
@@ -28,14 +17,6 @@ interface ShipmentProfitCellProps {
   baseCurrency: string;
 }
 
-/**
- * Renders the "Total Profit" column cell in the shipment directory table.
- *
- *  – null rank (no rates):  shows "No rates" in muted italic
- *  – isBest:                shows emerald "Best choice" trophy badge
- *  – not best, has rank:    shows profit + "X behind best" note
- *  – only 1 shipment (comparedWith < 2): shows profit only, no badge
- */
 export function ShipmentProfitCell({
   result,
   baseCurrency,

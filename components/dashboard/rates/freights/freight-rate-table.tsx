@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { RatesTotalRow } from "@/components/dashboard/sales/rates/shipment-profit";
+import { RatesTotalRow } from "@/components/dashboard/rates/components/shipment-profit";
 import { rankShipments } from "@/lib/rate/shipment-ranking";
 import type { ShipmentRateItem } from "@/lib/rate/types";
 // Adjust to wherever RatesTotalRow lives in your project.
@@ -310,10 +310,7 @@ function MarginCell({ percent }: { percent: number }) {
         >
           {percent.toFixed(1)}%
         </span>
-        <div
-          className="h-1 w-16 overflow-hidden bg-muted"
-          role="presentation"
-        >
+        <div className="h-1 w-16 overflow-hidden bg-muted" role="presentation">
           <div
             className={cn("h-full ", bar)}
             style={{ width: `${barWidth}%` }}
@@ -455,29 +452,63 @@ export function FreightRatesTable({
         <thead className="border-b border-border bg-muted/40">
           {/* Column labels */}
           <tr>
-            <th scope="col" className={cn(th, "bg-amber-500/20 text-foreground")}>
+            <th
+              scope="col"
+              className={cn(th, "bg-amber-500/20 text-foreground")}
+            >
               Freight
             </th>
-            <th scope="col" className={cn(th, COL.groupStart, "bg-amber-500/20 text-foreground")}>
+            <th
+              scope="col"
+              className={cn(
+                th,
+                COL.groupStart,
+                "bg-amber-500/20 text-foreground",
+              )}
+            >
               Charges
             </th>
-            <th scope="col" className={cn(th, COL.groupStart, "text-center bg-primary/20 text-foreground")}>
+            <th
+              scope="col"
+              className={cn(
+                th,
+                COL.groupStart,
+                "text-center bg-primary/20 text-foreground",
+              )}
+            >
               Net
             </th>
-            <th scope="col" className={cn(th, "text-center bg-primary/20 text-foreground")}>
+            <th
+              scope="col"
+              className={cn(th, "text-center bg-primary/20 text-foreground")}
+            >
               Gross
             </th>
-            <th scope="col" className={cn(th, "text-center bg-primary/20 text-foreground")}>
+            <th
+              scope="col"
+              className={cn(th, "text-center bg-primary/20 text-foreground")}
+            >
               Profit
             </th>
             <th
               scope="col"
-              className={cn(th, COL.groupStart, "bg-primary/20 text-foreground")}
+              className={cn(
+                th,
+                COL.groupStart,
+                "bg-primary/20 text-foreground",
+              )}
               title="Margin = profit / gross"
             >
               Margin
             </th>
-            <th scope="col" className={cn(th, COL.groupStart, "bg-destructive/20 text-foreground")}>
+            <th
+              scope="col"
+              className={cn(
+                th,
+                COL.groupStart,
+                "bg-destructive/20 text-foreground",
+              )}
+            >
               Actions
             </th>
           </tr>

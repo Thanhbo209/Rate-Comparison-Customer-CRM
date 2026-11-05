@@ -29,10 +29,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AddRateDialog } from "./add-rate-dialog";
-import { EditRateDialog } from "./edit-rate-dialog";
+import { AddRateDialog } from "./dialogs/add-rate-dialog";
+import { EditRateDialog } from "./dialogs/edit-rate-dialog";
 import { ManageFreightItemsDialog } from "./manage-freight-items-dialog";
-import { RateDeleteDialog } from "./rate-delete-dialog";
+import { RateDeleteDialog } from "./dialogs/rate-delete-dialog";
 import type {
   ShipmentComparisonDetail,
   ProviderItem,
@@ -40,7 +40,7 @@ import type {
   MultiShipmentRateOverview,
 } from "@/lib/rate/types";
 import { rankShipments } from "@/lib/rate/shipment-ranking";
-import { FreightRatesTable } from "./freight-rate-table";
+import { FreightRatesTable } from "./freights/freight-rate-table";
 
 interface RateComparisonViewProps {
   shipment: ShipmentComparisonDetail | null;

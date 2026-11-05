@@ -44,7 +44,7 @@ import {
 } from "@/lib/freight/actions";
 import type { ShipmentRateItem, FreightItemSummary } from "@/lib/rate/types";
 import { toast } from "react-toastify";
-import { FreightDeleteDialog } from "./freight-delete-dialog";
+import { FreightDeleteDialog } from "./freights/freight-delete-dialog";
 
 interface ManageFreightItemsDialogProps {
   open: boolean;

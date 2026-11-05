@@ -10,9 +10,9 @@ import type {
 } from "@/lib/customer/types";
 import { CustomerStats } from "./components/customer-stats";
 import { CustomerTable } from "./components/customer-table";
-import { CustomerDialog } from "./components/customer-dialog";
-import { CustomerViewDialog } from "./components/customer-view-dialog";
-import { CustomerDeleteDialog } from "./components/customer-delete-dialog";
+import { CustomerDialog } from "./dialogs/customer-dialog";
+import { CustomerViewDialog } from "./dialogs/customer-view-dialog";
+import { CustomerDeleteDialog } from "./dialogs/customer-delete-dialog";
 
 interface CustomersViewProps {
   initialCustomers: CustomerItem[];
