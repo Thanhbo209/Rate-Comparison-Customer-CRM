@@ -1,6 +1,6 @@
 import { requireRole } from "@/lib/auth/session";
 import { getCustomers, getCustomerStats } from "@/lib/customer/queries";
-import { CustomersView } from "@/components/dashboard/customers/components/customers-view";
+import { CustomersView } from "@/components/dashboard/customers/customers-view";
 
 export const dynamic = "force-dynamic";
 
@@ -21,3 +21,4 @@ export default async function AdminCustomersPage() {
     />
   );
 }
+
