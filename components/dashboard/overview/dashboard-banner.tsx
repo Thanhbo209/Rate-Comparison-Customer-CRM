@@ -64,7 +64,7 @@ export function DashboardBanner({
             alt="Logistics and Freight"
             width={800}
             height={360}
-            className="h-auto w-full max-w-[280px] sm:max-w-[340px] md:max-w-[360px] lg:max-w-[420px] object-contain drop-shadow-xs"
+            className="h-auto w-full max-w-70 sm:max-w-85 md:max-w-90 lg:max-w-105 object-contain drop-shadow-xs"
             priority
           />
         </div>
