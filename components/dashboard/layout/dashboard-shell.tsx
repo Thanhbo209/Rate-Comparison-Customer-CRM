@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { DashboardSidebar } from "./dashboard-sidebar";
-import { DashboardHeader } from "./dashboard-header";
+import { DashboardSidebar } from "./components/dashboard-sidebar";
+import { DashboardHeader } from "./components/dashboard-header";
 import type { AppRole } from "@/lib/auth/roles";
 
 interface DashboardShellProps {
