@@ -1,7 +1,7 @@
 "use client";
 
 import { Menu } from "lucide-react";
-import { SignOutButton } from "../../shared/sign-out-button";
+import { SignOutButton } from "../../../shared/sign-out-button";
 import type { AppRole } from "@/lib/auth/roles";
 import { cn } from "@/lib/utils";
 

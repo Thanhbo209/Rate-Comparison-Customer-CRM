@@ -4,7 +4,7 @@ import { useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 import { X, PanelLeftClose, PanelLeftOpen, Building2 } from "lucide-react";
 import { BRAND, Logo } from "@/components/shared/brand";
-import { SignOutButton } from "../../shared/sign-out-button";
+import { SignOutButton } from "../../../shared/sign-out-button";
 import { cn } from "@/lib/utils";
 import type { AppRole } from "@/lib/auth/roles";
 import {
