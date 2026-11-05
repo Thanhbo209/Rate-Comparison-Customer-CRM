@@ -8,7 +8,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { SectionCard } from "@/components/dashboard/overview/section-card";
+import { SectionCard } from "@/components/dashboard/overview/components/section-card";
 import {
   Select,
   SelectContent,

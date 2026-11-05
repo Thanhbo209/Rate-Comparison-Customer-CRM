@@ -23,16 +23,11 @@ export function SectionCard({
   children,
 }: SectionCardProps) {
   return (
-    <div
-      className={cn(
-        "border border-border bg-card shadow-xs",
-        className
-      )}
-    >
+    <div className={cn("border border-border bg-card shadow-xs", className)}>
       <div
         className={cn(
           "flex items-center justify-between p-5",
-          headerBorder && "border-b border-border"
+          headerBorder && "border-b border-border",
         )}
       >
         <div>

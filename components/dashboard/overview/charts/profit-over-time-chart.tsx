@@ -8,7 +8,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { SectionCard } from "@/components/dashboard/overview/section-card";
+import { SectionCard } from "@/components/dashboard/overview/components/section-card";
 import { Clock } from "lucide-react";
 import type { ShipmentComparisonDetail } from "@/lib/rate/types";
 import { getShipmentTotals } from "@/lib/rate/shipment-ranking";
