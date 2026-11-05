@@ -1,4 +1,4 @@
-import { NavConfigItem } from "@/utils/layout/sidebar/constants";
+import { NavConfigItem } from "@/utils/layouts/sidebar/constants";
 import { cn } from "cn";
 import Link from "next/link";
 import { NavIcon } from "./nav.icons";

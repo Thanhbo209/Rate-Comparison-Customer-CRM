@@ -13,12 +13,12 @@ import {
   NavConfigItem,
   SALES_BOTTOM_ITEMS,
   SALES_NAV_ITEMS,
-} from "@/utils/layout/sidebar/constants";
+} from "@/utils/layouts/sidebar/constants";
 import {
   readCollapsed,
   subscribeCollapsed,
   writeCollapsed,
-} from "@/utils/layout/sidebar/helper";
+} from "@/utils/layouts/sidebar/helper";
 import { NavItem } from "./nav-items";
 import Link from "next/link";
 
