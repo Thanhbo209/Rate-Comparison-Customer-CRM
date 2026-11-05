@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/select";
 import { AddRateDialog } from "./dialogs/add-rate-dialog";
 import { EditRateDialog } from "./dialogs/edit-rate-dialog";
-import { ManageFreightItemsDialog } from "./manage-freight-items-dialog";
+import { ManageFreightItemsDialog } from "./freight-management/manage-freight-items-dialog";
 import { RateDeleteDialog } from "./dialogs/rate-delete-dialog";
 import type {
   ShipmentComparisonDetail,
