@@ -1,8 +1,8 @@
 "use client";
 
 import type { ShipmentComparisonDetail } from "@/lib/rate/types";
-import { CostVsProfitShipmentChart } from "./cost-vs-profit-shipment-chart";
-import { ProfitOverTimeChart } from "./profit-over-time-chart";
+import { CostVsProfitShipmentChart } from "./components/cost-vs-profit-shipment-chart";
+import { ProfitOverTimeChart } from "./components/profit-over-time-chart";
 
 interface SalesAnalyticsChartsProps {
   shipments: ShipmentComparisonDetail[];
